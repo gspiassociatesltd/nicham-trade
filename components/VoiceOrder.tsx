@@ -113,7 +113,7 @@ const voicePrompts: any = {
 const productKeywords: any = {
   en: { bike: 1, cargo: 1, pump: 2, water: 2, freezer: 3, cold: 3, grid: 4, mini: 4, tractor: 5, plough: 5, dryer: 6, dry: 6, canoe: 7, kayak: 7, boat: 8, foldable: 9, collapsible: 9 },
   pcm: { bike: 1, cargo: 1, keke: 1, pump: 2, water: 2, freezer: 3, cold: 3, grid: 4, mini: 4, tractor: 5, dryer: 6, canoe: 7, boat: 8, foldable: 9 },
-  yo: { keke: 1, eru: 1, bike: 1, fompu: 2, omi: 2, firisa: 3, grid: 4, tirakito: 5, gbigbe: 6, kika: 9, fold: 9, eru: 1 },
+  yo: { keke: 1, eru: 1, bike: 1, fompu: 2, omi: 2, firisa: 3, grid: 4, tirakito: 5, gbigbe: 6, kika: 9, fold: 9 },
   ha: { keke: 1, kaya: 1, bike: 1, famfo: 2, ruwa: 2, pump: 2, firiza: 3, sanyi: 3, grid: 4, mini: 4, tarikta: 5, noma: 5, bushewa: 6, kwale: 7, jirgi: 8, ninkewa: 9 },
   ig: { igwe: 1, ibu: 1, bike: 1, mmiri: 2, pump: 2, friza: 3, grid: 4, trakto: 5, nkucha: 6, ugbo: 7, mpiachi: 9, fold: 9 }
 }
