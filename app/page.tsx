@@ -77,7 +77,7 @@ export default function Home() {
           const total = calcTotal(meta.basePrice)
           const prod = pT[meta.id]
           return (
-          <div key={meta.id} className="bg-white rounded-2xl shadow p-4 hover:shadow-xl transition border">
+          <div id={`product-${meta.id}`} key={meta.id} className="bg-white rounded-2xl shadow p-4 hover:shadow-xl transition border scroll-mt-20">
             <a href={`/product/${meta.id}?lang=${lang}`}>
               <div className="text-5xl mb-3">{meta.img}</div>
               <h3 className="font-bold text-sm">{prod.name}</h3>
