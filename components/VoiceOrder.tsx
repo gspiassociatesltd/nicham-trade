@@ -4,55 +4,32 @@ import { useRouter } from 'next/navigation'
 
 const voicePrompts: any = {
   en: {
-    welcome: "Welcome to NiChAm Solar Market. Say the product you want. For example, say Solar Bike, or Solar Pump, or Solar Freezer.",
-    listening: "Listening... Speak now",
-    heard: "I heard you say",
-    productFound: "Great! Opening {product}. {intro}. It costs {price} naira. I will take you to order page. Are you ready to place order? Say yes.",
-    orderPlaced: "Taking you to order page for {product}. Please confirm on the page. Thank you.",
-    tryAgain: "Sorry, I did not understand. Please say Solar Bike, Solar Pump, Solar Freezer, Mini Grid, Tractor, Dryer, Canoe, Boat, or Foldable Bike.",
+    welcome: "Welcome to NiChAm Solar Market. Say the product you want. For example, say Solar Bike, Solar Pump, or Solar Freezer.",
+    listening: "Listening, speak now",
+    heard: "You said",
+    productIntro: "Great! You asked for {product}. {intro} This is {sourced}. Total price is {price} naira including all fees. Should I open the order page for you? Say yes to continue, or say another product.",
+    confirmOpen: "Opening order page for {product} now.",
+    orderPageReady: "You are on the order page for {product}. {intro} Price total {price} naira. Ready to place order? Say yes to confirm order, or no to go back.",
+    orderConfirmed: "Order confirmed! Your order ID is {orderId}. Your money is safe in MTN MoMo Escrow. AfricanIES will source and deliver. You will get SMS with tracking. Thank you.",
+    tryAgain: "Sorry, I did not hear a product name. Please say Solar Bike, Solar Pump, Solar Freezer, Mini Grid, Tractor, Dryer, Canoe Kit, Boat, or Foldable Bike.",
     langCode: "en-NG",
     voiceActive: true
   },
   pcm: {
-    welcome: "Welcome to NiChAm Solar Market. Talk wetin you wan buy. For example, talk Solar Bike, or Solar Pump.",
-    listening: "I dey listen... Talk now",
-    heard: "I hear say you talk",
-    productFound: "Correct! I dey open {product}. {intro}. E cost {price} naira. I go carry you go order page. You ready to order? Talk yes.",
-    orderPlaced: "I dey carry you go order page for {product}. Abeg confirm for page. Thank you.",
-    tryAgain: "Sorry, I no understand. Abeg talk Solar Bike, Solar Pump, Solar Freezer, Mini Grid, Tractor, Dryer, Canoe, Boat, or Foldable Bike.",
+    welcome: "Welcome to NiChAm Solar Market. Talk wetin you wan buy. For example, talk Solar Bike, or Solar Pump, or Solar Freezer.",
+    listening: "I dey listen, talk now",
+    heard: "You talk",
+    productIntro: "Correct! You ask for {product}. {intro} Na {sourced}. Total price na {price} naira including everything. Make I open order page for you? Talk yes to continue, or talk another product.",
+    confirmOpen: "I dey open order page for {product} now.",
+    orderPageReady: "You dey order page for {product} now. {intro} Price total na {price} naira. You ready to place order? Talk yes to confirm, or no to go back.",
+    orderConfirmed: "Order don enter! Your Order ID na {orderId}. Your money dey safe for MTN MoMo Escrow. AfricanIES go find and deliver. You go get SMS with tracking. Thank you.",
+    tryAgain: "Sorry, I no hear product name. Abeg talk Solar Bike, Solar Pump, Solar Freezer, Mini Grid, Tractor, Dryer, Canoe, Boat, or Foldable Bike.",
     langCode: "en-NG",
     voiceActive: true
   },
-  ha: {
-    welcome: "Barka da zuwa Kasuwar Solar ta NiChAm. Rubutu a shirye yake a Hausa, murya ta asali tana nan tafe. Ka ce Kekin Kaya Solar ko Famfon Ruwa.",
-    listening: "Ina sauraro... (Rubutu kawai a yanzu)",
-    heard: "Na ji ka ce",
-    productFound: "Madalla! Ina bude {product}. Zan kai ka shafin oda. Ka shirya?",
-    orderPlaced: "Ina kai ka shafin odar {product}.",
-    tryAgain: "Yi hakuri, ban gane ba. Ka ce Solar Bike, Pump, Freezer.",
-    langCode: "ha-NG",
-    voiceActive: false
-  },
-  ig: {
-    welcome: "Nnoo na Ahia Solar NiChAm. Ederede di njikere na Igbo, olu obodo na-abia. Kwuo Solar Bike ma obu Pump.",
-    listening: "Ana m ege nti... (Ederede naanị ugbu a)",
-    heard: "Anuru m",
-    productFound: "O di mma! Ana m emepe {product}. Ana m akpuru gi gaa peeji iwu.",
-    orderPlaced: "Ana m akpuru gi gaa peeji iwu maka {product}.",
-    tryAgain: "Ndo, aghotaghị m. Kwuo Solar Bike, Pump, Freezer.",
-    langCode: "ig-NG",
-    voiceActive: false
-  },
-  yo: {
-    welcome: "Kaabo si Oja Solar NiChAm. O ro ti setan ni Yoruba, ohun abinibi n bo. So Keke Eru Solar tabi Fompu Omi.",
-    listening: "Mo n gbo... (Oro kikun nikan ni bayi)",
-    heard: "Mo gbo pe o so",
-    productFound: "O dara! Mo n si {product}. Mo ma mu o lo si oju-iwe pase. O ti setan?",
-    orderPlaced: "Mo mu o lo si oju-iwe pase fun {product}.",
-    tryAgain: "Ma binu, Emi ko loye. So Solar Bike, Pump, Freezer.",
-    langCode: "yo-NG",
-    voiceActive: false
-  }
+  ha: { welcome: "Barka da zuwa Kasuwar Solar ta NiChAm. Rubutu a shirye yake a Hausa, murya ta asali tana nan tafe.", listening: "Ina sauraro", heard: "Na ji", productIntro: "{product}. {intro} Farashin {price} naira. Bude shafin oda? Ka ce eh.", confirmOpen: "Ina bude shafin oda na {product}", orderPageReady: "Kana shafin oda na {product}. {intro}", orderConfirmed: "An tabbatar da oda! ID {orderId}", tryAgain: "Ban ji sunan kaya ba", langCode: "ha-NG", voiceActive: false },
+  ig: { welcome: "Nnoo na Ahia Solar NiChAm. Ederede di njikere.", listening: "Ana m ege nti", heard: "Anuru m", productIntro: "{product}. {intro} Onu ahia {price} naira. Mepee peeji iwu? Kwuo ee.", confirmOpen: "Ana m emepe peeji iwu maka {product}", orderPageReady: "I no na peeji iwu maka {product}. {intro}", orderConfirmed: "Ekwenyela iwu! ID {orderId}", tryAgain: "Anughi m aha ngwaahia", langCode: "ig-NG", voiceActive: false },
+  yo: { welcome: "Kaabo si Oja Solar NiChAm. O ro ti setan.", listening: "Mo n gbo", heard: "Mo gbo", productIntro: "{product}. {intro} Iye {price} naira. Si oju-iwe pase? So beeni.", confirmOpen: "Mo n si oju-iwe pase fun {product}", orderPageReady: "O wa ni oju-iwe pase fun {product}. {intro}", orderConfirmed: "A ti jersi pase! ID {orderId}", tryAgain: "Emi ko gbo oruko oja", langCode: "yo-NG", voiceActive: false }
 }
 
 const productKeywords: any = {
@@ -63,36 +40,47 @@ const productKeywords: any = {
   yo: { keke: 1, eru: 1, bike: 1, fompu: 2, firisa: 3, grid: 4, tirakito: 5, gbigbe: 6, kika: 9, fold: 9 }
 }
 
+function calcTotal(base: number) {
+  const pf = Math.round(base * 0.10)
+  const vat = Math.round(pf * 0.075)
+  const esc = Math.round(base * 0.02)
+  const gp = Math.round(base * 0.01)
+  return base + pf + vat + esc + gp
+}
+
 export default function VoiceOrder({ lang, products }: { lang: string, products: any }) {
   const [isListening, setIsListening] = useState(false)
   const [transcript, setTranscript] = useState("")
   const [response, setResponse] = useState("")
   const [lastProduct, setLastProduct] = useState<any>(null)
+  const [awaitingConfirm, setAwaitingConfirm] = useState<'open' | 'order' | null>(null)
   const recognitionRef = useRef<any>(null)
   const router = useRouter()
 
   const prompts = voicePrompts[lang] || voicePrompts.en
 
   useEffect(() => {
+    // Fix: Say NiChAm as word, not N I C H A M - no spaces, slower rate
+    const welcomeMsg = prompts.welcome.replace(/N\s*I\s*C\s*H\s*A\s*M/gi, 'NiChAm')
     if (prompts.voiceActive) {
-      speak(prompts.welcome)
-      setResponse(prompts.welcome)
+      speak(welcomeMsg)
+      setResponse(welcomeMsg)
     } else {
-      setResponse(prompts.welcome + " (Text ready, native voice - card needed)")
+      setResponse(welcomeMsg + " (Text ready, native voice card needed)")
     }
   }, [lang])
 
   const speak = (text: string) => {
     const isActive = voicePrompts[lang]?.voiceActive
-    if (!isActive) {
-      console.log("Voice not active for lang:", lang, "- text mode only until card purchased")
-      return
-    }
+    if (!isActive) return
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel()
-      const utterance = new SpeechSynthesisUtterance(text)
+      // Fix N I C H A M spelling issue - replace with NiChAm
+      const cleanText = text.replace(/N\s*I\s*C\s*H\s*A\s*M/gi, 'Nicham').replace(/NICHAM/gi, 'Nicham')
+      const utterance = new SpeechSynthesisUtterance(cleanText)
       utterance.lang = prompts.langCode
-      utterance.rate = 0.9
+      utterance.rate = 0.88
+      utterance.pitch = 1
       const voices = window.speechSynthesis.getVoices()
       const ngVoice = voices.find((v: any) => v.lang.includes('en-NG')) || voices.find((v: any) => v.lang.includes('en')) 
       if (ngVoice) utterance.voice = ngVoice
@@ -134,23 +122,40 @@ export default function VoiceOrder({ lang, products }: { lang: string, products:
   }
 
   const handleVoiceCommand = (text: string) => {
-    if (text.includes('yes') || text.includes('eh') || text.includes('ee') || text.includes('bẹẹni') || text.includes('bẹẹ')) {
-      if (lastProduct) {
-        const url = `/product/${lastProduct.id}?lang=${lang}&voice=yes`
-        router.push(url)
-        const msg = prompts.orderPlaced.replace('{product}', lastProduct.name)
+    // YES / NO handling for two-step flow
+    const isYes = text.includes('yes') || text.includes('yeah') || text.includes('yep') || text.includes('correct') || text.includes('open')
+    const isNo = text.includes('no') || text.includes("a'a") || text.includes('mba') || text.includes('bẹẹkọ') || text.includes('back')
+
+    if (awaitingConfirm === 'open' && lastProduct) {
+      if (isYes) {
+        const total = calcTotal(lastProduct.basePrice)
+        const confirmMsg = prompts.confirmOpen.replace('{product}', lastProduct.name)
+        setResponse(confirmMsg)
+        if (prompts.voiceActive) speak(confirmMsg)
+        setAwaitingConfirm(null)
+        setTimeout(() => {
+          router.push(`/product/${lastProduct.id}?lang=${lang}&voice=ready&name=${encodeURIComponent(lastProduct.name)}`)
+        }, 2500)
+        return
+      }
+      if (isNo) {
+        setAwaitingConfirm(null)
+        const msg = prompts.welcome
         setResponse(msg)
         if (prompts.voiceActive) speak(msg)
         return
       }
     }
-    if (text.includes('no') || text.includes("a'a") || text.includes('mba') || text.includes('bẹẹkọ')) {
-      const msg = prompts.welcome
-      setResponse(msg)
-      if (prompts.voiceActive) speak(msg)
-      return
+
+    if (awaitingConfirm === 'order' && lastProduct) {
+      if (isYes) {
+        // Will be handled on order page, but also allow confirm here
+        router.push(`/product/${lastProduct.id}?lang=${lang}&voice=confirm`)
+        return
+      }
     }
 
+    // Find product by keyword
     const keywords = productKeywords[lang] || productKeywords.en
     const keywordsEn = productKeywords.en
     let foundId = null
@@ -167,20 +172,18 @@ export default function VoiceOrder({ lang, products }: { lang: string, products:
       const productMeta = products.find((p: any) => p.id === foundId)
       if (productMeta) {
         setLastProduct(productMeta)
-        const msg = prompts.productFound.replace('{product}', productMeta.name).replace('{intro}', productMeta.intro).replace('{price}', productMeta.basePrice.toLocaleString())
-        setResponse(`${prompts.heard}: "${text}". ${msg} Say YES to open order page.`)
-        if (prompts.voiceActive) {
-          speak(msg)
-          setTimeout(() => {
-            const url = `/product/${productMeta.id}?lang=${lang}&voice=auto`
-            router.push(url)
-          }, 4000)
-        } else {
-          setTimeout(() => {
-            const url = `/product/${productMeta.id}?lang=${lang}&voice=auto`
-            router.push(url)
-          }, 2000)
-        }
+        const total = calcTotal(productMeta.basePrice)
+        // Now describe product fully BEFORE opening - this is what user asked: tell load capacity 200kg etc
+        const msg = prompts.productIntro
+          .replace('{product}', productMeta.name)
+          .replace('{intro}', productMeta.intro)
+          .replace('{sourced}', productMeta.sourced || 'Sourced by AfricanIES')
+          .replace('{price}', total.toLocaleString())
+        
+        setResponse(`${prompts.heard}: "${text}". ${msg}`)
+        if (prompts.voiceActive) speak(msg)
+        setAwaitingConfirm('open')
+        // Do NOT auto-navigate - wait for YES per your instruction
       }
     } else {
       setResponse(`${prompts.heard}: "${text}". ${prompts.tryAgain}`)
@@ -191,11 +194,11 @@ export default function VoiceOrder({ lang, products }: { lang: string, products:
   return (
     <div className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-50 flex flex-col items-end gap-2">
       {(transcript || response) && (
-        <div className="bg-black text-white rounded-2xl p-3 max-w-[320px] text-xs shadow-2xl border border-yellow-400">
-          <div className="text-yellow-300 font-bold mb-1">🎤 Voice Order - {lang.toUpperCase()} {prompts.voiceActive ? '(Voice Active)' : '(Text only - card needed for native voice)'}</div>
+        <div className="bg-black text-white rounded-2xl p-3 max-w-[340px] text-xs shadow-2xl border border-yellow-400">
+          <div className="text-yellow-300 font-bold mb-1">🎤 Voice - {lang.toUpperCase()} {prompts.voiceActive ? '(Active)' : '(Text only)'} {awaitingConfirm ? `→ Awaiting YES to ${awaitingConfirm}` : ''}</div>
           {transcript && <div className="text-gray-300">You said: "{transcript}"</div>}
-          <div className="mt-1">{response}</div>
-          <div className="mt-2 text-[10px] text-gray-500">Voice transcript saved for Nigerian LLM data. Lang: {lang} | Orders to: /product/ID?lang={lang}</div>
+          <div className="mt-1 leading-relaxed">{response}</div>
+          <div className="mt-2 text-[10px] text-gray-500">Flow: Say product → Hear description (load, etc) → Say YES → Opens order page → Say YES again → Order confirmed. No repeat welcome.</div>
         </div>
       )}
       <button
@@ -204,7 +207,7 @@ export default function VoiceOrder({ lang, products }: { lang: string, products:
       >
         {isListening ? '🔴' : '🎤'}
       </button>
-      <div className="bg-black text-white text-[10px] px-2 py-1 rounded-full">{isListening ? 'Listening...' : 'Tap to speak - No typing'}</div>
+      <div className="bg-black text-white text-[10px] px-2 py-1 rounded-full">{isListening ? 'Listening...' : awaitingConfirm ? `Say YES to ${awaitingConfirm}` : 'Tap to speak - No typing'}</div>
     </div>
   )
 }
