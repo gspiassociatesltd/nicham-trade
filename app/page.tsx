@@ -1,8 +1,8 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { translations, productTranslations } from '../lib/i18n'
-import VoiceOrder from '../components/VoiceOrder'
 import LangToggle from '../components/LangToggle'
+import VoiceOrder from '../components/VoiceOrder'
 
 const productsMeta = [
   { id: 1, basePrice: 400000, co2: 2.2, img: "🚲", category: "Mobility" },
@@ -27,10 +27,23 @@ function calcPricing(base: number) {
 
 export default function Home() {
   const [lang, setLang] = useState('en')
+  useEffect(() => {
+    const saved = localStorage.getItem('nicham_lang')
+    if (saved) setLang(saved)
+  }, [])
+  const handleLang = (l: string) => {
+    setLang(l)
+    localStorage.setItem('nicham_lang', l)
+  }
+
   const t = translations[lang] || translations.en
   const pT = productTranslations[lang] || productTranslations.en
-
-  const voiceProducts = productsMeta.map(m => ({ id: m.id, name: (productTranslations[lang] || productTranslations.en)[m.id].name, intro: (productTranslations[lang] || productTranslations.en)[m.id].intro, basePrice: m.basePrice }))
+  const voiceProducts = productsMeta.map(m => ({ 
+    id: m.id, 
+    name: (productTranslations[lang] || productTranslations.en)[m.id].name, 
+    intro: (productTranslations[lang] || productTranslations.en)[m.id].intro, 
+    basePrice: m.basePrice 
+  }))
 
   return (
     <main className="min-h-screen">
@@ -39,7 +52,7 @@ export default function Home() {
           <h1 className="text-xl font-black">☀️ {t.title}</h1>
           <p className="text-xs text-yellow-300">{t.headerSub}</p>
         </div>
-        <LangToggle lang={lang} setLang={setLang} />
+        <LangToggle lang={lang} setLang={handleLang} />
       </header>
 
       <div className="bg-green-700 text-white text-center p-2 text-sm font-bold">
@@ -54,7 +67,6 @@ export default function Home() {
         <h2 className="text-3xl font-black mb-2">{t.subtitle}</h2>
         <p className="text-gray-600 mb-2">{t.desc}</p>
         <p className="text-xs text-gray-500 max-w-3xl mx-auto">{t.howItWorks}</p>
-        
         <div className="flex gap-2 justify-center flex-wrap mt-4">
           <button className="px-4 py-2 bg-black text-white rounded-full text-sm font-bold">☀️ {t.btnSolar}</button>
           <button className="px-4 py-2 bg-white border-2 border-black rounded-full text-sm font-bold">🛒 {t.btnAfricanIES}</button>
@@ -65,9 +77,7 @@ export default function Home() {
         {productsMeta.map(meta=>{
           const pr = calcPricing(meta.basePrice)
           const prod = pT[meta.id]
-          const voiceProducts = productsMeta.map(m => ({ id: m.id, name: (productTranslations[lang] || productTranslations.en)[m.id].name, intro: (productTranslations[lang] || productTranslations.en)[m.id].intro, basePrice: m.basePrice }))
-
-  return (
+          return (
           <div key={meta.id} className="bg-white rounded-2xl shadow p-4 hover:shadow-xl transition border">
             <a href={`/product/${meta.id}?lang=${lang}`}>
               <div className="text-5xl mb-3">{meta.img}</div>
@@ -91,8 +101,7 @@ export default function Home() {
             </div>
             <div className="mt-2 flex gap-1">
               <span className="text-[10px] text-gray-400">{t.share}:</span>
-              <a href={`https://wa.me/?text=${encodeURIComponent(prod.name + ' - ' + prod.intro)}`} target="_blank" className="text-xs bg-green-500 text-white px-2 py-1 rounded-full">WhatsApp</a>
-              <a href={`https://www.facebook.com/sharer/sharer.php?u=https://nicham-trade.vercel.app`} target="_blank" className="text-xs bg-blue-600 text-white px-2 py-1 rounded-full">FB</a>
+              <a href={`https://wa.me/?text=${encodeURIComponent(prod.name)}`} target="_blank" className="text-xs bg-green-500 text-white px-2 py-1 rounded-full">WhatsApp</a>
               <a href={`https://www.youtube.com/@godwinabaniwo6755`} target="_blank" className="text-xs bg-red-600 text-white px-2 py-1 rounded-full">YouTube</a>
             </div>
           </div>
@@ -106,10 +115,7 @@ export default function Home() {
             <div className="bg-gray-900 rounded-xl p-4">
               <h4 className="font-bold mb-2">{t.footerMarket}</h4>
               <div className="space-y-1">
-                <div>{t.footerMarket1}</div>
-                <div>{t.footerMarket2}</div>
-                <div>{t.footerMarket3}</div>
-                <div>{t.footerMarket4}</div>
+                <div>{t.footerMarket1}</div><div>{t.footerMarket2}</div><div>{t.footerMarket3}</div><div>{t.footerMarket4}</div>
               </div>
             </div>
             <div className="bg-gray-900 rounded-xl p-4">
@@ -117,25 +123,20 @@ export default function Home() {
               <div className="space-y-1">
                 <a href="https://facebook.com/abaniwog" target="_blank" className="block hover:text-yellow-300">Facebook: abaniwog</a>
                 <a href="https://instagram.com/gspiassociatesltd" target="_blank" className="block hover:text-yellow-300">Instagram: gspiassociatesltd</a>
-                <a href="https://threads.net/@gspiassociatesltd" target="_blank" className="block hover:text-yellow-300">Threads: @gspiassociatesltd</a>
                 <a href="https://www.youtube.com/@godwinabaniwo6755" target="_blank" className="block hover:text-red-400">YouTube: @godwinabaniwo6755</a>
               </div>
             </div>
             <div className="bg-gray-900 rounded-xl p-4">
               <h4 className="font-bold mb-2">{t.footerMission}</h4>
               <div className="space-y-1">
-                <div>{t.footerMission1}</div>
-                <div>{t.footerMission2}</div>
-                <div>{t.footerMission3}</div>
-                <div>{t.footerMission4}</div>
+                <div>{t.footerMission1}</div><div>{t.footerMission2}</div><div>{t.footerMission3}</div><div>{t.footerMission4}</div>
               </div>
             </div>
           </div>
-          <div className="text-center mt-6 text-[10px] text-gray-500">
-            {t.copyright}
-          </div>
+          <div className="text-center mt-6 text-[10px] text-gray-500">{t.copyright}</div>
         </div>
       </section>
+
       <VoiceOrder lang={lang} products={voiceProducts} />
     </main>
   )
