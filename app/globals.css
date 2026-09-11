@@ -1,8 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-body{font-family: system-ui, -apple-system; background:#FFFBEB}
-.card{ @apply bg-white rounded-2xl shadow-sm border p-4 }
-.btn{ @apply rounded-xl px-5 py-3 font-bold text-center min-h-[48px] flex items-center justify-center }
-.btn-green{ @apply btn bg-[#0A7F2E] text-white }
-.btn-yellow{ @apply btn bg-[#FFC107] text-black }
