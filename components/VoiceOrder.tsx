@@ -141,7 +141,7 @@ export default function VoiceOrder({ lang, products }: { lang: string, products:
         return
       }
     }
-    if (text.includes('no') || text.includes('a'a') || text.includes('mba') || text.includes('bẹẹkọ')) {
+    if (text.includes('no') || text.includes("a'a") || text.includes('mba') || text.includes('bẹẹkọ')) {
       const msg = prompts.welcome
       setResponse(msg)
       speak(msg)
