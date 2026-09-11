@@ -1,4 +1,7 @@
-# NiChAm Trade - All Nigeria Farm Market | Zero Budget MVP
+# NiChAm Trade - All Nigeria SOLAR Market ☀️ | AfricanIES + MTN MoMo + Ayoba
+**Solar Cargo Bikes, Pumps, Freezers, Mini-Grids & Tractors for 36 States | 4 Languages | Green Points → MTN Airtime**
+
+Built on GitHub + Vercel + Render + Supabase + Ubuntu - Ready to scale with AfricanIES logistics & MTN MoMo escrow.
 **Stack: GitHub + Vercel + Render + Supabase + Ubuntu - 100% FREE**
 
 Target: MTN MoMo, Ayoba, AfriLabs, AfricInvest
