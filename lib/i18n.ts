@@ -16,7 +16,7 @@ export const translations: any = {
     priceGreen: "Green Points",
     priceTotal: "Total",
     share: "Share",
-    voiceBar: "Voice: EN + Pidgin active now | HA • IG • YO text ready, native voice - funding needed",
+    voiceBar: "Voice: EN + Pidgin active now (Tap mic to order without typing) | HA • IG • YO text ready, native voice card needed",
     footerTitle: "Connect & Mission",
     footerMarket: "Marketplace Model",
     footerMarket1: "GSPI/NiChAm: Platform owner only",

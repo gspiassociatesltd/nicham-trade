@@ -16,13 +16,12 @@ const productsMeta = [
   { id: 9, basePrice: 250000, co2: 1.8, img: "🚲‍♂️", category: "Mobility" },
 ]
 
-function calcPricing(base: number) {
+function calcTotal(base: number) {
   const platformFee = Math.round(base * 0.10)
   const vat = Math.round(platformFee * 0.075)
   const escrowFee = Math.round(base * 0.02)
   const greenPoints = Math.round(base * 0.01)
-  const total = base + platformFee + vat + escrowFee + greenPoints
-  return { base, platformFee, vat, escrowFee, greenPoints, total }
+  return base + platformFee + vat + escrowFee + greenPoints
 }
 
 export default function Home() {
@@ -75,34 +74,25 @@ export default function Home() {
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 max-w-6xl mx-auto">
         {productsMeta.map(meta=>{
-          const pr = calcPricing(meta.basePrice)
+          const total = calcTotal(meta.basePrice)
           const prod = pT[meta.id]
           return (
           <div key={meta.id} className="bg-white rounded-2xl shadow p-4 hover:shadow-xl transition border">
             <a href={`/product/${meta.id}?lang=${lang}`}>
               <div className="text-5xl mb-3">{meta.img}</div>
               <h3 className="font-bold text-sm">{prod.name}</h3>
-              <p className="text-xs text-gray-500 mt-1 italic">{prod.intro}</p>
-              <p className="text-xs text-gray-500">{prod.sourced} • {meta.category}</p>
-              <div className="mt-2 bg-gray-50 rounded-xl p-2 text-xs">
-                <div className="flex justify-between"><span>{t.priceSourced}</span><span>₦{pr.base.toLocaleString()}</span></div>
-                <div className="flex justify-between"><span>{t.pricePlatform}</span><span>₦{pr.platformFee.toLocaleString()}</span></div>
-                <div className="flex justify-between"><span>{t.priceVAT}</span><span>₦{pr.vat.toLocaleString()}</span></div>
-                <div className="flex justify-between"><span>{t.priceEscrow}</span><span>₦{pr.escrowFee.toLocaleString()}</span></div>
-                <div className="flex justify-between"><span>{t.priceGreen}</span><span>₦{pr.greenPoints.toLocaleString()}</span></div>
-                <div className="flex justify-between font-black border-t mt-1 pt-1"><span>{t.priceTotal}</span><span className="text-green-700">₦{pr.total.toLocaleString()}</span></div>
+              <p className="text-xs text-gray-500 mt-1 italic line-clamp-3">{prod.intro}</p>
+              <p className="text-[10px] text-gray-400 mt-1">{prod.sourced} • {meta.category}</p>
+              <div className="mt-3 flex justify-between items-center">
+                <span className="text-xs text-gray-500">{t.priceTotal}</span>
+                <span className="text-lg font-black text-green-700">₦{total.toLocaleString()}</span>
               </div>
               <div className="mt-2 text-xs bg-green-50 text-green-800 p-2 rounded-lg">
                 🌱 {prod.co2Text.replace('{co2}', meta.co2.toString())}
               </div>
             </a>
-            <div className="mt-3 flex gap-1 flex-wrap">
-              <a href={`/product/${meta.id}?lang=${lang}`} className="flex-1 bg-black text-white py-2 rounded-full text-xs text-center font-bold">{t.cta}</a>
-            </div>
-            <div className="mt-2 flex gap-1">
-              <span className="text-[10px] text-gray-400">{t.share}:</span>
-              <a href={`https://wa.me/?text=${encodeURIComponent(prod.name)}`} target="_blank" className="text-xs bg-green-500 text-white px-2 py-1 rounded-full">WhatsApp</a>
-              <a href={`https://www.youtube.com/@godwinabaniwo6755`} target="_blank" className="text-xs bg-red-600 text-white px-2 py-1 rounded-full">YouTube</a>
+            <div className="mt-3">
+              <a href={`/product/${meta.id}?lang=${lang}`} className="block bg-black text-white py-2 rounded-full text-xs text-center font-bold">{t.cta}</a>
             </div>
           </div>
         )})}
