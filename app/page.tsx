@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { translations, productTranslations } from '../lib/i18n'
+import VoiceOrder from '../components/VoiceOrder'
 import LangToggle from '../components/LangToggle'
 
 const productsMeta = [
@@ -28,6 +29,8 @@ export default function Home() {
   const [lang, setLang] = useState('en')
   const t = translations[lang] || translations.en
   const pT = productTranslations[lang] || productTranslations.en
+
+  const voiceProducts = productsMeta.map(m => ({ id: m.id, name: (productTranslations[lang] || productTranslations.en)[m.id].name, intro: (productTranslations[lang] || productTranslations.en)[m.id].intro, basePrice: m.basePrice }))
 
   return (
     <main className="min-h-screen">
@@ -62,7 +65,9 @@ export default function Home() {
         {productsMeta.map(meta=>{
           const pr = calcPricing(meta.basePrice)
           const prod = pT[meta.id]
-          return (
+          const voiceProducts = productsMeta.map(m => ({ id: m.id, name: (productTranslations[lang] || productTranslations.en)[m.id].name, intro: (productTranslations[lang] || productTranslations.en)[m.id].intro, basePrice: m.basePrice }))
+
+  return (
           <div key={meta.id} className="bg-white rounded-2xl shadow p-4 hover:shadow-xl transition border">
             <a href={`/product/${meta.id}?lang=${lang}`}>
               <div className="text-5xl mb-3">{meta.img}</div>
@@ -131,6 +136,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <VoiceOrder lang={lang} products={voiceProducts} />
     </main>
   )
 }

@@ -1,5 +1,6 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { translations } from '../../../lib/i18n'
 
 const basePrices: any = {1:400000,2:280000,3:240000,4:2200000,5:3400000,6:130000,7:160000,8:1050000,9:250000}
 
@@ -40,6 +41,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           <p className="text-sm mt-2">This solar product displaces diesel/petrol, saves CO2, earns carbon credits for platform.</p>
         </div>
 
+        <div className="mt-4 bg-black text-yellow-300 p-2 rounded-xl text-xs">🔊 Voice order active - Tap mic button bottom-right, say Yes to order in your language (EN/HA/YO/IG/PIDGIN) - No typing needed per master spec 2.1</div>
         <button className="mt-6 w-full bg-green-600 text-white py-3 rounded-full font-bold">Order via Platform - ₦{total.toLocaleString()}</button>
       </div>
     </main>
