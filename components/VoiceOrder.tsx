@@ -146,37 +146,76 @@ export default function VoiceOrder({ lang, products, mode }: { lang: string, pro
 
   const prompts = voicePrompts[lang] || voicePrompts.en
 
+  const [voicesReady, setVoicesReady] = useState(false)
+
   useEffect(() => {
-    // Restore welcome message on listing page load - plays once
+    // Wait for voices to load - critical for first load
+    const loadVoices = () => {
+      const voices = window.speechSynthesis.getVoices()
+      if (voices.length > 0) setVoicesReady(true)
+    }
+    loadVoices()
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = loadVoices
+    }
+    // Fallback timer
+    const t = setTimeout(() => setVoicesReady(true), 1500)
+    return () => clearTimeout(t)
+  }, [])
+
+  useEffect(() => {
     if (currentMode === 'listing') {
       const welcome = prompts.welcome
       setResponse(welcome)
-      if (prompts.voiceActive) {
-        setTimeout(() => {
+      // FIX: Play welcome on listing page load - wait for voicesReady + user has interacted or after 2 sec
+      if (prompts.voiceActive && voicesReady) {
+        const trySpeak = () => {
           if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel()
-            const u = new SpeechSynthesisUtterance(welcome.replace(/Nicham/g, 'Nicham'))
+            const clean = welcome.replace(/Nicham/g, 'Nicham')
+            const u = new SpeechSynthesisUtterance(clean)
             u.lang = prompts.langCode
             u.rate = 0.85
+            u.volume = 1
+            // Use en-NG voice if available
+            const voices = window.speechSynthesis.getVoices()
+            const ngVoice = voices.find((v:any) => v.lang === 'en-NG') || voices.find((v:any) => v.lang.startsWith('en'))
+            if (ngVoice) u.voice = ngVoice
             window.speechSynthesis.speak(u)
           }
-        }, 1000)
+        }
+        // Try immediately, and also after slight delay for Chrome autoplay policy
+        trySpeak()
+        const timer = setTimeout(trySpeak, 1200)
+        return () => clearTimeout(timer)
       }
     } else {
       const welcome = products[0] ? `${products[0].name}: ${products[0].intro} Total ${calcTotal(products[0].basePrice).toLocaleString()} naira. Press mic and say YES to confirm or tap YES button.` : prompts.welcome
       setResponse(welcome)
     }
-  }, [lang, currentMode])
+  }, [lang, currentMode, voicesReady])
 
-  const speak = (text: string) => {
-    if (!voicePrompts[lang]?.voiceActive) return
+  const speak = (text: string, afterSpeak?: () => void) => {
+    if (!voicePrompts[lang]?.voiceActive) {
+      if (afterSpeak) afterSpeak()
+      return
+    }
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel()
       const clean = text.replace(/NiChAm/g, 'Nicham')
       const u = new SpeechSynthesisUtterance(clean)
       u.lang = prompts.langCode
       u.rate = 0.85
+      u.volume = 1
+      const voices = window.speechSynthesis.getVoices()
+      const ngVoice = voices.find((v:any) => v.lang === 'en-NG') || voices.find((v:any) => v.lang.startsWith('en'))
+      if (ngVoice) u.voice = ngVoice
+      if (afterSpeak) {
+        u.onend = afterSpeak
+      }
       window.speechSynthesis.speak(u)
+    } else {
+      if (afterSpeak) afterSpeak()
     }
   }
 
@@ -249,11 +288,20 @@ export default function VoiceOrder({ lang, products, mode }: { lang: string, pro
       if (productMeta) {
         setLastProduct(productMeta)
         const total = calcTotal(productMeta.basePrice)
-        // Auto-scroll to product picture as requested
-        scrollToProduct(productMeta.id)
         const msg = prompts.productIntro.replace('{product}', productMeta.name).replace('{intro}', productMeta.intro).replace('{price}', total.toLocaleString())
-        setResponse(`${prompts.heard}: "${text}" → Found: ${productMeta.name}. Scrolling to show picture. ${msg}`)
-        if (prompts.voiceActive) speak(msg)
+        setResponse(`${prompts.heard}: "${text}" → Found: ${productMeta.name}. ${msg}`)
+        // FIXED ORDER: Voice says "I will scroll to show you picture" FIRST, then scroll happens as voice speaks, not before
+        // So user hears intention before seeing scroll
+        if (prompts.voiceActive) {
+          speak(msg, () => {
+            // Optional callback after speech ends
+          })
+          // Scroll slightly after speech starts - so voice says "I will scroll" then picture moves
+          setTimeout(() => scrollToProduct(productMeta.id), 800)
+        } else {
+          // For text-only languages, scroll immediately
+          scrollToProduct(productMeta.id)
+        }
         setAwaiting('open')
         return
       }
