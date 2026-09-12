@@ -37,9 +37,9 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
   const handleConfirm = () => {
     const orderId = "NCH-" + Date.now().toString().slice(-6)
-    const saving = Math.round(base * 0.02)
+    const 
     const orders = JSON.parse(localStorage.getItem('nicham_orders') || '[]')
-    orders.unshift({ productName: prod.name, total, orderId, saving, date: new Date().toLocaleString() })
+    orders.unshift({ productName: prod.name, total, orderId, 
     localStorage.setItem('nicham_orders', JSON.stringify(orders))
     alert("Order confirmed! ID: " + orderId)
     router.push("/?lang=" + lang)

@@ -2,43 +2,32 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
-const products = [
-  { id: 1, name: "Solar Cargo Bike 500W", basePrice: 400000 },
-  { id: 2, name: "Solar Irrigation Pump", basePrice: 280000 },
-  { id: 3, name: "Solar Freezer 200L", basePrice: 240000 },
-  { id: 4, name: "Solar Home System 5kW", basePrice: 2200000 },
-  { id: 5, name: "Solar Tractor 20HP", basePrice: 3400000 },
-  { id: 6, name: "Solar Dryer 100kg", basePrice: 130000 },
-  { id: 7, name: "Solar Boat Engine", basePrice: 160000 },
-  { id: 8, name: "Solar Ferry 12 Seater", basePrice: 1050000 },
-  { id: 9, name: "Collapsible Solar E-Bike", basePrice: 250000 },
-]
-
-function calcTotal(base: number) {
-  const competitivePrice = base * 0.98
-  const vat = Math.round(competitivePrice * 0.075)
-  const escrow = Math.round(competitivePrice * 0.01)
-  return Math.round(competitivePrice + vat + escrow)
-}
-
-const prompts: any = {
+const PROMPTS: any = {
   en: { welcome: "Welcome to Nicham Solar Market.", langCode: "en-NG" },
+  pidgin: { welcome: "Welcome to Nicham Solar Market.", langCode: "en-NG" },
+  ha: { welcome: "Barka da zuwa kasuwar Nicham Solar.", langCode: "ha" },
+  ig: { welcome: "Nnoo na ahia Nicham Solar.", langCode: "ig" },
+  yo: { welcome: "Kaabo si oja Nicham Solar.", langCode: "yo" }
 }
 
 export default function VoiceOrder({ lang, currentMode }: { lang: string, currentMode: 'listing' | 'order' }) {
   const [isListening, setIsListening] = useState(false)
-  const [response, setResponse] = useState(prompts.en.welcome)
+  const [response, setResponse] = useState(PROMPTS.en.welcome)
   const [isMinimized, setIsMinimized] = useState(false)
   const [hasPlayedWelcome, setHasPlayedWelcome] = useState(false)
   const [voicesReady, setVoicesReady] = useState(false)
   const [showTapOverlay, setShowTapOverlay] = useState(false)
   const router = useRouter()
-  const p = prompts[lang] || prompts.en
+  const p = PROMPTS[lang] || PROMPTS.en
 
   useEffect(() => {
-    const load = () => { if (window.speechSynthesis.getVoices().length > 0) setVoicesReady(true) }
+    const load = () => {
+      if (typeof window !== 'undefined' && window.speechSynthesis.getVoices().length > 0) setVoicesReady(true)
+    }
     load()
-    if ('speechSynthesis' in window) window.speechSynthesis.onvoiceschanged = load
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = load
+    }
     const t = setTimeout(() => setVoicesReady(true), 1500)
     return () => clearTimeout(t)
   }, [])
@@ -48,22 +37,24 @@ export default function VoiceOrder({ lang, currentMode }: { lang: string, curren
     if (currentMode === 'listing' && !hasPlayedWelcome && voicesReady) {
       const play = () => {
         try {
-          window.speechSynthesis.cancel()
-          const u = new SpeechSynthesisUtterance(p.welcome)
-          u.lang = p.langCode
-          u.rate = 0.85
-          u.onstart = () => { setHasPlayedWelcome(true); setShowTapOverlay(false) }
-          u.onend = () => setTimeout(() => setIsMinimized(true), 2000)
-          u.onerror = () => setShowTapOverlay(true)
-          window.speechSynthesis.speak(u)
-          setTimeout(() => { if (!window.speechSynthesis.speaking && !hasPlayedWelcome) setShowTapOverlay(true) }, 900)
+          if (typeof window !== 'undefined') {
+            window.speechSynthesis.cancel()
+            const u = new SpeechSynthesisUtterance(p.welcome)
+            u.lang = p.langCode
+            u.rate = 0.85
+            u.onstart = () => { setHasPlayedWelcome(true); setShowTapOverlay(false) }
+            u.onend = () => setTimeout(() => setIsMinimized(true), 2000)
+            u.onerror = () => setShowTapOverlay(true)
+            window.speechSynthesis.speak(u)
+            setTimeout(() => { if (!window.speechSynthesis.speaking && !hasPlayedWelcome) setShowTapOverlay(true) }, 900)
+          }
         } catch { setShowTapOverlay(true) }
       }
       const t = setTimeout(play, 800)
-      const h = () => { clearTimeout(t); if (!hasPlayedWelcome) play(); document.removeEventListener('click', h); document.removeEventListener('touchstart', h) }
-      document.addEventListener('click', h)
-      document.addEventListener('touchstart', h)
-      return () => { clearTimeout(t); document.removeEventListener('click', h); document.removeEventListener('touchstart', h) }
+      const handler = () => { if (!hasPlayedWelcome) { clearTimeout(t); play() } document.removeEventListener('click', handler); document.removeEventListener('touchstart', handler) }
+      document.addEventListener('click', handler)
+      document.addEventListener('touchstart', handler)
+      return () => { clearTimeout(t); document.removeEventListener('click', handler); document.removeEventListener('touchstart', handler) }
     }
   }, [lang, currentMode, voicesReady, hasPlayedWelcome, p])
 
@@ -77,15 +68,14 @@ export default function VoiceOrder({ lang, currentMode }: { lang: string, curren
     rec.onresult = (e: any) => {
       const txt = e.results[0][0].transcript.toLowerCase()
       if (txt.includes("yes")) {
-        if (currentMode === 'listing') router.push("/product/1?lang=" + lang)
-        else {
+        if (currentMode === 'listing') {
+          router.push("/product/2?lang=" + lang)
+        } else {
           const orderId = "NCH-" + Date.now().toString().slice(-6)
-          const saving = Math.round(products[0].basePrice * 0.02)
-          const total = calcTotal(products[0].basePrice)
           const orders = JSON.parse(localStorage.getItem('nicham_orders') || '[]')
-          orders.unshift({ productName: products[0].name, total, orderId, saving })
+          orders.unshift({ productName: "Solar Product", total: 150000, orderId, date: new Date().toLocaleString() })
           localStorage.setItem('nicham_orders', JSON.stringify(orders))
-          const msg = "Order confirmed. ID " + orderId + ". Saved " + saving + " versus AfricanIES. "
+          const msg = "Order confirmed. ID " + orderId + ". Thank you."
           setResponse(msg)
           const u = new SpeechSynthesisUtterance(msg)
           window.speechSynthesis.speak(u)
@@ -100,26 +90,28 @@ export default function VoiceOrder({ lang, currentMode }: { lang: string, curren
       {showTapOverlay && currentMode === 'listing' && !hasPlayedWelcome && (
         <div className="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4" onClick={() => {
           setShowTapOverlay(false)
-          const u = new SpeechSynthesisUtterance(p.welcome)
-          u.lang = p.langCode
-          window.speechSynthesis.speak(u)
-          setHasPlayedWelcome(true)
-          setTimeout(() => setIsMinimized(true), 2000)
+          try {
+            const u = new SpeechSynthesisUtterance(p.welcome)
+            u.lang = p.langCode
+            window.speechSynthesis.speak(u)
+            setHasPlayedWelcome(true)
+            setTimeout(() => setIsMinimized(true), 2000)
+          } catch {}
         }}>
           <div className="bg-yellow-400 text-black rounded-2xl p-6 max-w-sm text-center font-bold">
-            <div className="text-3xl mb-2">Tap to start Voice Market</div>
-            <div className="text-sm">Chrome blocks auto-talk. Tap here.</div>
-            <div className="mt-3 bg-black text-white px-4 py-2 rounded-full text-xs">2% cheaper than AfricanIES</div>
+            <div className="text-2xl mb-2">Tap to start</div>
           </div>
         </div>
       )}
       <div className={`fixed bottom-4 left-4 right-4 md:w-96 bg-white rounded-2xl shadow-2xl border z-40 ${isMinimized ? 'p-2' : 'p-4'}`}>
-        <div className="flex justify-between mb-2"><b className="text-sm">Voice Market</b><button onClick={() => setIsMinimized(!isMinimized)} className="text-xs bg-gray-100 px-2 py-1 rounded">{isMinimized ? 'Expand' : 'Minimize'}</button></div>
+        <div className="flex justify-between mb-2">
+          <b className="text-sm">Voice Market</b>
+          <button onClick={() => setIsMinimized(!isMinimized)} className="text-xs bg-gray-100 px-2 py-1 rounded">{isMinimized ? 'Expand' : 'Minimize'}</button>
+        </div>
         {!isMinimized && (
           <>
             <div className="text-xs bg-gray-50 p-2 rounded mb-2">{response}</div>
             <button onClick={handleMic} className={`w-full py-3 rounded-full font-bold ${isListening ? 'bg-red-500 text-white' : 'bg-black text-white'}`}>{isListening ? 'Listening...' : 'Press & Say YES'}</button>
-            <div className="text-[10px] text-gray-500 mt-1 text-center">10% discount, 2% to you | Carbon MTN | Logistics only</div>
           </>
         )}
       </div>
