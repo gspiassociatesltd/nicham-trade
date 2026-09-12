@@ -8,7 +8,7 @@ const basePrices: any = {1:400000,2:280000,3:240000,4:2200000,5:3400000,6:130000
 const co2Vals: any = {1:2.2,2:3.0,3:4.0,4:8.5,5:6.0,6:1.5,7:5.0,8:5.5,9:1.8}
 
 const confirmedPrompts: any = {
-  en: { title: "Order Confirmed! 🎉", orderId: "Order ID", next: "What happens next:", s1: "1. Money held in MTN MoMo Escrow - safe", s2: "2. logistics partner sources from manufacturer & inspects", s3: "3. Ships China/USA → Nigeria, clears customs, delivers", s4: "4. SMS with tracking, you confirm with OTP", s5: "5. MoMo releases money after OTP", voice: "Order confirmed! ID {orderId}. Money safe in MoMo Escrow. logistics partner will deliver. You will get SMS. Thank you.", green: "Saved {co2} tons CO2 = {co2} Carbon Credits" },
+  en: { title: "Order Confirmed! 🎉", orderId: "Order ID", next: "What happens next:", s1: "1. Money held in MTN MoMo Escrow - safe", s2: "2. logistics partner sources from manufacturer & inspects", s3: "3. Ships China/USA → Nigeria, clears customs, delivers", s4: "4. SMS with tracking, you confirm with OTP", s5: "5. MoMo releases money after OTP", voice: "Order confirmed! ID {orderId}. Money safe in MoMo Escrow. logistics partner will deliver. You will get SMS. Thank you.", green: "Saved {co2} tons CO2 = " },
   pcm: { title: "Order Don Enter! 🎉", orderId: "Order ID na", next: "Wetin go happen next:", s1: "1. Money dey for MoMo Escrow - safe", s2: "2. logistics partner go find & check am", s3: "3. Dem go ship come Nigeria & deliver", s4: "4. SMS tracking + OTP confirm", s5: "5. MoMo go release money after OTP", voice: "Order don enter! ID na {orderId}. Money safe for MoMo. logistics partner go deliver. You go get SMS. Thank you.", green: "You save {co2} tons CO2" }
 }
 
@@ -81,11 +81,11 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         <p className="mt-1 text-xs text-gray-500">{prod.sourced} - {prod.co2Text.replace('{co2}', (co2Vals[params.id]||2.2).toString())}</p>
         
         <div className="mt-4 bg-yellow-300 text-black p-4 rounded-xl border-2 border-black">
-          <div className="font-black">🎤 ORDER PAGE - Press Mic Then Say YES</div>
+          <div className="font-black">🎤 ORDER PAGE - Press YES to confirm</div>
           <div className="mt-2 text-sm leading-relaxed">
             {voiceParam === 'ready'
               ? `You said "${prod.name}" on market page, then said YES to open order page. You are now here. ${prod.intro} Total price ₦${total.toLocaleString()}. To confirm order, press microphone button below and say YES, or tap green YES button. Or choose another product or go back to the market page.`
-              : `You are on order page for ${prod.name}. ${prod.intro} Price ₦${total.toLocaleString()} total. To confirm, press microphone button and say YES, or tap YES button below. Or choose another product or go back to the market page.`
+              : `You are on order page. Total price shown below. Press YES to confirm order.`
             }
           </div>
           <div className="mt-3 grid grid-cols-2 gap-2">
@@ -98,7 +98,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         <div className="mt-6 p-4 bg-green-50 rounded-xl text-center">
           <div className="text-sm text-gray-500">{t.priceTotal}</div>
           <div className="text-3xl font-black text-green-700">₦{total.toLocaleString()}</div>
-          <button onClick={() => setShowBreakdown(!showBreakdown)} className="mt-2 text-xs text-blue-600 underline">{showBreakdown ? 'Hide breakdown' : 'Show breakdown (MTN/logistics partner internal only)'}</button>
+          <button onClick={() => setShowBreakdown(!showBreakdown)} className="mt-2 text-xs text-blue-600 underline">{showBreakdown ? 'Hide breakdown' : ''}</button>
         </div>
 
         {showBreakdown && (

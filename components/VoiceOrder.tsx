@@ -22,10 +22,12 @@ function calcTotal(base: number) {
 }
 
 const prompts: any = {
-  en: { welcome: "Welcome to Nicham Solar Market, powered by GSPI Associates. 9 solar products. Total price only. best market price. You earn green points. Say product name like Solar Bike, or press mic.", langCode: "en-NG" },
-}
-
-export default function VoiceOrder({ lang, currentMode }: { lang: string, currentMode: 'listing' | 'order' }) {
+  en: { welcome: "Welcome to Nicham Solar Market.", langCode: "en-NG" },
+  pidgin: { welcome: "Welcome to Nicham Solar Market.", langCode: "en-NG" },
+  ha: { welcome: "Barka da zuwa kasuwar Nicham Solar.", langCode: "ha" },
+  ig: { welcome: "Nnoo na ahia Nicham Solar.", langCode: "ig" },
+  yo: { welcome: "Kaabo si oja Nicham Solar.", langCode: "yo" },
+}) {
   const [isListening, setIsListening] = useState(false)
   const [response, setResponse] = useState(prompts.en.welcome)
   const [isMinimized, setIsMinimized] = useState(false)
@@ -114,12 +116,12 @@ export default function VoiceOrder({ lang, currentMode }: { lang: string, curren
         </div>
       )}
       <div className={`fixed bottom-4 left-4 right-4 md:w-96 bg-white rounded-2xl shadow-2xl border z-40 ${isMinimized ? 'p-2' : 'p-4'}`}>
-        <div className="flex justify-between mb-2"><b className="text-sm">Voice Market 2% cheaper</b><button onClick={() => setIsMinimized(!isMinimized)} className="text-xs bg-gray-100 px-2 py-1 rounded">{isMinimized ? 'Expand' : 'Minimize'}</button></div>
+        <div className="flex justify-between mb-2"><b className="text-sm">Voice Market</b><button onClick={() => setIsMinimized(!isMinimized)} className="text-xs bg-gray-100 px-2 py-1 rounded">{isMinimized ? 'Expand' : 'Minimize'}</button></div>
         {!isMinimized && (
           <>
             <div className="text-xs bg-gray-50 p-2 rounded mb-2">{response}</div>
             <button onClick={handleMic} className={`w-full py-3 rounded-full font-bold ${isListening ? 'bg-red-500 text-white' : 'bg-black text-white'}`}>{isListening ? 'Listening...' : 'Press & Say YES'}</button>
-            <div className="text-[10px] text-gray-500 mt-1 text-center">Best price - Green points - 36 states delivery</div>
+            <div className="text-[10px] text-gray-500 mt-1 text-center"></div>
           </>
         )}
       </div>
