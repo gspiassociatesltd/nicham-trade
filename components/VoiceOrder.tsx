@@ -7,7 +7,7 @@ const voicePrompts: any = {
     welcome: "Welcome to Nicham Solar Market. You can click any product below to see details, or press the microphone button and say the product you want. For example, click Solar Bike or press mic and say Solar Bike.",
     listening: "Listening now. Speak after the beep.",
     heard: "You said",
-    productIntro: "You asked for {product}. {intro} Total price is {price} naira. I will scroll to show you the picture. To open order page, press the microphone button again and say YES, or click the product.",
+    productIntro: "You asked for {product}. {intro} Total price is {price} naira. To open order page, press the microphone button again and say YES, or click the product.",
     confirmOpen: "Opening order page for {product} now.",
     howToTitle: "HOW TO USE - Click or Talk:",
     how1: "1. CLICK any product picture below, OR press 🎤 and say 'Solar bike' - I will scroll to show you the picture and describe what it can do (load, etc)",
@@ -28,7 +28,7 @@ const voicePrompts: any = {
     welcome: "Welcome to Nicham Solar Market. You fit click any product below to see details, or press microphone button and talk wetin you wan buy. For example, click Solar Bike or press mic and talk Solar Bike.",
     listening: "I dey listen now. Talk after beep.",
     heard: "You talk",
-    productIntro: "You ask for {product}. {intro} Total price na {price} naira. I go scroll show you the picture. To open order page, press microphone button again and talk YES, or click the product.",
+    productIntro: "You ask for {product}. {intro} Total price na {price} naira. To open order page, press microphone button again and talk YES, or click the product.",
     confirmOpen: "I dey open order page for {product} now.",
     howToTitle: "HOW TO USE AM - Click or Talk:",
     how1: "1. CLICK any product picture below, OR press 🎤 and talk 'Solar bike' - I go scroll show you picture and talk wetin e fit do",
@@ -49,7 +49,7 @@ const voicePrompts: any = {
     welcome: "Kaabo si Oja Solar Nicham. O le tẹ lori ọja eyikeyi ni isalẹ lati ri alaye, tabi tẹ bọtini maikirofooni ki o so ọja ti o fẹ. Fun apẹẹrẹ, tẹ Keke Solar tabi tẹ mic ki o so Keke Solar.",
     listening: "Mo n gbo nisinsinyi. Soro lẹhin beep.",
     heard: "O so pe",
-    productIntro: "O beere fun {product}. {intro} Lapapo iye ni {price} naira. Emi yoo yi lọ lati fi aworan han ọ. Lati ṣi oju-iwe aṣẹ, tẹ bọtini maikirofooni lẹẹkansi ki o so BẸẸNI, tabi tẹ ọja naa.",
+    productIntro: "O beere fun {product}. {intro} Lapapo iye ni {price} naira. Lati ṣi oju-iwe aṣẹ, tẹ bọtini maikirofooni lẹẹkansi ki o so BẸẸNI, tabi tẹ ọja naa.",
     confirmOpen: "Mo n ṣi oju-iwe aṣẹ fun {product} nisisiyi.",
     howToTitle: "BAWO LO ṢE LE LO - Tẹ tabi Sọrọ:",
     how1: "1. TẸ lori aworan ọja eyikeyi ni isalẹ, TABI tẹ 🎤 ki o so 'Keke solar' - Emi yoo yi lọ lati fi aworan han ọ ati sọ ohun ti o le ṣe",
@@ -70,7 +70,7 @@ const voicePrompts: any = {
     welcome: "Barka da zuwa Kasuwar Solar Nicham. Za ka iya danna kowane kaya a ƙasa don ganin bayani, ko danna maɓallin makirufo ka faɗi kayan da kake so. Misali, danna Keke Solar ko danna mic ka ce Keke Solar.",
     listening: "Ina sauraro yanzu. Yi magana bayan beep.",
     heard: "Ka ce",
-    productIntro: "Ka nemi {product}. {intro} Jimillar farashi {price} naira ne. Zan gungura don nuna maka hoton. Don buɗe shafin oda, danna maɓallin makirufo kuma ka ce EH, ko danna kayan.",
+    productIntro: "Ka nemi {product}. {intro} Jimillar farashi {price} naira ne. Don buɗe shafin oda, danna maɓallin makirufo kuma ka ce EH, ko danna kayan.",
     confirmOpen: "Ina buɗe shafin oda na {product} yanzu.",
     howToTitle: "YADDA AKE AMFANI - Danna ko Magana:",
     how1: "1. DANNA hoton kowane kaya a ƙasa, KO danna 🎤 ka ce 'Keke solar' - Zan gungura don nuna hoton da bayanin abin da zai iya yi",
@@ -91,7 +91,7 @@ const voicePrompts: any = {
     welcome: "Nnọọ na Ahịa Solar Nicham. Ị nwere ike ịpị ngwaahịa ọ bụla dị n'okpuru ka ịhụ nkọwa, ma ọ bụ pịa bọtịnụ igwe okwu wee kwuo ngwaahịa ịchọrọ. Dịka ọmụmaatụ, pịa Keke Solar ma ọ bụ pịa mic kwuo Keke Solar.",
     listening: "Ana m ege ntị ugbu a. Kwuo okwu mgbe beep gasịrị.",
     heard: "I kwuru",
-    productIntro: "Ị rịọrọ {product}. {intro} Ọnụ ahịa niile bụ {price} naira. M ga-atụgharị iji gosi gị foto. Iji mepee peeji iwu, pịa bọtịnụ igwe okwu ọzọ wee kwuo EE, ma ọ bụ pịa ngwaahịa ahụ.",
+    productIntro: "Ị rịọrọ {product}. {intro} Ọnụ ahịa niile bụ {price} naira. Iji mepee peeji iwu, pịa bọtịnụ igwe okwu ọzọ wee kwuo EE, ma ọ bụ pịa ngwaahịa ahụ.",
     confirmOpen: "Ana m emepe peeji iwu maka {product} ugbu a.",
     howToTitle: "OTU ESI EJI YA - Pịa ma ọ bụ Kwuo:",
     how1: "1. PỊA foto ngwaahịa ọ bụla n'okpuru, MA ọ bụ pịa 🎤 kwuo 'Keke solar' - M ga-atụgharị iji gosi foto na ihe ọ nwere ike ime",
@@ -111,11 +111,12 @@ const voicePrompts: any = {
 }
 
 const productKeywords: any = {
-  en: { bike: 1, cargo: 1, pump: 2, water: 2, freezer: 3, cold: 3, grid: 4, mini: 4, tractor: 5, plough: 5, plow: 5, dryer: 6, dry: 6, canoe: 7, kayak: 7, boat: 8, foldable: 9, collapsible: 9 },
-  pcm: { bike: 1, cargo: 1, keke: 1, pump: 2, water: 2, freezer: 3, cold: 3, grid: 4, mini: 4, tractor: 5, dryer: 6, canoe: 7, boat: 8, foldable: 9 },
-  yo: { keke: 1, bike: 1, fompu: 2, omi: 2, firisa: 3, grid: 4, tirakito: 5, gbigbe: 6, kika: 9 },
-  ha: { keke: 1, kaya: 1, bike: 1, famfo: 2, ruwa: 2, firiza: 3, grid: 4, tarikta: 5, bushewa: 6, kwale: 7, jirgi: 8 },
-  ig: { igwe: 1, bike: 1, mmiri: 2, friza: 3, grid: 4, trakto: 5, nkucha: 6, ugbo: 7, mpiachi: 9 }
+  // FIX: foldable/collapsible checked FIRST before generic bike, to avoid cargo bike stealing collapsible bike
+  en: { foldable: 9, collapsible: 9, collapsable: 9, canoe: 7, kayak: 7, boat: 8, pump: 2, water: 2, freezer: 3, cold: 3, grid: 4, mini: 4, tractor: 5, plough: 5, plow: 5, dryer: 6, dry: 6, bike: 1, cargo: 1, bicycle: 1 },
+  pcm: { foldable: 9, collapsible: 9, canoe: 7, boat: 8, pump: 2, water: 2, freezer: 3, grid: 4, tractor: 5, dryer: 6, bike: 1, cargo: 1, keke: 1 },
+  yo: { kika: 9, fold: 9, canoe: 7, fompu: 2, omi: 2, firisa: 3, grid: 4, tirakito: 5, gbigbe: 6, keke: 1, bike: 1 },
+  ha: { ninkewa: 9, fold: 9, kwale: 7, jirgi: 8, famfo: 2, ruwa: 2, firiza: 3, grid: 4, tarikta: 5, bushewa: 6, keke: 1, bike: 1 },
+  ig: { mpiachi: 9, fold: 9, ugbo: 7, mmiri: 2, friza: 3, grid: 4, trakto: 5, nkucha: 6, igwe: 1, bike: 1 }
 }
 
 function calcTotal(base: number) {
