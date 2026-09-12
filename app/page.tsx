@@ -17,11 +17,10 @@ const productsMeta = [
 ]
 
 function calcTotal(base: number) {
-  // ARCHITECT: Competitive pricing - 10% merchant discount, 2% passed to buyer to beat AfricanIES
-  const competitivePrice = base * 0.98 // 2% cheaper than AfricanIES retail
+  const competitivePrice = base * 0.98
   const vat = Math.round(competitivePrice * 0.075)
-  const escrowFee = Math.round(competitivePrice * 0.01)
-  return Math.round(competitivePrice + vat + escrowFee)
+  const escrow = Math.round(competitivePrice * 0.01)
+  return Math.round(competitivePrice + vat + escrow)
 }
 
 
