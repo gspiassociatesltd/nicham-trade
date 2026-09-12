@@ -29,6 +29,14 @@ export default function Home() {
   const [filtered, setFiltered] = useState(productsMeta)
 
   useEffect(() => {
+    const handler = (e: any) => {
+      setSearchTerm(e.detail)
+    }
+    window.addEventListener("voiceSearch" as any, handler)
+    return () => window.removeEventListener("voiceSearch" as any, handler)
+  }, [])
+
+  useEffect(() => {
     const saved = localStorage.getItem('nicham_lang')
     if (saved) setLang(saved)
   }, [])
@@ -84,6 +92,37 @@ export default function Home() {
         <p className="text-xs text-gray-500 max-w-3xl mx-auto">Buyer orders on platform → Escrow with MTN&apos;s momo → AfricanIES collects from manufacturers & delivers → Buyer confirms - MTN&apos;s momo pays</p>
         
         <div className="max-w-2xl mx-auto mt-6 flex gap-2">
+          <button
+            id="searchMicBtn"
+            onClick={() => {
+              const SR = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition
+              if (!SR) { alert("Voice not supported - type instead"); return }
+              const rec = new SR()
+              rec.lang = "en-NG"
+              rec.onstart = () => { const b = document.getElementById("searchMicBtn"); if(b) b.innerText = "🎙️ Listening..." }
+              rec.onend = () => { const b = document.getElementById("searchMicBtn"); if(b) b.innerText = "🎤 Mic" }
+              rec.onresult = (e: any) => {
+                const spoken = e.results[0][0].transcript
+                const input = document.getElementById("searchInput") as HTMLInputElement
+                if (input) {
+                  input.value = spoken
+                  input.dispatchEvent(new Event("input", { bubbles: true }))
+                  input.dispatchEvent(new Event("change", { bubbles: true }))
+                  // Trigger React state update
+                  const event = new Event("input", { bubbles: true })
+                  Object.defineProperty(event, "target", { writable: false, value: input })
+                  input.dispatchEvent(event)
+                  // Also set via direct call to window for search
+                  window.dispatchEvent(new CustomEvent("voiceSearch", { detail: spoken }))
+                }
+              }
+              rec.start()
+            }}
+            className="px-4 py-3 bg-red-600 text-white rounded-full text-sm font-black hover:bg-red-700"
+            title="Click and say product name"
+          >
+            🎤 Mic
+          </button>
           <input
             type="text"
             value={searchTerm}

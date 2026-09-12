@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 const PROMPTS: any = {
-  en: { welcome: "Welcome to Nicham solar market, type the product you want in the search column or click on the microphone and say the name of the product you want, then click search.", langCode: "en-NG" },
-  pidgin: { welcome: "Welcome to Nicham solar market, type the product you want in the search column or click on the microphone and say the name of the product you want, then click search.", langCode: "en-NG" },
+  en: { welcome: "Welcome to Nicham solar market, type the product you want in the search column or click on the microphone and say the name of the product you want, then click search. The microphone is next to the search box.", langCode: "en-NG" },
+  pidgin: { welcome: "Welcome to Nicham solar market, type the product you want in the search column or click on the microphone and say the name of the product you want, then click search. The microphone is next to the search box.", langCode: "en-NG" },
   ha: { welcome: "Barka da zuwa kasuwar Nicham Solar. Rubuta sunan kayan da kake so a wurin bincike ko danna microphone ka fadi sunan.", langCode: "ha" },
   ig: { welcome: "Nnoo na ahia Nicham Solar. Pịnye aha ngwaahịa ịchọrọ na kọlụm ọchụchọ ma ọ bụ pịa igwe okwu kwuo aha ya.", langCode: "ig" },
   yo: { welcome: "Kaabo si oja Nicham Solar. Tẹ orukọ ọja ti o fẹ sinu apoti iwadi tabi tẹ microphone ki o sọ orukọ rẹ.", langCode: "yo" }
@@ -13,7 +13,7 @@ const PROMPTS: any = {
 export default function VoiceOrder({ lang, currentMode }: { lang: string, currentMode: 'listing' | 'order' }) {
   const [isListening, setIsListening] = useState(false)
   const [response, setResponse] = useState(PROMPTS.en.welcome)
-  const [isMinimized, setIsMinimized] = useState(false)
+  const [isMinimized, setIsMinimized] = useState(false) // Expanded by default so mic visible
   const [hasPlayedWelcome, setHasPlayedWelcome] = useState(false)
   const [voicesReady, setVoicesReady] = useState(false)
   const [showTapOverlay, setShowTapOverlay] = useState(false)
