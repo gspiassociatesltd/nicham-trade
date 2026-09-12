@@ -22,7 +22,7 @@ function calcTotal(base: number) {
 }
 
 const prompts: any = {
-  en: { welcome: "Welcome to Nicham Solar Market, powered by GSPI Associates. 9 solar products. Total price only. 2 percent cheaper than AfricanIES. Carbon credits shared with MTN. Say product name like Solar Bike, or press mic.", langCode: "en-NG" },
+  en: { welcome: "Welcome to Nicham Solar Market, powered by GSPI Associates. 9 solar products. Total price only. best market price. You earn green points. Say product name like Solar Bike, or press mic.", langCode: "en-NG" },
 }
 
 export default function VoiceOrder({ lang, currentMode }: { lang: string, currentMode: 'listing' | 'order' }) {
@@ -85,7 +85,7 @@ export default function VoiceOrder({ lang, currentMode }: { lang: string, curren
           const orders = JSON.parse(localStorage.getItem('nicham_orders') || '[]')
           orders.unshift({ productName: products[0].name, total, orderId, saving })
           localStorage.setItem('nicham_orders', JSON.stringify(orders))
-          const msg = "Order confirmed. ID " + orderId + ". Saved " + saving + " versus AfricanIES. 2 percent cheaper. Carbon with MTN."
+          const msg = "Order confirmed. ID " + orderId + ". Saved " + saving + " . best market price. Carbon with MTN."
           setResponse(msg)
           const u = new SpeechSynthesisUtterance(msg)
           window.speechSynthesis.speak(u)
@@ -109,7 +109,7 @@ export default function VoiceOrder({ lang, currentMode }: { lang: string, curren
           <div className="bg-yellow-400 text-black rounded-2xl p-6 max-w-sm text-center font-bold">
             <div className="text-3xl mb-2">Tap to start Voice Market</div>
             <div className="text-sm">Chrome blocks auto-talk. Tap here.</div>
-            <div className="mt-3 bg-black text-white px-4 py-2 rounded-full text-xs">2% cheaper than AfricanIES</div>
+            <div className="mt-3 bg-black text-white px-4 py-2 rounded-full text-xs">best price</div>
           </div>
         </div>
       )}
@@ -119,7 +119,7 @@ export default function VoiceOrder({ lang, currentMode }: { lang: string, curren
           <>
             <div className="text-xs bg-gray-50 p-2 rounded mb-2">{response}</div>
             <button onClick={handleMic} className={`w-full py-3 rounded-full font-bold ${isListening ? 'bg-red-500 text-white' : 'bg-black text-white'}`}>{isListening ? 'Listening...' : 'Press & Say YES'}</button>
-            <div className="text-[10px] text-gray-500 mt-1 text-center">10% discount, 2% to you | Carbon MTN | Logistics only</div>
+            <div className="text-[10px] text-gray-500 mt-1 text-center">Best price - Green points - 36 states delivery</div>
           </>
         )}
       </div>
