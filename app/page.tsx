@@ -192,7 +192,7 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Voice Market floating removed - Mic is now in search bar above for single mic UX */}
+      {/* Single mic in search bar - no floating box */}
     </main>
   )
 }
