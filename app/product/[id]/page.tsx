@@ -114,7 +114,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           </div>
         )}
       </div>
-      <VoiceOrder lang={lang} products={[{ id: parseInt(params.id), name: prod.name, intro: prod.intro, basePrice: base }]} mode="order" />
+      <VoiceOrder lang={lang} currentMode="order" />
     </main>
   )
 }

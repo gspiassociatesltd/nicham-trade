@@ -127,7 +127,7 @@ export default function Home() {
         </div>
       </section>
 
-      <VoiceOrder lang={lang} products={voiceProducts} />
+      <VoiceOrder lang={lang} currentMode="listing" />
     </main>
   )
 }
