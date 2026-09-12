@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react'
 import { translations, productTranslations } from '../lib/i18n'
 import LangToggle from '../components/LangToggle'
-import VoiceOrder from '../components/VoiceOrder'
 
 const productsMeta = [
   { id: 1, basePrice: 400000, img: "🚲", keywords: "cargo bike solar 500w" },
@@ -27,14 +26,6 @@ export default function Home() {
   const [lang, setLang] = useState('en')
   const [searchTerm, setSearchTerm] = useState('')
   const [filtered, setFiltered] = useState(productsMeta)
-
-  useEffect(() => {
-    const handler = (e: any) => {
-      setSearchTerm(e.detail)
-    }
-    window.addEventListener("voiceSearch" as any, handler)
-    return () => window.removeEventListener("voiceSearch" as any, handler)
-  }, [])
 
   useEffect(() => {
     const saved = localStorage.getItem('nicham_lang')
@@ -68,6 +59,14 @@ export default function Home() {
 
   const t = translations[lang] || translations.en
 
+  const welcomeText: any = {
+    en: "Welcome to Nicham solar market, type the product you want in the search column then click search.",
+    pidgin: "Welcome to Nicham solar market, type product wey you want for search column then click search.",
+    ha: "Barka da zuwa kasuwar Nicham Solar. Rubuta sunan kayan da kake so a wurin bincike sannan danna search.",
+    ig: "Nnoo na ahia Nicham Solar. Pịnye aha ngwaahịa ịchọrọ na kọlụm ọchụchọ wee pịa search.",
+    yo: "Kaabo si oja Nicham Solar. Tẹ orukọ ọja ti o fẹ sinu apoti iwadi lẹhinna tẹ search."
+  }
+
   return (
     <main className="min-h-screen">
       <header className="bg-black text-white p-4 flex justify-between items-center">
@@ -82,51 +81,16 @@ export default function Home() {
         🌱 Green Points on Solar Purchases | Platform: GSPI/NiChAm | Delivers Nationwide
       </div>
 
-      <div className="bg-black text-yellow-300 text-center p-2 text-xs">
-        Voice: EN + Pidgin active now (Tap mic to order without typing)
-      </div>
-
       <section className="p-6 text-center bg-gradient-to-br from-yellow-50 to-green-50">
         <h2 className="text-3xl font-black mb-2">Solar Cargo Bikes, Pumps, Freezers, Mini-Grids & Tractors - Nationwide</h2>
         <p className="text-gray-600 mb-2">Marketplace Model: GSPI/NiChAm Platform | Escrow with MTN MoMo | AfricanIES Nationwide Delivery</p>
         <p className="text-xs text-gray-500 max-w-3xl mx-auto">Buyer orders on platform → Escrow with MTN&apos;s momo → AfricanIES collects from manufacturers & delivers → Buyer confirms - MTN&apos;s momo pays</p>
         
         <div className="max-w-3xl mx-auto mt-4 bg-yellow-50 border-2 border-yellow-300 rounded-xl p-3 text-sm text-center">
-          <b>Welcome to Nicham solar market,</b> type the product you want in the search column or click on the microphone and say the name of the product you want, then click search. The microphone is next to the search box.
+          <b>{welcomeText[lang] || welcomeText.en}</b>
         </div>
         
         <div className="max-w-2xl mx-auto mt-4 flex gap-2">
-          <button
-            id="searchMicBtn"
-            onClick={() => {
-              const SR = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition
-              if (!SR) { alert("Voice not supported - type instead"); return }
-              const rec = new SR()
-              rec.lang = "en-NG"
-              rec.onstart = () => { const b = document.getElementById("searchMicBtn"); if(b) b.innerText = "🎙️ Listening..." }
-              rec.onend = () => { const b = document.getElementById("searchMicBtn"); if(b) b.innerText = "🎤 Mic" }
-              rec.onresult = (e: any) => {
-                const spoken = e.results[0][0].transcript
-                const input = document.getElementById("searchInput") as HTMLInputElement
-                if (input) {
-                  input.value = spoken
-                  input.dispatchEvent(new Event("input", { bubbles: true }))
-                  input.dispatchEvent(new Event("change", { bubbles: true }))
-                  // Trigger React state update
-                  const event = new Event("input", { bubbles: true })
-                  Object.defineProperty(event, "target", { writable: false, value: input })
-                  input.dispatchEvent(event)
-                  // Also set via direct call to window for search
-                  window.dispatchEvent(new CustomEvent("voiceSearch", { detail: spoken }))
-                }
-              }
-              rec.start()
-            }}
-            className="px-4 py-3 bg-red-600 text-white rounded-full text-sm font-black hover:bg-red-700"
-            title="Click and say product name"
-          >
-            🎤 Mic
-          </button>
           <input
             type="text"
             value={searchTerm}
@@ -144,7 +108,7 @@ export default function Home() {
           </button>
         </div>
         <div className="text-xs text-gray-500 mt-2">
-          {filtered.length} products found | {searchTerm ? `Results for "${searchTerm}"` : "All products - type to filter or use voice"}
+          {filtered.length} products found | {searchTerm ? `Results for "${searchTerm}"` : "All products - type to filter"}
         </div>
       </section>
 
@@ -195,8 +159,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
-      {/* Voice Market floating removed - Mic is now in search bar above for single mic UX */}
     </main>
   )
 }

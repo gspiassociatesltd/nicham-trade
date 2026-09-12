@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import VoiceOrder from '../../../components/VoiceOrder'
 
 const productsData: any = {
   1: { name: "Solar Cargo Bike 500W", intro: "Carry 300kg with solar power", basePrice: 400000 },
@@ -51,11 +50,11 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         <h1 className="text-2xl font-black">{prod.name}</h1>
         <p className="text-sm text-gray-700 mt-2">{prod.intro}</p>
         <div className="bg-yellow-100 border-2 border-yellow-400 rounded-xl p-4 mt-4">
-          <div className="font-bold text-sm">ORDER PAGE - Press YES to confirm</div>
+          <div className="font-bold text-sm">Order Page - Click Confirm to place order</div>
           <div className="text-xs mt-2">You are on order page for {prod.name}. Total {total.toLocaleString()} naira. Press YES button below to confirm.</div>
           <div className="flex gap-3 mt-4">
-            <button onClick={handleConfirm} className="flex-1 bg-green-600 text-white py-3 rounded-full font-bold">TAP YES - Confirm</button>
-            <button onClick={() => { const u = new SpeechSynthesisUtterance("You are on order page for " + prod.name + ". Total " + total.toLocaleString() + " naira. Press YES to confirm."); window.speechSynthesis.speak(u) }} className="flex-1 bg-black text-white py-3 rounded-full">Hear Instruction</button>
+            <button onClick={handleConfirm} className="flex-1 bg-green-600 text-white py-3 rounded-full font-bold">Confirm Order</button>
+            <button onClick={() => { const u = new SpeechSynthesisUtterance("You are on order page for " + prod.name + ". Total " + total.toLocaleString() + " naira. Press YES to confirm."); window.speechSynthesis.speak(u) }} className="flex-1 bg-black text-white py-3 rounded-full">Place Order</button>
           </div>
         </div>
         <div className="bg-green-50 p-4 rounded-xl mt-6 text-center">
@@ -63,7 +62,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           <div className="text-3xl font-black text-green-700">₦{total.toLocaleString()}</div>
         </div>
       </div>
-      <VoiceOrder lang={lang} currentMode="order" />
+      {/* No voice - plain text only */}
     </main>
   )
 }
