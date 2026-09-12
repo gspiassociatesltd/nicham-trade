@@ -23,7 +23,6 @@ function calcTotal(base: number) {
   return Math.round(competitivePrice + vat + escrow)
 }
 
-
 export default function Home() {
   const [lang, setLang] = useState('en')
   useEffect(() => {

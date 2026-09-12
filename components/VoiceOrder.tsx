@@ -142,8 +142,8 @@ export default function VoiceOrder({ lang, products, mode }: { lang: string, pro
   const [lastProduct, setLastProduct] = useState<any>(null)
   const [awaiting, setAwaiting] = useState<'open' | 'order' | null>(null)
   const [isMinimized, setIsMinimized] = useState(false)
-  const [showTapOverlay, setShowTapOverlay] = useState(false)
   const [hasPlayedWelcome, setHasPlayedWelcome] = useState(false)
+  const [showTapOverlay, setShowTapOverlay] = useState(false)
   const recognitionRef = useRef<any>(null)
   const router = useRouter()
   const currentMode = mode || 'listing'
@@ -173,14 +173,12 @@ export default function VoiceOrder({ lang, products, mode }: { lang: string, pro
             const u = new SpeechSynthesisUtterance(prompts.welcome)
             u.lang = prompts.langCode
             u.rate = 0.85
-            window.speechSynthesis.speak(u)
-            setHasPlayedWelcome(true)
-            setTimeout(()=>setIsMinimized(true), 1500)
+            try{ window.speechSynthesis.speak(u); setHasPlayedWelcome(true); setTimeout(()=>setIsMinimized(true), 1500) }catch{}
           }
         }}>
           <div className="bg-yellow-400 text-black rounded-2xl p-6 max-w-sm text-center font-bold">
             <div className="text-3xl mb-2">🔊 Tap to start NiChAm Voice Market</div>
-            <div className="text-sm">Chrome blocks auto-talk until you tap. Tap here to hear welcome, then mic works without top-left popup on arrival.</div>
+            <div className="text-sm">Chrome blocks auto-talk until you tap. Tap here to hear welcome.</div>
             <div className="mt-3 bg-black text-white px-4 py-2 rounded-full text-xs">Tap anywhere to start</div>
           </div>
         </div>
@@ -221,14 +219,12 @@ export default function VoiceOrder({ lang, products, mode }: { lang: string, pro
             const u = new SpeechSynthesisUtterance(prompts.welcome)
             u.lang = prompts.langCode
             u.rate = 0.85
-            window.speechSynthesis.speak(u)
-            setHasPlayedWelcome(true)
-            setTimeout(()=>setIsMinimized(true), 1500)
+            try{ window.speechSynthesis.speak(u); setHasPlayedWelcome(true); setTimeout(()=>setIsMinimized(true), 1500) }catch{}
           }
         }}>
           <div className="bg-yellow-400 text-black rounded-2xl p-6 max-w-sm text-center font-bold">
             <div className="text-3xl mb-2">🔊 Tap to start NiChAm Voice Market</div>
-            <div className="text-sm">Chrome blocks auto-talk until you tap. Tap here to hear welcome, then mic works without top-left popup on arrival.</div>
+            <div className="text-sm">Chrome blocks auto-talk until you tap. Tap here to hear welcome.</div>
             <div className="mt-3 bg-black text-white px-4 py-2 rounded-full text-xs">Tap anywhere to start</div>
           </div>
         </div>
@@ -377,14 +373,12 @@ export default function VoiceOrder({ lang, products, mode }: { lang: string, pro
             const u = new SpeechSynthesisUtterance(prompts.welcome)
             u.lang = prompts.langCode
             u.rate = 0.85
-            window.speechSynthesis.speak(u)
-            setHasPlayedWelcome(true)
-            setTimeout(()=>setIsMinimized(true), 1500)
+            try{ window.speechSynthesis.speak(u); setHasPlayedWelcome(true); setTimeout(()=>setIsMinimized(true), 1500) }catch{}
           }
         }}>
           <div className="bg-yellow-400 text-black rounded-2xl p-6 max-w-sm text-center font-bold">
             <div className="text-3xl mb-2">🔊 Tap to start NiChAm Voice Market</div>
-            <div className="text-sm">Chrome blocks auto-talk until you tap. Tap here to hear welcome, then mic works without top-left popup on arrival.</div>
+            <div className="text-sm">Chrome blocks auto-talk until you tap. Tap here to hear welcome.</div>
             <div className="mt-3 bg-black text-white px-4 py-2 rounded-full text-xs">Tap anywhere to start</div>
           </div>
         </div>
