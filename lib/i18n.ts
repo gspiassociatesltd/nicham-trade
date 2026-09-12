@@ -20,16 +20,16 @@ export const translations: any = {
     footerTitle: "Connect & Mission",
     footerMarket: "Marketplace Model",
     footerMarket1: "GSPI/NiChAm: Platform owner only",
-    footerMarket2: "AfricanIES: Delivers Nationwide",
-    footerMarket3: "",
-    footerMarket4: "",
+    footerMarket2: "AfricanIES: Sources from manufacturers & delivers",
+    footerMarket3: "Even GSPI own products via AfricanIES",
+    footerMarket4: "36 States coverage",
     footerFollow: "Follow Us",
     footerMission: "Carbon Mission",
     footerMission1: "Mission: Remove Nigerians from fossil fuel",
     footerMission2: "#NiChAmGreen #SolarNigeria",
     footerMission3: "Carbon Credits tracked per product",
     footerMission4: "Green Points on solar purchases",
-    copyright: "© GSPI Associates Limited • GSPI/NiChAm: Platform owner only | AfricanIES: Delivers Nationwide"
+    copyright: "© GSPI Associates Limited • Platform: GSPI/NiChAm | Sourcing & Delivery: AfricanIES • Mission: Clean energy for 36 States"
   },
   pcm: { 
     title: "All Nigeria SOLAR Market", 

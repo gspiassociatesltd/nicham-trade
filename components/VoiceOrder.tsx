@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 const PROMPTS: any = {
-  en: { welcome: "Welcome to Nicham Solar Market.", langCode: "en-NG" },
-  pidgin: { welcome: "Welcome to Nicham Solar Market.", langCode: "en-NG" },
-  ha: { welcome: "Barka da zuwa kasuwar Nicham Solar.", langCode: "ha" },
-  ig: { welcome: "Nnoo na ahia Nicham Solar.", langCode: "ig" },
-  yo: { welcome: "Kaabo si oja Nicham Solar.", langCode: "yo" }
+  en: { welcome: "Welcome to Nicham solar market, type the product you want in the search column or click on the microphone and say the name of the product you want.", langCode: "en-NG" },
+  pidgin: { welcome: "Welcome to Nicham solar market, type the product you want in the search column or click on the microphone and say the name of the product you want.", langCode: "en-NG" },
+  ha: { welcome: "Barka da zuwa kasuwar Nicham Solar. Rubuta sunan kayan da kake so a wurin bincike ko danna microphone ka fadi sunan.", langCode: "ha" },
+  ig: { welcome: "Nnoo na ahia Nicham Solar. Pịnye aha ngwaahịa ịchọrọ na kọlụm ọchụchọ ma ọ bụ pịa igwe okwu kwuo aha ya.", langCode: "ig" },
+  yo: { welcome: "Kaabo si oja Nicham Solar. Tẹ orukọ ọja ti o fẹ sinu apoti iwadi tabi tẹ microphone ki o sọ orukọ rẹ.", langCode: "yo" }
 }
 
 export default function VoiceOrder({ lang, currentMode }: { lang: string, currentMode: 'listing' | 'order' }) {
@@ -80,6 +80,15 @@ export default function VoiceOrder({ lang, currentMode }: { lang: string, curren
           const u = new SpeechSynthesisUtterance(msg)
           window.speechSynthesis.speak(u)
         }
+      } else {
+        // Search logic for thousands of products
+        const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement
+        if (searchInput && currentMode === 'listing') {
+          searchInput.value = e.results[0][0].transcript
+          searchInput.dispatchEvent(new Event('input', { bubbles: true }))
+          searchInput.dispatchEvent(new Event('change', { bubbles: true }))
+          setResponse("Searching for " + e.results[0][0].transcript)
+        }
       }
     }
     rec.start()
@@ -100,6 +109,7 @@ export default function VoiceOrder({ lang, currentMode }: { lang: string, curren
         }}>
           <div className="bg-yellow-400 text-black rounded-2xl p-6 max-w-sm text-center font-bold">
             <div className="text-2xl mb-2">Tap to start</div>
+            <div className="text-xs mt-2">Tap to hear how to search</div>
           </div>
         </div>
       )}
@@ -111,7 +121,7 @@ export default function VoiceOrder({ lang, currentMode }: { lang: string, curren
         {!isMinimized && (
           <>
             <div className="text-xs bg-gray-50 p-2 rounded mb-2">{response}</div>
-            <button onClick={handleMic} className={`w-full py-3 rounded-full font-bold ${isListening ? 'bg-red-500 text-white' : 'bg-black text-white'}`}>{isListening ? 'Listening...' : 'Press & Say YES'}</button>
+            <button onClick={handleMic} className={`w-full py-3 rounded-full font-bold ${isListening ? 'bg-red-500 text-white' : 'bg-black text-white'}`}>{isListening ? 'Listening...' : 'Press & Say Product Name'}</button>
           </>
         )}
       </div>
