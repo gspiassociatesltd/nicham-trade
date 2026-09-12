@@ -91,7 +91,11 @@ export default function Home() {
         <p className="text-gray-600 mb-2">Marketplace Model: GSPI/NiChAm Platform | Escrow with MTN MoMo | AfricanIES Nationwide Delivery</p>
         <p className="text-xs text-gray-500 max-w-3xl mx-auto">Buyer orders on platform → Escrow with MTN&apos;s momo → AfricanIES collects from manufacturers & delivers → Buyer confirms - MTN&apos;s momo pays</p>
         
-        <div className="max-w-2xl mx-auto mt-6 flex gap-2">
+        <div className="max-w-3xl mx-auto mt-4 bg-yellow-50 border-2 border-yellow-300 rounded-xl p-3 text-sm text-center">
+          <b>Welcome to Nicham solar market,</b> type the product you want in the search column or click on the microphone and say the name of the product you want, then click search. The microphone is next to the search box.
+        </div>
+        
+        <div className="max-w-2xl mx-auto mt-4 flex gap-2">
           <button
             id="searchMicBtn"
             onClick={() => {
