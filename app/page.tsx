@@ -17,10 +17,11 @@ const productsMeta = [
 ]
 
 function calcTotal(base: number) {
-  const competitivePrice = base * 0.98
-  const vat = Math.round(competitivePrice * 0.075)
-  const escrow = Math.round(competitivePrice * 0.01)
-  return Math.round(competitivePrice + vat + escrow)
+  const platformFee = Math.round(base * 0.10)
+  const vat = Math.round(platformFee * 0.075)
+  const escrowFee = Math.round(base * 0.02)
+  const greenPoints = Math.round(base * 0.01)
+  return base + platformFee + vat + escrowFee + greenPoints
 }
 
 export default function Home() {
