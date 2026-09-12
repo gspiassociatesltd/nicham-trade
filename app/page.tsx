@@ -192,7 +192,7 @@ export default function Home() {
         </div>
       </footer>
 
-      <VoiceOrder lang={lang} currentMode="listing" />
+      {/* Voice Market floating removed - Mic is now in search bar above for single mic UX */}
     </main>
   )
 }

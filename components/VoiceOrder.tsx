@@ -29,7 +29,12 @@ export default function VoiceOrder({ lang, currentMode }: { lang: string, curren
       window.speechSynthesis.onvoiceschanged = load
     }
     const t = setTimeout(() => setVoicesReady(true), 1500)
-    return () => clearTimeout(t)
+    // On listing page, mic is in search bar - no need for floating box (avoids duplicate mic)
+  if (currentMode === 'listing') {
+    return null
+  }
+
+  return () => clearTimeout(t)
   }, [])
 
   useEffect(() => {
@@ -54,7 +59,12 @@ export default function VoiceOrder({ lang, currentMode }: { lang: string, curren
       const handler = () => { if (!hasPlayedWelcome) { clearTimeout(t); play() } document.removeEventListener('click', handler); document.removeEventListener('touchstart', handler) }
       document.addEventListener('click', handler)
       document.addEventListener('touchstart', handler)
-      return () => { clearTimeout(t); document.removeEventListener('click', handler); document.removeEventListener('touchstart', handler) }
+      // On listing page, mic is in search bar - no need for floating box (avoids duplicate mic)
+  if (currentMode === 'listing') {
+    return null
+  }
+
+  return () => { clearTimeout(t); document.removeEventListener('click', handler); document.removeEventListener('touchstart', handler) }
     }
   }, [lang, currentMode, voicesReady, hasPlayedWelcome, p])
 
@@ -92,6 +102,11 @@ export default function VoiceOrder({ lang, currentMode }: { lang: string, curren
       }
     }
     rec.start()
+  }
+
+  // On listing page, mic is in search bar - no need for floating box (avoids duplicate mic)
+  if (currentMode === 'listing') {
+    return null
   }
 
   return (
