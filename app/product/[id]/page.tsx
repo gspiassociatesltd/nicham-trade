@@ -4,15 +4,15 @@ import { useRouter } from 'next/navigation'
 import VoiceOrder from '../../../components/VoiceOrder'
 
 const productsData: any = {
-  1: { name: "Solar Cargo Bike 500W", intro: "Carry 300kg with solar power", basePrice: 400000, co2: 2.2 },
-  2: { name: "Solar Irrigation Pump", intro: "Pump water with sunshine", basePrice: 280000, co2: 3.0 },
-  3: { name: "Solar Freezer 200L", intro: "Keep fish fresh with solar", basePrice: 240000, co2: 4.0 },
-  4: { name: "Solar Home System 5kW", intro: "Power your house with solar", basePrice: 2200000, co2: 8.5 },
-  5: { name: "Solar Tractor 20HP", intro: "Electric tractor for plowing, hauling, tilling. Zero diesel.", basePrice: 3400000, co2: 6.0 },
-  6: { name: "Solar Dryer 100kg", intro: "Dry tomatoes, pepper, fish using sun. No more waste.", basePrice: 130000, co2: 1.5 },
-  7: { name: "Solar Boat Engine", intro: "Boat engine with solar", basePrice: 160000, co2: 5.0 },
-  8: { name: "Solar Ferry 12 Seater", intro: "Ferry with solar power", basePrice: 1050000, co2: 5.5 },
-  9: { name: "Collapsible Solar E-Bike", intro: "Foldable bike with solar charging", basePrice: 250000, co2: 1.8 },
+  1: { name: "Solar Cargo Bike 500W", intro: "Carry 300kg with solar power", basePrice: 400000 },
+  2: { name: "Solar Irrigation Pump", intro: "Pump water with sunshine", basePrice: 280000 },
+  3: { name: "Solar Freezer 200L", intro: "Keep fish fresh with solar", basePrice: 240000 },
+  4: { name: "Solar Home System 5kW", intro: "Power your house with solar", basePrice: 2200000 },
+  5: { name: "Solar Tractor 20HP", intro: "Electric tractor for plowing, hauling, tilling. Zero diesel.", basePrice: 3400000 },
+  6: { name: "Solar Dryer 100kg", intro: "Dry tomatoes, pepper, fish using sun. No more waste.", basePrice: 130000 },
+  7: { name: "Solar Boat Engine", intro: "Boat engine with solar", basePrice: 160000 },
+  8: { name: "Solar Ferry 12 Seater", intro: "Ferry with solar power", basePrice: 1050000 },
+  9: { name: "Collapsible Solar E-Bike", intro: "Foldable bike with solar charging", basePrice: 250000 },
 }
 
 function calcTotal(base: number) {
@@ -37,9 +37,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
   const handleConfirm = () => {
     const orderId = "NCH-" + Date.now().toString().slice(-6)
-    const 
     const orders = JSON.parse(localStorage.getItem('nicham_orders') || '[]')
-    orders.unshift({ productName: prod.name, total, orderId, 
+    orders.unshift({ productName: prod.name, total, orderId, date: new Date().toLocaleString() })
     localStorage.setItem('nicham_orders', JSON.stringify(orders))
     alert("Order confirmed! ID: " + orderId)
     router.push("/?lang=" + lang)
@@ -47,7 +46,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
   return (
     <main className="p-6 max-w-3xl mx-auto">
-      <a href={`/?lang=${lang}`} className="text-sm">← NiChAm Solar Market</a>
+      <a href={`/?lang=${lang}`} className="text-sm">{"<-"} NiChAm Solar Market</a>
       <div className="bg-white rounded-2xl shadow p-6 mt-4">
         <h1 className="text-2xl font-black">{prod.name}</h1>
         <p className="text-sm text-gray-700 mt-2">{prod.intro}</p>
@@ -55,8 +54,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           <div className="font-bold text-sm">ORDER PAGE - Press YES to confirm</div>
           <div className="text-xs mt-2">You are on order page for {prod.name}. Total {total.toLocaleString()} naira. Press YES button below to confirm.</div>
           <div className="flex gap-3 mt-4">
-            <button onClick={handleConfirm} className="flex-1 bg-green-600 text-white py-3 rounded-full font-bold">✅ TAP YES - Confirm</button>
-            <button onClick={() => { const u = new SpeechSynthesisUtterance("You are on order page for " + prod.name + ". Total " + total.toLocaleString() + " naira. Press YES to confirm."); window.speechSynthesis.speak(u) }} className="flex-1 bg-black text-white py-3 rounded-full">🔊 Hear Instruction</button>
+            <button onClick={handleConfirm} className="flex-1 bg-green-600 text-white py-3 rounded-full font-bold">TAP YES - Confirm</button>
+            <button onClick={() => { const u = new SpeechSynthesisUtterance("You are on order page for " + prod.name + ". Total " + total.toLocaleString() + " naira. Press YES to confirm."); window.speechSynthesis.speak(u) }} className="flex-1 bg-black text-white py-3 rounded-full">Hear Instruction</button>
           </div>
         </div>
         <div className="bg-green-50 p-4 rounded-xl mt-6 text-center">
