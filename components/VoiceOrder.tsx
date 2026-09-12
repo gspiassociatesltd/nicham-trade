@@ -222,9 +222,23 @@ export default function VoiceOrder({ lang, products, mode }: { lang: string, pro
     }
   }
 
-  const startListening = () => {
+  const startListening = async () => {
+    // ARCHITECT FIX: Mic permission ONLY requested here when user taps mic button - not on page load
+    // This prevents top-left popup on arrival. Welcome talks via speaker without mic permission.
+    try {
+      // Request mic permission explicitly on mic tap - this triggers the popup only when user wants voice
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        await navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+          // Stop tracks immediately - we just needed permission, SpeechRecognition will use mic
+          stream.getTracks().forEach(track => track.stop())
+        }).catch(() => {
+          // Permission denied - continue anyway, SpeechRecognition will handle error
+        })
+      }
+    } catch {}
+    
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      alert('Voice needs Chrome on Android.')
+      alert('Voice needs Chrome on Android. Use Chrome browser.')
       return
     }
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
@@ -232,15 +246,22 @@ export default function VoiceOrder({ lang, products, mode }: { lang: string, pro
     recognitionRef.current.lang = prompts.langCode
     recognitionRef.current.continuous = false
     recognitionRef.current.interimResults = false
-    recognitionRef.current.onstart = () => { setIsListening(true); setResponse("🔴 " + prompts.listening) }
+    recognitionRef.current.onstart = () => { setIsListening(true); setIsMinimized(false); setResponse("🔴 " + prompts.listening) }
     recognitionRef.current.onresult = (event: any) => {
       const text = event.results[0][0].transcript.toLowerCase()
       setTranscript(text)
       handleCommand(text)
     }
     recognitionRef.current.onend = () => setIsListening(false)
-    recognitionRef.current.onerror = (e: any) => { setIsListening(false); setResponse(`Mic error: ${e.error}. ${prompts.needMic}`) }
-    try { recognitionRef.current.start() } catch {}
+    recognitionRef.current.onerror = (e: any) => { 
+      setIsListening(false)
+      if (e.error === 'not-allowed') {
+        setResponse(`Microphone blocked. Click the lock icon in address bar → Allow microphone → Reload page. Or click product to order without voice.`)
+      } else {
+        setResponse(`Mic error: ${e.error}. ${prompts.needMic}`)
+      }
+    }
+    try { recognitionRef.current.start() } catch (e) { console.log(e) }
   }
 
   const handleCommand = (text: string) => {
