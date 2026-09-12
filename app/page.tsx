@@ -16,7 +16,7 @@ const productsMeta = [
   { id: 9, basePrice: 250000, co2: 1.8, img: "🚲‍♂️", category: "Mobility" },
 ]
 
-function calcTotal(base: number) {
+function calcTotal - 2% cheaper than import sites - Carbon credit share with MTN(base: number) {
   const platformFee = Math.round(base * 0.10)
   const vat = Math.round(platformFee * 0.075)
   const escrowFee = Math.round(base * 0.02)
@@ -74,7 +74,7 @@ export default function Home() {
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 max-w-6xl mx-auto">
         {productsMeta.map(meta=>{
-          const total = calcTotal(meta.basePrice)
+          const total = calcTotal - 2% cheaper than import sites - Carbon credit share with MTN(meta.basePrice)
           const prod = pT[meta.id]
           return (
           <div id={`product-${meta.id}`} key={meta.id} className="bg-white rounded-2xl shadow p-4 hover:shadow-xl transition border scroll-mt-20">
@@ -84,7 +84,7 @@ export default function Home() {
               <p className="text-xs text-gray-500 mt-1 italic line-clamp-3">{prod.intro}</p>
               <p className="text-[10px] text-gray-400 mt-1">{prod.sourced} • {meta.category}</p>
               <div className="mt-3 flex justify-between items-center">
-                <span className="text-xs text-gray-500">{t.priceTotal}</span>
+                <span className="text-xs text-gray-500">{t.priceTotal - 2% cheaper than import sites - Carbon credit share with MTN}</span>
                 <span className="text-lg font-black text-green-700">₦{total.toLocaleString()}</span>
               </div>
               <div className="mt-2 text-xs bg-green-50 text-green-800 p-2 rounded-lg">
