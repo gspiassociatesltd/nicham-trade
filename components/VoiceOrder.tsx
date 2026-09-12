@@ -4,13 +4,13 @@ import { useRouter } from 'next/navigation'
 
 const voicePrompts: any = {
   en: {
-    welcome: "Welcome to Nicham Solar Market. You can click any product below to see details, or press the microphone button and say the product you want. For example, click Solar Bike or press mic and say Solar Bike.",
+    welcome: "Welcome to Nicham Solar Market. You can click any product below to see details, or press the microphone button and say the product you want. For example, click Solar Bike or press mic and say Solar Bike. I will start talking straight away without needing mic for this welcome.",
     listening: "Listening now. Speak after the beep.",
     heard: "You said",
     productIntro: "You asked for {product}. {intro} Total price is {price} naira. To open order page, press the microphone button again and say YES, or click the product.",
     confirmOpen: "Opening order page for {product} now.",
     howToTitle: "HOW TO USE - Click or Talk:",
-    how1: "1. CLICK any product picture below, OR press 🎤 and say 'Solar bike' - I will scroll to show you the picture and describe what it can do (load, etc)",
+    how1: "1. CLICK any product picture below, OR press 🎤 and say 'Solar bike' and hear what it can do (load, capacity, etc)",
     how2: "2. Then press 🎤 again and say 'YES' - or click Order button - to open order page",
     how3: "3. On order page, press 🎤 and say 'YES' again, or tap green YES button - Order confirmed with ID",
     howNote: "Must press mic before each voice phrase. Welcome message plays once on page load.",
@@ -31,7 +31,7 @@ const voicePrompts: any = {
     productIntro: "You ask for {product}. {intro} Total price na {price} naira. To open order page, press microphone button again and talk YES, or click the product.",
     confirmOpen: "I dey open order page for {product} now.",
     howToTitle: "HOW TO USE AM - Click or Talk:",
-    how1: "1. CLICK any product picture below, OR press 🎤 and talk 'Solar bike' - I go scroll show you picture and talk wetin e fit do",
+    how1: "1. CLICK any product picture below, OR press 🎤 and talk 'Solar bike' and hear wetin e fit do",
     how2: "2. Then press 🎤 again and talk 'YES' - or click Order button - to open order page",
     how3: "3. For order page, press 🎤 and talk 'YES' again, or tap green YES button - Order go enter with ID",
     howNote: "Must press mic before you talk. Welcome dey play once when page open.",
@@ -52,7 +52,7 @@ const voicePrompts: any = {
     productIntro: "O beere fun {product}. {intro} Lapapo iye ni {price} naira. Lati ṣi oju-iwe aṣẹ, tẹ bọtini maikirofooni lẹẹkansi ki o so BẸẸNI, tabi tẹ ọja naa.",
     confirmOpen: "Mo n ṣi oju-iwe aṣẹ fun {product} nisisiyi.",
     howToTitle: "BAWO LO ṢE LE LO - Tẹ tabi Sọrọ:",
-    how1: "1. TẸ lori aworan ọja eyikeyi ni isalẹ, TABI tẹ 🎤 ki o so 'Keke solar' - Emi yoo yi lọ lati fi aworan han ọ ati sọ ohun ti o le ṣe",
+    how1: "1. TẸ lori aworan ọja eyikeyi ni isalẹ, TABI tẹ 🎤 ki o so 'Keke solar' ati gbo ohun ti o le ṣe",
     how2: "2. Lẹhinna tẹ 🎤 lẹẹkansi ki o so 'BẸẸNI' - tabi tẹ bọtini Paṣẹ - lati ṣi oju-iwe aṣẹ",
     how3: "3. Lori oju-iwe aṣẹ, tẹ 🎤 ki o so 'BẸẸNI' lẹẹkansi, tabi tẹ bọtini BẸẸNI alawọ ewe - Aṣẹ ti jẹrisi pẹlu ID",
     howNote: "O gbọdọ tẹ mic ṣaaju gbolohun ohun kọọkan. Ifiranṣẹ kaabo n dun lẹẹkan nigbati oju-iwe ba ṣii.",
@@ -73,7 +73,7 @@ const voicePrompts: any = {
     productIntro: "Ka nemi {product}. {intro} Jimillar farashi {price} naira ne. Don buɗe shafin oda, danna maɓallin makirufo kuma ka ce EH, ko danna kayan.",
     confirmOpen: "Ina buɗe shafin oda na {product} yanzu.",
     howToTitle: "YADDA AKE AMFANI - Danna ko Magana:",
-    how1: "1. DANNA hoton kowane kaya a ƙasa, KO danna 🎤 ka ce 'Keke solar' - Zan gungura don nuna hoton da bayanin abin da zai iya yi",
+    how1: "1. DANNA hoton kowane kaya a ƙasa, KO danna 🎤 ka ce 'Keke solar' da ji bayanin abin da zai iya yi",
     how2: "2. Sannan danna 🎤 kuma ka ce 'EH' - ko danna maɓallin Oda - don buɗe shafin oda",
     how3: "3. A shafin oda, danna 🎤 ka ce 'EH' kuma, ko danna koren maɓallin EH - An tabbatar da oda tare da ID",
     howNote: "Dole ka danna mic kafin kowace magana. Saƙon barka da zuwa yana kunna sau ɗaya lokacin da shafi ya buɗe.",
@@ -94,7 +94,7 @@ const voicePrompts: any = {
     productIntro: "Ị rịọrọ {product}. {intro} Ọnụ ahịa niile bụ {price} naira. Iji mepee peeji iwu, pịa bọtịnụ igwe okwu ọzọ wee kwuo EE, ma ọ bụ pịa ngwaahịa ahụ.",
     confirmOpen: "Ana m emepe peeji iwu maka {product} ugbu a.",
     howToTitle: "OTU ESI EJI YA - Pịa ma ọ bụ Kwuo:",
-    how1: "1. PỊA foto ngwaahịa ọ bụla n'okpuru, MA ọ bụ pịa 🎤 kwuo 'Keke solar' - M ga-atụgharị iji gosi foto na ihe ọ nwere ike ime",
+    how1: "1. PỊA foto ngwaahịa ọ bụla n'okpuru, MA ọ bụ pịa 🎤 kwuo 'Keke solar' ma nụ ihe ọ nwere ike ime",
     how2: "2. Mgbe ahụ pịa 🎤 ọzọ kwuo 'EE' - ma ọ bụ pịa bọtịnụ Iwu - iji mepee peeji iwu",
     how3: "3. Na peeji iwu, pịa 🎤 kwuo 'EE' ọzọ, ma ọ bụ pịa bọtịnụ akwụkwọ ndụ akwụkwọ ndụ EE - Ekwenyela iwu na ID",
     howNote: "Ga-pịa mic tupu ahịrịokwu olu ọ bụla. Ozi nnabata na-akpọ otu ugboro mgbe ibe mepere.",
@@ -141,6 +141,8 @@ export default function VoiceOrder({ lang, products, mode }: { lang: string, pro
   const [response, setResponse] = useState("")
   const [lastProduct, setLastProduct] = useState<any>(null)
   const [awaiting, setAwaiting] = useState<'open' | 'order' | null>(null)
+  const [isMinimized, setIsMinimized] = useState(false)
+  const [hasPlayedWelcome, setHasPlayedWelcome] = useState(false)
   const recognitionRef = useRef<any>(null)
   const router = useRouter()
   const currentMode = mode || 'listing'
@@ -191,7 +193,7 @@ export default function VoiceOrder({ lang, products, mode }: { lang: string, pro
         return () => clearTimeout(timer)
       }
     } else {
-      const welcome = products[0] ? `${products[0].name}: ${products[0].intro} Total ${calcTotal(products[0].basePrice).toLocaleString()} naira. Press mic and say YES to confirm or tap YES button.` : prompts.welcome
+      const welcome = products[0] ? `${products[0].name}: ${products[0].intro} Total ${calcTotal(products[0].basePrice).toLocaleString()} naira. Press mic and say YES to confirm, or tap YES button. Or choose another product or go back to the market page.` : prompts.welcome
       setResponse(welcome)
     }
   }, [lang, currentMode, voicesReady])
@@ -325,9 +327,10 @@ export default function VoiceOrder({ lang, products, mode }: { lang: string, pro
 
   return (
     <div className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-50 flex flex-col items-end gap-2 max-w-[92vw]">
-      {(transcript || response) && (
-        <div className="bg-black text-white rounded-2xl p-4 max-w-[400px] text-xs shadow-2xl border-2 border-yellow-400">
-          <div className="text-yellow-300 font-black mb-2 flex justify-between items-center gap-2">
+      {(transcript || response) && !isMinimized && (
+        <div className="bg-black text-white rounded-2xl p-4 max-w-[400px] text-xs shadow-2xl border-2 border-yellow-400 relative">
+          <button onClick={() => setIsMinimized(true)} className="absolute top-2 right-2 bg-gray-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">✕</button>
+          <div className="text-yellow-300 font-black mb-2 flex justify-between items-center gap-2 pr-6">
             <span className="text-[11px]">🎤 {prompts.voiceLabel}</span>
             <span className="bg-yellow-400 text-black px-2 py-0.5 rounded-full text-[8px]">{awaiting ? (awaiting === 'open' ? prompts.badgeAwaitOpen : prompts.badgeAwaitOrder) : prompts.badgeSayProduct}</span>
           </div>
@@ -340,16 +343,23 @@ export default function VoiceOrder({ lang, products, mode }: { lang: string, pro
             <div>{prompts.how3}</div>
             <div className="mt-1 text-gray-400 italic">{prompts.howNote}</div>
           </div>
+          <div className="mt-2 text-[9px] text-gray-400">Box auto-minimizes after welcome to show products. Tap mic to expand again.</div>
+        </div>
+      )}
+      {isMinimized && (transcript || response) && (
+        <div className="bg-black text-white rounded-full px-3 py-1 text-[10px] shadow border border-yellow-400 flex items-center gap-2">
+          <span>🎤 {awaiting ? 'Awaiting YES...' : 'Voice ready - tap mic'}</span>
+          <button onClick={() => setIsMinimized(false)} className="bg-yellow-400 text-black px-2 py-0.5 rounded-full font-bold">Expand</button>
         </div>
       )}
       <button
-        onClick={startListening}
+        onClick={() => { setIsMinimized(false); startListening() }}
         className={`w-20 h-20 rounded-full flex items-center justify-center shadow-2xl border-4 border-white text-3xl transition-all ${isListening ? 'bg-red-600 animate-pulse scale-110' : 'bg-yellow-400 hover:bg-yellow-500'}`}
       >
         {isListening ? '🔴' : '🎤'}
       </button>
       <div className="bg-black text-white text-[10px] px-3 py-1 rounded-full font-bold text-center max-w-[260px] leading-tight">
-        {isListening ? '🔴 LISTENING' : awaiting === 'open' ? prompts.badgeAwaitOpen : awaiting === 'order' ? prompts.badgeAwaitOrder : prompts.badgePressMic}
+        {isListening ? '🔴 LISTENING - Speak product name or YES' : awaiting === 'open' ? prompts.badgeAwaitOpen : awaiting === 'order' ? prompts.badgeAwaitOrder : prompts.badgePressMic}
       </div>
     </div>
   )

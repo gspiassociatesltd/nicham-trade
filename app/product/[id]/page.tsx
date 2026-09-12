@@ -84,8 +84,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           <div className="font-black">🎤 ORDER PAGE - Press Mic Then Say YES</div>
           <div className="mt-2 text-sm leading-relaxed">
             {voiceParam === 'ready'
-              ? `You said "${prod.name}" on listing page, then said YES to open order page. You are now here. ${prod.intro} Total price ₦${total.toLocaleString()}. To confirm order, press the microphone button below and say YES, or tap the green YES button. You must press mic before speaking!`
-              : `You are on order page for ${prod.name}. ${prod.intro} Price ₦${total.toLocaleString()} total. To confirm, press microphone button and say YES, or tap YES button below.`
+              ? `You said "${prod.name}" on market page, then said YES to open order page. You are now here. ${prod.intro} Total price ₦${total.toLocaleString()}. To confirm order, press microphone button below and say YES, or tap green YES button. Or choose another product or go back to the market page.`
+              : `You are on order page for ${prod.name}. ${prod.intro} Price ₦${total.toLocaleString()} total. To confirm, press microphone button and say YES, or tap YES button below. Or choose another product or go back to the market page.`
             }
           </div>
           <div className="mt-3 grid grid-cols-2 gap-2">
