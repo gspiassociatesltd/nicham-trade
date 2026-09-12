@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 const PROMPTS: any = {
-  en: { welcome: "Welcome to Nicham solar market, type the product you want in the search column or click on the microphone and say the name of the product you want.", langCode: "en-NG" },
-  pidgin: { welcome: "Welcome to Nicham solar market, type the product you want in the search column or click on the microphone and say the name of the product you want.", langCode: "en-NG" },
+  en: { welcome: "Welcome to Nicham solar market, type the product you want in the search column or click on the microphone and say the name of the product you want, then click search.", langCode: "en-NG" },
+  pidgin: { welcome: "Welcome to Nicham solar market, type the product you want in the search column or click on the microphone and say the name of the product you want, then click search.", langCode: "en-NG" },
   ha: { welcome: "Barka da zuwa kasuwar Nicham Solar. Rubuta sunan kayan da kake so a wurin bincike ko danna microphone ka fadi sunan.", langCode: "ha" },
   ig: { welcome: "Nnoo na ahia Nicham Solar. Pịnye aha ngwaahịa ịchọrọ na kọlụm ọchụchọ ma ọ bụ pịa igwe okwu kwuo aha ya.", langCode: "ig" },
   yo: { welcome: "Kaabo si oja Nicham Solar. Tẹ orukọ ọja ti o fẹ sinu apoti iwadi tabi tẹ microphone ki o sọ orukọ rẹ.", langCode: "yo" }
