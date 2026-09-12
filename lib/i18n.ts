@@ -6,7 +6,7 @@ export const translations: any = {
     greenBar: "Green Points on Solar Purchases | Platform: GSPI/NiChAm | Sourcing & Delivery: AfricanIES",
     headerSub: "Platform: GSPI Associates Ltd | Sourcing & Logistics: AfricanIES | 36 States",
     desc: "Platform: GSPI/NiChAm • Sourcing & Delivery: AfricanIES • 36 States • Carbon Mission",
-    howItWorks: "Buyer orders on platform → Escrow → AfricanIES sources from manufacturers & delivers → Buyer confirms. GSPI owns platform only.",
+    howItWorks: "Buyer orders on platform → Escrow with MTN's momo → AfricanIES collects from manufacturers & delivers → Buyer confirms - MTN's momo pays",
     btnSolar: "NiChAm Solar Market",
     btnAfricanIES: "AfricanIES Catalog (Via API)",
     priceSourced: "AfricanIES Sourced Price",
