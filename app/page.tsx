@@ -68,7 +68,7 @@ export default function Home() {
         <p className="text-xs text-gray-500 max-w-3xl mx-auto">{t.howItWorks}</p>
         <div className="flex gap-2 justify-center flex-wrap mt-4">
           <button className="px-4 py-2 bg-black text-white rounded-full text-sm font-bold">☀️ {t.btnSolar}</button>
-          <button className="px-4 py-2 bg-white border-2 border-black rounded-full text-sm font-bold">🛒 {t.btnPan-African}</button>
+          <button className="px-4 py-2 bg-white border-2 border-black rounded-full text-sm font-bold">🛒 {t.btnSolar}</button>
         </div>
       </section>
 
