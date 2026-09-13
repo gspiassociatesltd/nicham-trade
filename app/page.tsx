@@ -31,6 +31,26 @@ export default function Home() {
   useEffect(() => {
     const saved = localStorage.getItem('nicham_lang')
     if (saved) setLang(saved)
+    // Voice welcome message on listing page - Committees: Language aware, only English speaks auto to avoid English-on-Yoruba bug
+    const hasWelcomed = sessionStorage.getItem('nicham_welcomed')
+    if (!hasWelcomed) {
+      setTimeout(() => {
+        try {
+          const currentLang = saved || 'en'
+          if (currentLang === 'en' || currentLang === 'pidgin') {
+            const msg = "Welcome to Nicham solar market, type the product you want in the search column then click search."
+            if (window.speechSynthesis) {
+              window.speechSynthesis.cancel()
+              const u = new SpeechSynthesisUtterance(msg)
+              u.lang = "en-NG"
+              u.rate = 0.85
+              window.speechSynthesis.speak(u)
+            }
+          }
+          sessionStorage.setItem('nicham_welcomed', 'yes')
+        } catch {}
+      }, 1000)
+    }
   }, [])
 
   useEffect(() => {
@@ -70,12 +90,14 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
-      <header className="bg-black text-white p-4 flex justify-between items-center">
-        <div>
-          <h1 className="text-xl font-black">☀️ NiChAm Solar Market</h1>
-          <p className="text-xs text-yellow-300">GSPI/NiChAm: Platform owner only | AfricanIES: Delivers Nationwide</p>
+      <header className="bg-black text-white p-4">
+        <div className="text-center">
+          <h1 className="text-3xl md:text-4xl font-black tracking-wide">☀️ NiChAm Solar Market</h1>
+          <p className="text-xs text-yellow-300 mt-1">GSPI/NiChAm: Platform owner only | AfricanIES: Delivers Nationwide</p>
         </div>
-        <LangToggle lang={lang} setLang={handleLang} />
+        <div className="flex justify-end mt-2">
+          <LangToggle lang={lang} setLang={handleLang} />
+        </div>
       </header>
 
       <div className="bg-green-700 text-white text-center p-2 text-sm font-bold">
@@ -89,6 +111,18 @@ export default function Home() {
         
         <div className="max-w-3xl mx-auto mt-4 bg-yellow-50 border-2 border-yellow-300 rounded-xl p-3 text-sm text-center">
           <b>{welcomeText[lang] || welcomeText.en}</b>
+          <div className="mt-2">
+            <button onClick={() => {
+              try {
+                const msg = welcomeText[lang] || welcomeText.en
+                const u = new SpeechSynthesisUtterance(msg)
+                u.lang = lang === 'en' || lang === 'pidgin' ? 'en-NG' : 'en-NG'
+                u.rate = 0.85
+                window.speechSynthesis.cancel()
+                window.speechSynthesis.speak(u)
+              } catch {}
+            }} className="text-xs px-3 py-1 bg-black text-white rounded-full">🔊 Hear Welcome</button>
+          </div>
         </div>
         
         <div className="max-w-2xl mx-auto mt-4 flex gap-2 items-center">
