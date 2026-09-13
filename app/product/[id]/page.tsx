@@ -44,27 +44,44 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     localStorage.setItem('nicham_orders', JSON.stringify(orders))
     setMsg("Order confirmed! Your Order ID is " + orderId + " - Thank you for using NiChAm Solar Market. Your order is now in escrow with MTN MoMo. AfricanIES will collect and deliver nationwide.")
     try {
-      const u = new SpeechSynthesisUtterance("Order confirmed. Your Order ID is " + orderId + ". Thank you for using NiChAm Solar Market. Your order is now in escrow with MTN MoMo. AfricanIES will collect and deliver nationwide. You will be notified.")
-      u.lang = "en-NG"
-      u.rate = 0.85
-      window.speechSynthesis.cancel()
-      window.speechSynthesis.speak(u)
-    } catch {}
-    // Nigeria LLM dataset: save what was ordered via voice
+      const fullMsg = "Order confirmed. Your Order ID is " + orderId + ". Thank you for using NiChAm Solar Market. Your order is now in escrow with MTN MoMo. AfricanIES will collect and deliver nationwide. You will be notified."
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel()
+        const parts = fullMsg.split(". ")
+        let idx = 0
+        const speakNext = () => {
+          if (idx >= parts.length) return
+          const chunk = parts[idx].trim()
+          if (!chunk) { idx++; speakNext(); return }
+          const u = new SpeechSynthesisUtterance(chunk + (chunk.endsWith(".") ? "" : "."))
+          u.lang = "en-NG"
+          u.rate = 0.82
+          u.onend = () => { idx++; setTimeout(speakNext, 200) }
+          window.speechSynthesis.speak(u)
+        }
+        speakNext()
+      }
+    } catch {
+      try {
+        const u = new SpeechSynthesisUtterance("Order confirmed. ID " + orderId + ". Thank you.")
+        u.lang = "en-NG"
+        window.speechSynthesis.speak(u)
+      } catch {}
+    }
     try {
       const dataset = JSON.parse(localStorage.getItem('nicham_voice_dataset') || '[]')
       dataset.push({ type: 'order', product: meta.name, lang, time: new Date().toISOString() })
       localStorage.setItem('nicham_voice_dataset', JSON.stringify(dataset.slice(-100)))
     } catch {}
-    setTimeout(() => { window.location.href = "/?lang=" + lang }, 2500)
+    setTimeout(() => { window.location.href = "/?lang=" + lang }, 8000)
   }
 
   const orderText: any = {
     en: { title: "Order Page - Click YES - Confirm below", desc: `You are on order page for ${meta.name}. Total ${total.toLocaleString()} naira. Click YES - Confirm button below to place order. No typing needed.` },
     pidgin: { title: "Order Page - Click YES - Confirm", desc: `You dey order page for ${meta.name}. Total ${total.toLocaleString()} naira. Click YES - Confirm to order. No need to type.` },
-    ha: { title: "Shafin Oda - Danna YES - Confirm", desc: `Kana shafin oda na ${meta.name}. Jimilla ${total.toLocaleString()} naira. Danna YES - Confirm. (Voice Hausa coming V51)` },
-    ig: { title: "Peeji Iwu - Pia YES - Confirm", desc: `I no na peeji iwu maka ${meta.name}. Onu ego ${total.toLocaleString()} naira. Pia YES - Confirm. (Voice Igbo coming V51)` },
-    yo: { title: "Oju-iwe Ase - Te YES - Confirm", desc: `O wa lori oju-iwe ase fun ${meta.name}. Lapapo ${total.toLocaleString()} naira. Te YES - Confirm. (Voice Yoruba coming V51)` }
+    ha: { title: "Shafin Oda - Danna YES - Confirm", desc: `Kana shafin oda na ${meta.name}. Jimilla ${total.toLocaleString()} naira. Danna YES - Confirm.` },
+    ig: { title: "Peeji Iwu - Pia YES - Confirm", desc: `I no na peeji iwu maka ${meta.name}. Onu ego ${total.toLocaleString()} naira. Pia YES - Confirm.` },
+    yo: { title: "Oju-iwe Ase - Te YES - Confirm", desc: `O wa lori oju-iwe ase fun ${meta.name}. Lapapo ${total.toLocaleString()} naira. Te YES - Confirm.` }
   }
 
   const ot = orderText[lang] || orderText.en
@@ -81,7 +98,6 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           <div className="font-bold text-sm">{ot.title}</div>
           <div className="text-xs mt-1 text-gray-700">{ot.desc}</div>
           
-          {/* Committees: Content YES matches button, UI single mic, Language no English on Yoruba */}
           {lang === 'en' || lang === 'pidgin' ? (
             <OrderMic onYES={handleConfirm} />
           ) : (
