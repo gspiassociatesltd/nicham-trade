@@ -150,7 +150,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               <button onClick={handlePay} className="mt-3 w-full py-3 bg-black text-white rounded-full font-black text-sm animate-pulse">💳 Pay with MTN MoMo - Deduct from Wallet</button>
               <div className="flex gap-2 mt-2">
                 <button onClick={()=>speak(["Order ID "+orderId+". Total "+total.toLocaleString()+" naira. Please click Pay with MTN MoMo to secure your payment in escrow."])} className="flex-1 py-2 bg-white border rounded-full text-xs font-bold">🔊 Replay</button>
-                <a href={`/?lang=${lang}`} className="flex-1 py-2 bg-gray-200 rounded-full text-xs font-bold text-center">Save for Later</a>
+                <a href={`/orders?lang=${lang}`} className="flex-1 py-2 bg-gray-200 rounded-full text-xs font-bold text-center">Save Order - Pay Later (24hrs)</a>
               </div>
             </div>
           )}
