@@ -42,9 +42,9 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     const orders = JSON.parse(localStorage.getItem('nicham_orders') || '[]')
     orders.unshift({ productName: meta.name, total, orderId, date: new Date().toLocaleString() })
     localStorage.setItem('nicham_orders', JSON.stringify(orders))
-    setMsg("Order confirmed! ID: " + orderId + " - Thank you")
+    setMsg("Order confirmed! Your Order ID is " + orderId + " - Thank you for using NiChAm Solar Market. Your order is now in escrow with MTN MoMo. AfricanIES will collect and deliver nationwide.")
     try {
-      const u = new SpeechSynthesisUtterance("Order confirmed. ID " + orderId + ". Thank you for using Nicham Solar Market.")
+      const u = new SpeechSynthesisUtterance("Order confirmed. Your Order ID is " + orderId + ". Thank you for using NiChAm Solar Market. Your order is now in escrow with MTN MoMo. AfricanIES will collect and deliver nationwide. You will be notified.")
       u.lang = "en-NG"
       u.rate = 0.85
       window.speechSynthesis.cancel()
