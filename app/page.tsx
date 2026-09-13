@@ -61,18 +61,18 @@ export default function Home() {
   const t = translations[lang] || translations.en
 
   const welcomeText: any = {
-    en: "Welcome to Nicham solar market, type the product you want in the search column then click search. Microphone is inside search bar for English.",
-    pidgin: "Welcome to Nicham solar market, type product wey you want for search column then click search. Mic dey inside search bar.",
-    ha: "Barka da zuwa kasuwar Nicham Solar. Rubuta sunan kaya a search. (Voice comes next version for Hausa)",
-    ig: "Nnoo na ahia Nicham Solar. Pinyere aha na search. (Voice ga-abia ozo maka Igbo)",
-    yo: "Kaabo si oja Nicham Solar. Te oruko oja ni search. (Voice yoo wa fun Yoruba ni version to nbo)"
+    en: "Welcome to Nicham solar market, type the product you want in the search column then click search.",
+    pidgin: "Welcome to Nicham solar market, type product wey you want for search column then click search.",
+    ha: "Barka da zuwa kasuwar Nicham Solar. Rubuta sunan kayan da kake so a wurin bincike sannan danna search.",
+    ig: "Nnoo na ahia Nicham Solar. Pịnye aha ngwaahịa ịchọrọ na kọlụm ọchụchọ wee pịa search.",
+    yo: "Kaabo si oja Nicham Solar. Tẹ orukọ ọja ti o fẹ sinu apoti iwadi lẹhinna tẹ search."
   }
 
   return (
     <main className="min-h-screen">
       <header className="bg-black text-white p-4 flex justify-between items-center">
         <div>
-          <h1 className="text-xl font-black">☀️ All Nigeria SOLAR Market</h1>
+          <h1 className="text-xl font-black">☀️ NiChAm Solar Market</h1>
           <p className="text-xs text-yellow-300">GSPI/NiChAm: Platform owner only | AfricanIES: Delivers Nationwide</p>
         </div>
         <LangToggle lang={lang} setLang={handleLang} />
@@ -109,9 +109,7 @@ export default function Home() {
             🔍 Search
           </button>
         </div>
-        <div className="text-xs text-gray-500 mt-2">
-          {filtered.length} products found | {searchTerm ? `Results for "${searchTerm}"` : "All products - type to filter"} | V50 Committees Coordinated
-        </div>
+        <div className="text-xs text-gray-500 mt-2 hidden"></div>
       </section>
 
       <section id="products-grid" className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 max-w-6xl mx-auto">
