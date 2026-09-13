@@ -31,26 +31,22 @@ export default function Home() {
   useEffect(() => {
     const saved = localStorage.getItem('nicham_lang')
     if (saved) setLang(saved)
-    // Voice welcome message on listing page - Committees: Language aware, only English speaks auto to avoid English-on-Yoruba bug
-    const hasWelcomed = sessionStorage.getItem('nicham_welcomed')
-    if (!hasWelcomed) {
-      setTimeout(() => {
-        try {
-          const currentLang = saved || 'en'
-          if (currentLang === 'en' || currentLang === 'pidgin') {
-            const msg = "Welcome to Nicham solar market, type the product you want in the search column then click search."
-            if (window.speechSynthesis) {
-              window.speechSynthesis.cancel()
-              const u = new SpeechSynthesisUtterance(msg)
-              u.lang = "en-NG"
-              u.rate = 0.85
-              window.speechSynthesis.speak(u)
-            }
+    // Voice welcome message plays automatically on arriving at listing page - as requested
+    setTimeout(() => {
+      try {
+        const currentLang = saved || 'en'
+        if (currentLang === 'en' || currentLang === 'pidgin') {
+          const msg = "Welcome to Nicham solar market, type the product you want in the search column then click search or click the microphone and say the name of the product you want."
+          if (window.speechSynthesis) {
+            window.speechSynthesis.cancel()
+            const u = new SpeechSynthesisUtterance(msg)
+            u.lang = "en-NG"
+            u.rate = 0.85
+            window.speechSynthesis.speak(u)
           }
-          sessionStorage.setItem('nicham_welcomed', 'yes')
-        } catch {}
-      }, 1000)
-    }
+        }
+      } catch {}
+    }, 1200)
   }, [])
 
   useEffect(() => {
@@ -81,8 +77,8 @@ export default function Home() {
   const t = translations[lang] || translations.en
 
   const welcomeText: any = {
-    en: "Welcome to Nicham solar market, type the product you want in the search column then click search.",
-    pidgin: "Welcome to Nicham solar market, type product wey you want for search column then click search.",
+    en: "Welcome to Nicham solar market, type the product you want in the search column then click search or click the microphone and say the name of the product you want.",
+    pidgin: "Welcome to Nicham solar market, type product wey you want for search column then click search or click microphone and talk the product name.",
     ha: "Barka da zuwa kasuwar Nicham Solar. Rubuta sunan kayan da kake so a wurin bincike sannan danna search.",
     ig: "Nnoo na ahia Nicham Solar. Pịnye aha ngwaahịa ịchọrọ na kọlụm ọchụchọ wee pịa search.",
     yo: "Kaabo si oja Nicham Solar. Tẹ orukọ ọja ti o fẹ sinu apoti iwadi lẹhinna tẹ search."
