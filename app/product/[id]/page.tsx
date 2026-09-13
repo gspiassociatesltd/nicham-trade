@@ -23,83 +23,112 @@ function calcTotal(base: number) {
 
 export default function ProductPage({ params }: { params: { id: string } }) {
   const [lang, setLang] = useState('en')
-  const [msg, setMsg] = useState("")
-  const [orderIdState, setOrderIdState] = useState("")
-  const [confirmed, setConfirmed] = useState(false)
+  const [step, setStep] = useState<'order'|'confirmed'|'paying'|'success'|'insufficient'>('order')
+  const [orderId, setOrderId] = useState('')
+  const [momoNumber, setMomoNumber] = useState('0803 123 4567')
+  const [balance, setBalance] = useState(50000)
 
   useEffect(() => {
     const saved = localStorage.getItem('nicham_lang')
     if (saved) setLang(saved)
-    const url = new URL(window.location.href)
-    const l = url.searchParams.get('lang')
-    if (l) setLang(l)
+    const b = localStorage.getItem('momo_balance')
+    if (b) setBalance(parseInt(b))
+    else { localStorage.setItem('momo_balance', '50000'); setBalance(50000) }
+    const num = localStorage.getItem('momo_number')
+    if (num) setMomoNumber(num)
   }, [])
 
   const id = parseInt(params.id)
-  const meta = productsMeta[id] || productsMeta[2]
+  const meta = productsMeta[id] || productsMeta[3]
   const total = calcTotal(meta.price)
 
-  const speakFull = (orderId: string) => {
+  const speak = (textArr: string[]) => {
     try {
-      if (typeof window === 'undefined' || !window.speechSynthesis) return
+      if (!window.speechSynthesis) return
       window.speechSynthesis.cancel()
-      // Small delay to ensure cancel completes
       setTimeout(() => {
-        const sentences = [
-          "Order confirmed.",
-          "Your Order ID is " + orderId + ".",
-          "Thank you for using NiChAm Solar Market.",
-          "Your order is now in escrow with MTN MoMo.",
-          "AfricanIES will collect and deliver nationwide.",
-          "You will be notified."
-        ]
-        let i = 0
+        let i=0
         const next = () => {
-          if (i >= sentences.length) return
-          const u = new SpeechSynthesisUtterance(sentences[i])
-          u.lang = "en-NG"
-          u.rate = 0.85
-          u.volume = 1
-          u.onend = () => { i++; setTimeout(next, 250) }
-          u.onerror = () => { i++; setTimeout(next, 250) }
+          if (i>=textArr.length) return
+          const u = new SpeechSynthesisUtterance(textArr[i])
+          u.lang='en-NG'; u.rate=0.85; u.volume=1
+          u.onend = () => { i++; setTimeout(next,250) }
+          u.onerror = () => { i++; setTimeout(next,250) }
           window.speechSynthesis.speak(u)
         }
         next()
-      }, 300)
+      },300)
     } catch {}
   }
 
-  const handleConfirm = () => {
-    const orderId = "NCH-" + Date.now().toString().slice(-6)
-    setOrderIdState(orderId)
-    setConfirmed(true)
+  const handleYES = () => {
+    const oid = "NCH-" + Date.now().toString().slice(-6)
+    setOrderId(oid)
+    setStep('confirmed')
     const orders = JSON.parse(localStorage.getItem('nicham_orders') || '[]')
-    orders.unshift({ productName: meta.name, total, orderId, date: new Date().toLocaleString() })
+    orders.unshift({ productName: meta.name, total, orderId: oid, status:'awaiting_payment', date: new Date().toLocaleString() })
     localStorage.setItem('nicham_orders', JSON.stringify(orders))
-    setMsg("Order confirmed! Your Order ID is " + orderId + " - Thank you for using NiChAm Solar Market. Your order is now in escrow with MTN MoMo. AfricanIES will collect and deliver nationwide.")
-    speakFull(orderId)
-    try {
-      const dataset = JSON.parse(localStorage.getItem('nicham_voice_dataset') || '[]')
-      dataset.push({ type: 'order', product: meta.name, lang, time: new Date().toISOString() })
-      localStorage.setItem('nicham_voice_dataset', JSON.stringify(dataset.slice(-100)))
-    } catch {}
-    // NO AUTO REDIRECT - user stays to hear full message, clicks Back manually
+    speak([
+      "Order confirmed.",
+      "Order ID " + oid + ".",
+      "Total " + total.toLocaleString() + " naira.",
+      "Please click Pay with MTN MoMo to secure your payment in escrow."
+    ])
+  }
+
+  const handlePay = () => {
+    setStep('paying')
+    setTimeout(() => {
+      if (balance < total) {
+        setStep('insufficient')
+        speak([
+          "Insufficient MoMo wallet balance.",
+          "Required " + total.toLocaleString() + " naira.",
+          "Your balance is " + balance.toLocaleString() + " naira.",
+          "Please top up or save order to pay later."
+        ])
+      } else {
+        const newBal = balance - total
+        setBalance(newBal)
+        localStorage.setItem('momo_balance', newBal.toString())
+        // Update order status
+        const orders = JSON.parse(localStorage.getItem('nicham_orders') || '[]')
+        const idx = orders.findIndex((o:any)=>o.orderId===orderId)
+        if (idx>=0){ orders[idx].status='paid_escrow'; orders[idx].momoTxn='MOMO-'+Date.now().toString().slice(-6); localStorage.setItem('nicham_orders', JSON.stringify(orders)) }
+        // Hidden admin log for AfricanIES stages (buyer doesn't see)
+        const admin = JSON.parse(localStorage.getItem('nicham_admin_escrow') || '[]')
+        admin.unshift({ orderId, total, stage1:'30% on collection to AfricanIES pending', stage2:'70% on delivery pending', hidden:true, date:new Date().toISOString() })
+        localStorage.setItem('nicham_admin_escrow', JSON.stringify(admin))
+        setStep('success')
+        speak([
+          "Payment secured.",
+          "Your payment of " + total.toLocaleString() + " naira is now secured in escrow with MTN MoMo.",
+          "Transaction ID MoMo " + Date.now().toString().slice(-6) + ".",
+          "AfricanIES will collect and deliver nationwide.",
+          "You will receive NiChAm order receipt and MoMo payment receipt."
+        ])
+      }
+    }, 1200)
+  }
+
+  const handleTopUp = () => {
+    const add = total - balance + 10000
+    const newBal = balance + add
+    setBalance(newBal)
+    localStorage.setItem('momo_balance', newBal.toString())
+    alert("MoMo wallet topped up by ₦" + add.toLocaleString() + ". New balance ₦" + newBal.toLocaleString())
+    setStep('confirmed')
   }
 
   const orderText: any = {
-    en: { title: "Order Page - Click YES - Confirm below", desc: `You are on order page for ${meta.name}. Total ${total.toLocaleString()} naira. Click YES - Confirm button below to place order. No typing needed.` },
-    pidgin: { title: "Order Page - Click YES - Confirm", desc: `You dey order page for ${meta.name}. Total ${total.toLocaleString()} naira. Click YES - Confirm to order.` },
-    ha: { title: "Shafin Oda - Danna YES - Confirm", desc: `Kana shafin oda na ${meta.name}. Jimilla ${total.toLocaleString()} naira.` },
-    ig: { title: "Peeji Iwu - Pia YES - Confirm", desc: `I no na peeji iwu maka ${meta.name}. Onu ego ${total.toLocaleString()} naira.` },
-    yo: { title: "Oju-iwe Ase - Te YES - Confirm", desc: `O wa lori oju-iwe ase fun ${meta.name}. Lapapo ${total.toLocaleString()} naira.` }
+    en: { title: "Order Page - Click YES - Confirm", desc: "You are on order page for "+meta.name+". Total "+total.toLocaleString()+" naira. Click YES to place order." },
+    pidgin: { title: "Order Page - Click YES", desc: "You dey order page for "+meta.name+". Total "+total.toLocaleString()+" naira." }
   }
-
   const ot = orderText[lang] || orderText.en
 
   return (
     <main className="min-h-screen bg-gray-50 p-4">
       <a href={`/?lang=${lang}`} className="text-sm mb-4 inline-block">&lt;- NiChAm Solar Market</a>
-      
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow p-6">
         <h1 className="text-2xl font-black">{meta.name}</h1>
         <p className="text-sm text-gray-600 mt-1">{meta.desc}</p>
@@ -107,35 +136,56 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         <div className="mt-4 bg-yellow-50 border-2 border-yellow-300 rounded-xl p-4">
           <div className="font-bold text-sm">{ot.title}</div>
           <div className="text-xs mt-1 text-gray-700">{ot.desc}</div>
-          
-          {!confirmed ? (
-            lang === 'en' || lang === 'pidgin' ? (
-              <OrderMic onYES={handleConfirm} />
-            ) : (
-              <div className="mt-3">
-                <button onClick={handleConfirm} className="w-full py-3 bg-green-600 text-white rounded-full font-black text-sm hover:bg-green-700">
-                  YES - Confirm
-                </button>
+
+          {step==='order' && (
+            lang==='en' || lang==='pidgin' ? <OrderMic onYES={handleYES} /> : 
+            <button onClick={handleYES} className="mt-3 w-full py-3 bg-green-600 text-white rounded-full font-black text-sm">YES - Confirm</button>
+          )}
+
+          {step==='confirmed' && (
+            <div className="mt-3 p-3 bg-blue-50 border-2 border-blue-300 rounded-xl">
+              <div className="font-black text-center text-blue-800">✅ Order ID: {orderId}</div>
+              <div className="text-center text-sm mt-1">Total ₦{total.toLocaleString()}</div>
+              <div className="text-[11px] text-center text-gray-600 mt-1">MoMo: {momoNumber} | Balance: ₦{balance.toLocaleString()}</div>
+              <button onClick={handlePay} className="mt-3 w-full py-3 bg-black text-white rounded-full font-black text-sm animate-pulse">💳 Pay with MTN MoMo - Deduct from Wallet</button>
+              <div className="flex gap-2 mt-2">
+                <button onClick={()=>speak(["Order ID "+orderId+". Total "+total.toLocaleString()+" naira. Please click Pay with MTN MoMo to secure your payment in escrow."])} className="flex-1 py-2 bg-white border rounded-full text-xs font-bold">🔊 Replay</button>
+                <a href={`/?lang=${lang}`} className="flex-1 py-2 bg-gray-200 rounded-full text-xs font-bold text-center">Save for Later</a>
               </div>
-            )
-          ) : (
-            <div className="mt-3 p-3 bg-green-50 border-2 border-green-300 rounded-xl">
-              <div className="text-center font-black text-green-700">✅ {msg}</div>
-              <div className="flex gap-2 mt-3">
-                <button onClick={() => orderIdState && speakFull(orderIdState)} className="flex-1 py-2 bg-black text-white rounded-full text-xs font-bold">🔊 Replay Full Message</button>
-                <a href={`/?lang=${lang}`} className="flex-1 py-2 bg-green-600 text-white rounded-full text-xs font-black text-center">Back to Market</a>
-              </div>
-              <div className="text-[10px] text-gray-500 mt-2 text-center">No auto-back - Hear full voice first, then click Back to Market when ready</div>
             </div>
           )}
 
-          {msg && !confirmed && <div className="mt-3 text-center text-sm font-bold text-green-700 bg-green-50 p-2 rounded">{msg}</div>}
+          {step==='paying' && <div className="mt-3 text-center py-6"><div className="animate-spin w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full mx-auto"></div><div className="text-sm mt-2 font-bold">Checking MoMo wallet & securing escrow...</div></div>}
+
+          {step==='success' && (
+            <div className="mt-3 p-3 bg-green-50 border-2 border-green-400 rounded-xl">
+              <div className="text-center font-black text-green-700 text-sm">✅ Payment Secured in Escrow</div>
+              <div className="text-[11px] text-center mt-2 leading-snug">Your payment of <b>₦{total.toLocaleString()}</b> is now secured in escrow with MTN MoMo.<br/>MoMo Txn: MOMO-{orderId.slice(-6)}<br/>AfricanIES will collect and deliver nationwide.<br/>You will receive NiChAm Order Receipt + MoMo Payment Receipt.</div>
+              <div className="flex gap-2 mt-3">
+                <button onClick={()=>speak(["Payment secured. Your payment of "+total.toLocaleString()+" naira is now secured in escrow with MTN MoMo. AfricanIES will collect and deliver nationwide."])} className="flex-1 py-2 bg-black text-white rounded-full text-xs font-bold">🔊 Replay Full</button>
+                <a href={`/?lang=${lang}`} className="flex-1 py-2 bg-green-600 text-white rounded-full text-xs font-black text-center">Back to Market</a>
+              </div>
+              <div className="text-[9px] text-gray-500 mt-2 text-center">Hidden admin: 30% to AfricanIES on collection, 70% on delivery confirmation (buyer doesn't see stages)</div>
+            </div>
+          )}
+
+          {step==='insufficient' && (
+            <div className="mt-3 p-3 bg-red-50 border-2 border-red-300 rounded-xl">
+              <div className="text-center font-black text-red-700 text-sm">❌ Insufficient MoMo Wallet Balance</div>
+              <div className="text-xs text-center mt-1">Required: ₦{total.toLocaleString()} | Balance: ₦{balance.toLocaleString()}</div>
+              <div className="grid gap-2 mt-3">
+                <button onClick={handleTopUp} className="w-full py-2.5 bg-green-600 text-white rounded-full font-bold text-xs">➕ Top Up MoMo Wallet (+₦{(total-balance+10000).toLocaleString()})</button>
+                <button onClick={()=>{ const n=prompt('Enter different MoMo number'); if(n){setMomoNumber(n); localStorage.setItem('momo_number',n); setStep('confirmed')} }} className="w-full py-2 bg-white border rounded-full font-bold text-xs">📱 Pay with Different Number</button>
+                <a href={`/?lang=${lang}`} className="w-full py-2 bg-gray-800 text-white rounded-full font-bold text-xs text-center">💾 Save Order - Pay Later (24hrs)</a>
+              </div>
+              <div className="text-[10px] text-gray-500 mt-2 text-center">Order saved, not cancelled. Top up and return to pay.</div>
+            </div>
+          )}
         </div>
 
         <div className="mt-6 bg-green-50 rounded-xl p-4 text-center">
-          <div className="text-xs text-gray-600">Total</div>
+          <div className="text-xs text-gray-600">Total (VAT 7.5% + Escrow 1% included)</div>
           <div className="text-3xl font-black text-green-700">₦{total.toLocaleString()}</div>
-          <div className="text-[10px] text-gray-500 mt-1">No typing needed - Just click YES or say YES via mic</div>
         </div>
       </div>
     </main>
