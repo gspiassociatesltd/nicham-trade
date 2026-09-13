@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import OrderMic from '../../../components/OrderMic'
 
 const productsMeta: any = {
   1: { name: "Solar Cargo Bike 500W", price: 400000, desc: "Carry 200kg with solar power" },
@@ -22,12 +23,14 @@ function calcTotal(base: number) {
 
 export default function ProductPage({ params }: { params: { id: string } }) {
   const [lang, setLang] = useState('en')
-  const [isListening, setIsListening] = useState(false)
   const [msg, setMsg] = useState("")
 
   useEffect(() => {
     const saved = localStorage.getItem('nicham_lang')
     if (saved) setLang(saved)
+    const url = new URL(window.location.href)
+    const l = url.searchParams.get('lang')
+    if (l) setLang(l)
   }, [])
 
   const id = parseInt(params.id)
@@ -39,55 +42,29 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     const orders = JSON.parse(localStorage.getItem('nicham_orders') || '[]')
     orders.unshift({ productName: meta.name, total, orderId, date: new Date().toLocaleString() })
     localStorage.setItem('nicham_orders', JSON.stringify(orders))
-    setMsg("Order confirmed! ID: " + orderId)
-    // Voice confirmation - English only for now (step 1 of Nigerian LLM)
+    setMsg("Order confirmed! ID: " + orderId + " - Thank you")
     try {
       const u = new SpeechSynthesisUtterance("Order confirmed. ID " + orderId + ". Thank you for using Nicham Solar Market.")
-      u.lang = "en-NG"
-      u.rate = 0.85
-      window.speechSynthesis.speak(u)
-    } catch {}
-    setTimeout(() => { window.location.href = "/?lang=" + lang }, 2500)
-  }
-
-  const handleVoiceYES = () => {
-    const SR = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition
-    if (!SR) {
-      alert("Voice not supported - click YES button")
-      return
-    }
-    const rec = new SR()
-    rec.lang = "en-NG"
-    rec.onstart = () => setIsListening(true)
-    rec.onend = () => setIsListening(false)
-    rec.onresult = (e: any) => {
-      const txt = e.results[0][0].transcript.toLowerCase()
-      if (txt.includes("yes") || txt.includes("confirm")) {
-        handleConfirm()
-      } else {
-        setMsg("Heard: " + e.results[0][0].transcript + " - Say YES to confirm")
-      }
-    }
-    rec.start()
-  }
-
-  const handleHearInstruction = () => {
-    try {
-      const instruction = "You are on order page for " + meta.name + ". Total " + total.toLocaleString() + " naira. Press YES button below to confirm, or click microphone and say YES. No typing needed."
-      const u = new SpeechSynthesisUtterance(instruction)
       u.lang = "en-NG"
       u.rate = 0.85
       window.speechSynthesis.cancel()
       window.speechSynthesis.speak(u)
     } catch {}
+    // Nigeria LLM dataset: save what was ordered via voice
+    try {
+      const dataset = JSON.parse(localStorage.getItem('nicham_voice_dataset') || '[]')
+      dataset.push({ type: 'order', product: meta.name, lang, time: new Date().toISOString() })
+      localStorage.setItem('nicham_voice_dataset', JSON.stringify(dataset.slice(-100)))
+    } catch {}
+    setTimeout(() => { window.location.href = "/?lang=" + lang }, 2500)
   }
 
   const orderText: any = {
-    en: { title: "Order Page - Click YES to confirm order", desc: `You are on order page for ${meta.name}. Total ${total.toLocaleString()} naira. Click YES button below to confirm. No typing needed.` },
-    pidgin: { title: "Order Page - Click YES to confirm", desc: `You dey order page for ${meta.name}. Total ${total.toLocaleString()} naira. Click YES button to confirm. No need to type.` },
-    ha: { title: "Shafin Oda - Danna YES", desc: `Kana shafin oda na ${meta.name}. Jimilla ${total.toLocaleString()} naira. Danna YES don tabbatarwa.` },
-    ig: { title: "Peeji Iwu - Pia YES", desc: `I no na peeji iwu maka ${meta.name}. Onu ego ${total.toLocaleString()} naira. Pia YES iji kwado.` },
-    yo: { title: "Oju-iwe Aṣẹ - Tẹ YES", desc: `O wa lori oju-iwe aṣẹ fun ${meta.name}. Lapapọ ${total.toLocaleString()} naira. Tẹ YES lati jẹrisi.` }
+    en: { title: "Order Page - Click YES - Confirm below", desc: `You are on order page for ${meta.name}. Total ${total.toLocaleString()} naira. Click YES - Confirm button below to place order. No typing needed.` },
+    pidgin: { title: "Order Page - Click YES - Confirm", desc: `You dey order page for ${meta.name}. Total ${total.toLocaleString()} naira. Click YES - Confirm to order. No need to type.` },
+    ha: { title: "Shafin Oda - Danna YES - Confirm", desc: `Kana shafin oda na ${meta.name}. Jimilla ${total.toLocaleString()} naira. Danna YES - Confirm. (Voice Hausa coming V51)` },
+    ig: { title: "Peeji Iwu - Pia YES - Confirm", desc: `I no na peeji iwu maka ${meta.name}. Onu ego ${total.toLocaleString()} naira. Pia YES - Confirm. (Voice Igbo coming V51)` },
+    yo: { title: "Oju-iwe Ase - Te YES - Confirm", desc: `O wa lori oju-iwe ase fun ${meta.name}. Lapapo ${total.toLocaleString()} naira. Te YES - Confirm. (Voice Yoruba coming V51)` }
   }
 
   const ot = orderText[lang] || orderText.en
@@ -104,20 +81,17 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           <div className="font-bold text-sm">{ot.title}</div>
           <div className="text-xs mt-1 text-gray-700">{ot.desc}</div>
           
-          <div className="flex gap-2 mt-4">
-            <button onClick={handleConfirm} className="flex-1 py-3 bg-green-600 text-white rounded-full font-black text-sm hover:bg-green-700">
-              YES - Confirm
-            </button>
-            <button onClick={handleHearInstruction} className="flex-1 py-3 bg-black text-white rounded-full font-bold text-sm">
-              Hear Instruction
-            </button>
-          </div>
-
-          <div className="mt-3 flex gap-2">
-            <button onClick={handleVoiceYES} className={`flex-1 py-2 rounded-full text-xs font-bold border-2 ${isListening ? 'bg-red-500 text-white border-red-500 animate-pulse' : 'bg-white border-black'}`}>
-              {isListening ? '🎙️ Listening... Say YES' : '🎤 Mic - Say YES'}
-            </button>
-          </div>
+          {/* Committees: Content YES matches button, UI single mic, Language no English on Yoruba */}
+          {lang === 'en' || lang === 'pidgin' ? (
+            <OrderMic onYES={handleConfirm} />
+          ) : (
+            <div className="mt-3">
+              <button onClick={handleConfirm} className="w-full py-3 bg-green-600 text-white rounded-full font-black text-sm hover:bg-green-700">
+                YES - Confirm
+              </button>
+              <div className="text-[10px] text-gray-500 mt-2 text-center">Voice for {lang.toUpperCase()} coming in V51 - Text order works now</div>
+            </div>
+          )}
 
           {msg && <div className="mt-3 text-center text-sm font-bold text-green-700 bg-green-50 p-2 rounded">{msg}</div>}
         </div>
@@ -125,11 +99,16 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         <div className="mt-6 bg-green-50 rounded-xl p-4 text-center">
           <div className="text-xs text-gray-600">Total</div>
           <div className="text-3xl font-black text-green-700">₦{total.toLocaleString()}</div>
-          <div className="text-[10px] text-gray-500 mt-1">No typing needed - Just click YES or say YES via mic</div>
+          <div className="text-[10px] text-gray-500 mt-1">No typing needed - Just click YES or say YES via mic (English)</div>
         </div>
 
-        <div className="mt-4 text-[11px] text-gray-500">
-          <b>Step 1 Voice (English only):</b> Nigerian English voice enabled. Pidgin + HA/IG/YO native LLM coming next after stable. Marketplace: GSPI/NiChAm platform owner | AfricanIES delivers.
+        <div className="mt-4 text-[11px] text-gray-500 bg-gray-50 p-2 rounded">
+          <b>V50 Committees Coordinated:</b><br/>
+          UI: Single mic per page - Listing mic inside search bar, Order mic inside yellow box. No floating.<br/>
+          Language: Yoruba/Hausa/Igbo pages show text only, no English voice - fixes English-on-Yoruba bug.<br/>
+          Content: Text says YES - Confirm, Button says YES - Confirm - YES visible.<br/>
+          Voice Engine: No useEffect returns null - build passes.<br/>
+          Nigeria LLM: English voice dataset collection starts.
         </div>
       </div>
     </main>

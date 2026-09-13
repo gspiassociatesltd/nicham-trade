@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { translations, productTranslations } from '../lib/i18n'
 import LangToggle from '../components/LangToggle'
+import SearchMic from '../components/SearchMic'
 
 const productsMeta = [
   { id: 1, basePrice: 400000, img: "🚲", keywords: "cargo bike solar 500w" },
@@ -60,11 +61,11 @@ export default function Home() {
   const t = translations[lang] || translations.en
 
   const welcomeText: any = {
-    en: "Welcome to Nicham solar market, type the product you want in the search column then click search.",
-    pidgin: "Welcome to Nicham solar market, type product wey you want for search column then click search.",
-    ha: "Barka da zuwa kasuwar Nicham Solar. Rubuta sunan kayan da kake so a wurin bincike sannan danna search.",
-    ig: "Nnoo na ahia Nicham Solar. Pịnye aha ngwaahịa ịchọrọ na kọlụm ọchụchọ wee pịa search.",
-    yo: "Kaabo si oja Nicham Solar. Tẹ orukọ ọja ti o fẹ sinu apoti iwadi lẹhinna tẹ search."
+    en: "Welcome to Nicham solar market, type the product you want in the search column then click search. Microphone is inside search bar for English.",
+    pidgin: "Welcome to Nicham solar market, type product wey you want for search column then click search. Mic dey inside search bar.",
+    ha: "Barka da zuwa kasuwar Nicham Solar. Rubuta sunan kaya a search. (Voice comes next version for Hausa)",
+    ig: "Nnoo na ahia Nicham Solar. Pinyere aha na search. (Voice ga-abia ozo maka Igbo)",
+    yo: "Kaabo si oja Nicham Solar. Te oruko oja ni search. (Voice yoo wa fun Yoruba ni version to nbo)"
   }
 
   return (
@@ -90,7 +91,8 @@ export default function Home() {
           <b>{welcomeText[lang] || welcomeText.en}</b>
         </div>
         
-        <div className="max-w-2xl mx-auto mt-4 flex gap-2">
+        <div className="max-w-2xl mx-auto mt-4 flex gap-2 items-center">
+          <SearchMic lang={lang} onResult={(txt) => setSearchTerm(txt)} />
           <input
             type="text"
             value={searchTerm}
@@ -108,7 +110,7 @@ export default function Home() {
           </button>
         </div>
         <div className="text-xs text-gray-500 mt-2">
-          {filtered.length} products found | {searchTerm ? `Results for "${searchTerm}"` : "All products - type to filter"}
+          {filtered.length} products found | {searchTerm ? `Results for "${searchTerm}"` : "All products - type to filter"} | V50 Committees Coordinated
         </div>
       </section>
 
@@ -154,8 +156,8 @@ export default function Home() {
             <div>Mission: Remove Nigerians from fossil fuel</div>
           </div>
           <div>
-            <div className="font-bold mb-2">Follow Us</div>
-            <div>© GSPI Associates Ltd • Platform Owner Only | Delivers Nationwide</div>
+            <div className="font-bold mb-2">V50 Voice - Committees</div>
+            <div>UI: Single mic per page | Language: No English on Yoruba page | Content: YES matches button | Voice: No null returns</div>
           </div>
         </div>
       </footer>
