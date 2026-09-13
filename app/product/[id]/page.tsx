@@ -128,7 +128,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
   return (
     <main className="min-h-screen bg-gray-50 p-4">
-      <a href={`/?lang=${lang}`} className="text-sm mb-4 inline-block"><- NiChAm Solar Market</a>
+      <a href={`/?lang=${lang}`} className="text-sm mb-4 inline-block">&lt;- NiChAm Solar Market</a>
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow p-6">
         <h1 className="text-2xl font-black">{meta.name}</h1>
         <p className="text-sm text-gray-600 mt-1">{meta.desc}</p>

@@ -11,7 +11,7 @@ export default function OrdersPage() {
   useEffect(() => {
     const sp = new URLSearchParams(window.location.search)
     setLang(sp.get('lang') || localStorage.getItem('nicham_lang') || 'en')
-    setOrders(JSON.parse(localStorage.getItem('nicham_orders') || '[]'))
+    try{ setOrders(JSON.parse(localStorage.getItem('nicham_orders') || '[]')) }catch{ setOrders([]) }
     setBalance(parseInt(localStorage.getItem('momo_balance')||'50000'))
     setMomoNumber(localStorage.getItem('momo_number')||'0803 123 4567')
   }, [])
@@ -48,7 +48,7 @@ export default function OrdersPage() {
 
   return (
     <main className="min-h-screen bg-gray-50 p-4">
-      <a href={`/?lang=${lang}`} className="text-sm">&lt;- Back to Market</a>
+      <a href={`/?lang=${lang}`} className="text-sm">{"<-"} Back to Market</a>
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow p-6 mt-4">
         <h1 className="text-xl font-black">My Orders - Saved and Paid</h1>
         <div className="mt-3 bg-yellow-50 border rounded-xl p-3 text-xs">
