@@ -153,11 +153,11 @@ export default function Home() {
           </div>
           <div>
             <div className="font-bold mb-2">Carbon Mission</div>
-            <div>Mission: Remove Nigerians from fossil fuel</div>
+            <div>Mission: Reduce Nigerians using fossil fuel</div>
           </div>
           <div>
-            <div className="font-bold mb-2">V50 Voice - Committees</div>
-            <div>UI: Single mic per page | Language: No English on Yoruba page | Content: YES matches button | Voice: No null returns</div>
+            <div className="font-bold mb-2">Follow Us</div>
+            <div>© GSPI Associates Ltd • Platform Owner Only | Delivers Nationwide</div>
           </div>
         </div>
       </footer>

@@ -103,12 +103,9 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         </div>
 
         <div className="mt-4 text-[11px] text-gray-500 bg-gray-50 p-2 rounded">
-          <b>V50 Committees Coordinated:</b><br/>
-          UI: Single mic per page - Listing mic inside search bar, Order mic inside yellow box. No floating.<br/>
-          Language: Yoruba/Hausa/Igbo pages show text only, no English voice - fixes English-on-Yoruba bug.<br/>
-          Content: Text says YES - Confirm, Button says YES - Confirm - YES visible.<br/>
-          Voice Engine: No useEffect returns null - build passes.<br/>
-          Nigeria LLM: English voice dataset collection starts.
+          <b>Order Information:</b><br/>
+          Click YES - Confirm to place order without typing.<br/>
+          Marketplace: GSPI/NiChAm platform owner | AfricanIES delivers.
         </div>
       </div>
     </main>
