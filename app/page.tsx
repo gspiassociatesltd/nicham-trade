@@ -101,8 +101,7 @@ export default function Home() {
       </div>
 
       <section className="p-6 text-center bg-gradient-to-br from-yellow-50 to-green-50">
-        <h2 className="text-lg md:text-xl font-bold mb-2 text-gray-700">Everything Solar - Solar Cargo Bikes, Pumps, Freezers, Mini-Grids, Tractors e.t.c. - Delivery Nationwide</div>
-      <a href="/orders" className="ml-2 text-xs bg-black text-white px-3 py-1 rounded-full">📦 My Orders</a><span className="ml-2 text-xs">MoMo Bal: <span id="momoBal">...</span></span></h2>
+        <h2 className="text-lg md:text-xl font-bold mb-2 text-gray-700">Everything Solar - Solar Cargo Bikes, Pumps, Freezers, Mini-Grids, Tractors e.t.c. - Delivery Nationwide</h2>
         <p className="text-gray-600 mb-2">Marketplace Model: GSPI/NiChAm Platform | Escrow with MTN MoMo | AfricanIES Nationwide Delivery</p>
         <p className="text-xs text-gray-500 max-w-3xl mx-auto">Buyer orders on platform → Escrow with MTN&apos;s momo → AfricanIES collects from manufacturers & delivers → Buyer confirms - MTN&apos;s momo pays</p>
         
