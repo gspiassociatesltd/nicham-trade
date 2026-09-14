@@ -79,26 +79,31 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     return texts[lang] || texts.en
   }
 
+  
   const speak = (textArr: string[]) => {
+    // MVP: EN and PIDGIN only, HA/YO/IG muted
+    if (lang === 'ha' || lang === 'yo' || lang === 'ig') {
+      return
+    }
     try {
       if (!window.speechSynthesis) return
       window.speechSynthesis.cancel()
-      const langMap: any = { en: 'en-NG', pidgin: 'en-NG', ha: 'ha-NG', yo: 'yo-NG' }
-      const ttsLang = langMap[lang] || 'en-NG'
       setTimeout(() => {
-        const voices = window.speechSynthesis.getVoices()
         let i=0
         const next = () => {
           if (i>=textArr.length) return
           const u = new SpeechSynthesisUtterance(textArr[i])
-          u.lang = ttsLang
-          u.rate = lang==='ha' || lang==='yo' ? 0.8 : 0.85
-          const native = voices.find((v:any)=>v.lang.toLowerCase().includes(lang==='ha'?'ha': lang==='yo'?'yo':'en'))
-          if (native) u.voice = native
+          u.lang = 'en-NG'
+          u.rate = lang === 'pidgin' ? 0.7 : 0.85
           u.onend = () => { i++; setTimeout(next,300) }
           u.onerror = () => { i++; setTimeout(next,300) }
           window.speechSynthesis.speak(u)
         }
+        next()
+      }, 400)
+    } catch {}
+  }
+
         next()
       }, 400)
     } catch {}
@@ -164,7 +169,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               <div className="text-[11px] text-center text-gray-600 mt-1">MoMo: {momoNumber} | Balance: N{balance.toLocaleString()}</div>
               <button onClick={handlePay} className="mt-3 w-full py-3 bg-black text-white rounded-full font-black text-sm">Pay with MTN MoMo - Deduct from Wallet</button>
               <div className="flex gap-2 mt-2">
-                <button onClick={()=>speak(ot.confirm)} className="flex-1 py-2 bg-white border rounded-full text-xs font-bold">Replay</button>
+                {(lang==="ha"||lang==="yo"||lang==="ig") ? <button disabled className="flex-1 py-2 bg-gray-200 text-gray-500 rounded-full text-xs font-bold">Voice coming soon</button> : <button onClick={()=>speak(ot.confirm)} className="flex-1 py-2 bg-white border rounded-full text-xs font-bold">Replay</button>}
                 <a href={`/orders?lang=${lang}`} className="flex-1 py-2 bg-gray-200 rounded-full text-xs font-bold text-center">Save for Later</a>
               </div>
             </div>

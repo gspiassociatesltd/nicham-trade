@@ -23,172 +23,162 @@ function calcTotal(base: number) {
   return Math.round(competitivePrice + vat + escrow)
 }
 
+const uiText: any = {
+  en: { 
+    greenBar: "Green Points on Solar Purchases | Platform: GSPI/NiChAm | Delivers Nationwide",
+    everything: "Everything Solar - Solar Cargo Bikes, Pumps, Freezers, Mini-Grids, Tractors e.t.c. - Delivery Nationwide",
+    marketplace: "Marketplace Model: GSPI/NiChAm Platform | Escrow with MTN MoMo | AfricanIES Nationwide Delivery",
+    escrowFlow: "Buyer orders on platform → Escrow with MTN's momo → AfricanIES collects from manufacturers & delivers → Buyer confirms → MTN's momo pays",
+    welcomeBox: "Welcome to Nicham Solar Market. Type product name in search box then click Search.",
+    welcomeSpeech: "Welcome to Nicham solar market, type the product you want in the search column then click search or click the microphone and say the name of the product you want.",
+    searchPlaceholder: "Type product name e.g. Solar Bike, Pump, Freezer...",
+    searchBtn: "Search",
+    hearWelcome: "Hear Welcome",
+    voiceComingSoon: "Voice coming soon"
+  },
+  pidgin: { 
+    greenBar: "Green Points for Solar Buy | Platform: GSPI/NiChAm | We Dey Deliver Everywhere",
+    everything: "Everything Solar - Solar Cargo Bike, Pump, Freezer, Mini-Grid, Tractor etc - We Dey Deliver Everywhere",
+    marketplace: "Marketplace Model: GSPI/NiChAm Platform | Escrow with MTN MoMo | AfricanIES Deliver Everywhere",
+    escrowFlow: "Buyer order for platform → Escrow with MTN MoMo → AfricanIES collect from manufacturer & deliver → Buyer confirm → MTN MoMo pay",
+    welcomeBox: "Welcome to Nicham Solar Market. Type product wey you want for search box then press Find Am.",
+    welcomeSpeech: "Welcome to Nicham Solar Market. Type product wey you want for search box, then press Search or press microphone talk the product name.",
+    searchPlaceholder: "Type product name e.g. Solar Bike, Pump, Freezer...",
+    searchBtn: "Find Am",
+    hearWelcome: "Hear Welcome",
+    voiceComingSoon: "Voice coming soon"
+  },
+  ha: { 
+    greenBar: "Mak points kore akan Sayayyan Solar | Platform: GSPI/NiChAm | Isarwa a Fadin Kasa",
+    everything: "Komai na Solar - Kekunan Kaya na Solar, Famfo, Firiza, Mini-Grids, Tractors da sauransu - Isarwa a Fadin Kasa",
+    marketplace: "Tsarin Kasuwa: Dandalin GSPI/NiChAm | Escrow da MTN MoMo | AfricanIES Isarwa a Fadin Kasa",
+    escrowFlow: "Mai saye yayi oda a dandali → Escrow da MTN MoMo → AfricanIES tattara daga masana'anta & isarwa → Mai saye tabbatar → MTN MoMo biya",
+    welcomeBox: "Barka da zuwa Kasuwar Solar ta Nicham. Rubuta sunan kaya a akwatin bincike sannan danna Nema.",
+    welcomeSpeech: "Barka da zuwa Kasuwar Solar ta Nicham.",
+    searchPlaceholder: "Rubuta sunan kaya e.g. Keke Solar, Famfo, Firiza...",
+    searchBtn: "Nema",
+    hearWelcome: "Ji Maraba",
+    voiceComingSoon: "Murya na zuwa anjima"
+  },
+  yo: { 
+    greenBar: "Gba Green Points lori Rira Solar | Platform: GSPI/NiChAm | Ifijiṣẹ Kaakiri",
+    everything: "Gbogbo Nnkan Solar - Keke Eru Solar, Fompu, Firisa, Mini-Grids, Tractors ati bẹẹ lọ - Ifijiṣẹ Kaakiri Orilẹ-ede",
+    marketplace: "Awoṣe Ọja: Platform GSPI/NiChAm | Escrow pẹlu MTN MoMo | Ifijiṣẹ AfricanIES Kaakiri",
+    escrowFlow: "Olura paṣẹ lori platform → Escrow pẹlu MTN MoMo → AfricanIES gba lati ọdọ awọn olupese & fi jiṣẹ → Olura jẹrisi → MTN MoMo sanwo",
+    welcomeBox: "Kaabo si oja Nicham Solar. Tẹ orukọ ọja ti o fẹ sinu apoti iwadi lẹhinna tẹ Wa.",
+    welcomeSpeech: "Kaabo si oja Nicham Solar.",
+    searchPlaceholder: "Tẹ orukọ ọja e.g. Keke Solar, Fompu, Firisa...",
+    searchBtn: "Wa",
+    hearWelcome: "Gbọ Kaabo",
+    voiceComingSoon: "Ohun n bọ laipẹ"
+  },
+  ig: { 
+    greenBar: "Nweta Green Points na Ịzụta Solar | Platform: GSPI/NiChAm | Na-ebuga Mba Nile",
+    everything: "Ihe Nile Solar - Igwe Ịnya Solar, Pumps, Freezers, Mini-Grids, Tractors wdg - Mbuga Mba Nile",
+    marketplace: "Ụdị Ahịa: Platform GSPI/NiChAm | Escrow na MTN MoMo | Mbuga AfricanIES Mba Nile",
+    escrowFlow: "Onye zụrụ ahịa na-enye iwu n'elu ikpo okwu → Escrow na MTN MoMo → AfricanIES na-anakọta n'aka ndị nrụpụta & na-ebuga → Onye zụrụ ahịa kwadoro → MTN MoMo na-akwụ ụgwọ",
+    welcomeBox: "Nnọọ na Ahịa Solar Nicham. Pịnye aha ngwaahịa n'igbe nchọta wee pịa Chọọ.",
+    welcomeSpeech: "Nnọọ na Ahịa Solar Nicham.",
+    searchPlaceholder: "Pịnye aha ngwaahịa e.g. Bike Solar, Pump, Freezer...",
+    searchBtn: "Chọọ",
+    hearWelcome: "Nụrụ Nnọọ",
+    voiceComingSoon: "Olu na-abịa n'oge adịghị anya"
+  }
+}
+
 export default function Home() {
   const [lang, setLang] = useState('en')
   const [searchTerm, setSearchTerm] = useState('')
   const [filtered, setFiltered] = useState(productsMeta)
 
   useEffect(() => {
-    const saved = localStorage.getItem('nicham_lang')
-    if (saved) setLang(saved)
-    // Voice welcome message plays automatically on arriving at listing page - as requested
-    setTimeout(() => {
-      try {
-        const currentLang = saved || 'en'
-        if (currentLang === 'en' || currentLang === 'pidgin') {
-          const msg = "Welcome to Nicham solar market, type the product you want in the search column then click search or click the microphone and say the name of the product you want."
-          if (window.speechSynthesis) {
-            window.speechSynthesis.cancel()
-            const u = new SpeechSynthesisUtterance(msg)
-            u.lang = "en-NG"
-            u.rate = 0.85
-            window.speechSynthesis.speak(u)
-          }
-        }
-      } catch {}
-    }, 1200)
+    const sp = new URLSearchParams(window.location.search)
+    const urlLang = sp.get('lang')
+    if (urlLang) {
+      setLang(urlLang)
+      localStorage.setItem('nicham_lang', urlLang)
+    } else {
+      const saved = localStorage.getItem('nicham_lang') || 'en'
+      setLang(saved)
+    }
   }, [])
 
   useEffect(() => {
-    if (!searchTerm.trim()) {
-      setFiltered(productsMeta)
-    } else {
-      const term = searchTerm.toLowerCase()
-      const res = productsMeta.filter(p => {
-        const prodTrans = (productTranslations[lang] || productTranslations.en)[p.id]
-        const name = prodTrans.name.toLowerCase()
-        const intro = prodTrans.intro.toLowerCase()
-        return name.includes(term) || intro.includes(term) || p.keywords.includes(term)
-      })
-      setFiltered(res)
+    if (!searchTerm) { setFiltered(productsMeta); return }
+    const low = searchTerm.toLowerCase()
+    setFiltered(productsMeta.filter(p=>p.keywords.includes(low)))
+  }, [searchTerm])
+
+  const speakWelcome = () => {
+    // MVP: Only EN and PIDGIN have voice, HA/YO/IG muted with Voice coming soon
+    if (lang === 'ha' || lang === 'yo' || lang === 'ig') {
+      return // button will show Voice coming soon, no action
     }
-  }, [searchTerm, lang])
-
-  const handleLang = (l: string) => {
-    setLang(l)
-    localStorage.setItem('nicham_lang', l)
+    try {
+      window.speechSynthesis.cancel()
+      const text = uiText[lang]?.welcomeSpeech || uiText.en.welcomeSpeech
+      const u = new SpeechSynthesisUtterance(text)
+      u.lang = 'en-NG'
+      // Pidgin slower as requested
+      u.rate = lang === 'pidgin' ? 0.7 : 0.85
+      window.speechSynthesis.speak(u)
+    } catch {}
   }
 
-  const handleSearch = () => {
-    const el = document.getElementById('products-grid')
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  const t = translations[lang] || translations.en
-
-  const welcomeText: any = {
-    en: "Welcome to Nicham solar market, type the product you want in the search column then click search or click the microphone and say the name of the product you want.",
-    pidgin: "Welcome to Nicham solar market, type product wey you want for search column then click search or click microphone and talk the product name.",
-    ha: "Barka da zuwa kasuwar Nicham Solar. Rubuta sunan kayan da kake so a wurin bincike sannan danna search.",
-    ig: "Nnoo na ahia Nicham Solar. Pịnye aha ngwaahịa ịchọrọ na kọlụm ọchụchọ wee pịa search.",
-    yo: "Kaabo si oja Nicham Solar. Tẹ orukọ ọja ti o fẹ sinu apoti iwadi lẹhinna tẹ search."
-  }
+  const t = uiText[lang] || uiText.en
+  const tr = translations[lang] || translations.en
+  const pTr = productTranslations[lang] || productTranslations.en
+  const isMuted = lang === 'ha' || lang === 'yo' || lang === 'ig'
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-[#f6f7e8]">
       <header className="bg-black text-white p-4">
         <div className="text-center">
-          <h1 className="text-3xl md:text-4xl font-black tracking-wide">☀️ NiChAm Solar Market</h1>
-          <p className="text-xs text-yellow-300 mt-1">GSPI/NiChAm: Platform owner only | AfricanIES: Delivers Nationwide</p>
+          <h1 className="text-3xl md:text-4xl font-black tracking-wide">☀ NiChAm Solar Market</h1>
+          <div className="text-yellow-300 text-xs mt-1">GSPI/NiChAm: Platform owner only | AfricanIES: Delivers Nationwide</div>
         </div>
         <div className="flex justify-end mt-2">
-          <LangToggle lang={lang} setLang={handleLang} />
+          <LangToggle lang={lang} setLang={setLang} />
         </div>
       </header>
 
-      <div className="bg-green-700 text-white text-center p-2 text-sm font-bold">
-        🌱 {lang==='ha' ? 'Mak points kore akan Sayayyan Solar | Platform: GSPI/NiChAm | Isarwa a Fadin Kasa' : lang==='yo' ? 'Gba Green Points lori Rira Solar | Platform: GSPI/NiChAm | Ifijiṣẹ Kaakiri' : lang==='pidgin' ? 'Get Green Points for Solar Buy | Platform: GSPI/NiChAm | We Dey Deliver Everywhere' : 'Green Points on Solar Purchases | Platform: GSPI/NiChAm | Delivers Nationwide'}
+      <div className="bg-green-700 text-white text-center py-2 text-xs font-bold">
+        🌱 {t.greenBar}
       </div>
 
-      <section className="p-6 text-center bg-gradient-to-br from-yellow-50 to-green-50">
-        <h2 className="text-lg md:text-xl font-bold mb-2 text-gray-700">{lang==='ha' ? 'Komai na Solar - Kekunan Kaya na Solar, Famfo, Firiza, Mini-Grids, Tractors da sauransu - Isarwa a Fadin Kasa' : lang==='yo' ? 'Gbogbo Nnkan Solar - Keke Eru Solar, Fompu, Firisa, Mini-Grids, Tractors ati bẹẹ lọ - Ifijiṣẹ Kaakiri Orilẹ-ede' : lang==='pidgin' ? 'Everything Solar - Solar Cargo Bike, Pump, Freezer, Mini-Grid, Tractor etc - We Dey Deliver Everywhere' : 'Everything Solar - Solar Cargo Bikes, Pumps, Freezers, Mini-Grids, Tractors e.t.c. - Delivery Nationwide'}</h2>
-        <p className="text-gray-600 mb-2">{lang==='ha' ? 'Tsarin Kasuwa: Dandalin GSPI/NiChAm | Escrow da MTN MoMo | AfricanIES Isarwa a Fadin Kasa' : lang==='yo' ? 'Awoṣe Ọja: Platform GSPI/NiChAm | Escrow pẹlu MTN MoMo | Ifijiṣẹ AfricanIES Kaakiri' : lang==='pidgin' ? 'Marketplace Model: GSPI/NiChAm Platform | Escrow with MTN MoMo | AfricanIES Deliver Everywhere' : 'Marketplace Model: GSPI/NiChAm Platform | Escrow with MTN MoMo | AfricanIES Nationwide Delivery'}</p>
-        <p className="text-xs text-gray-500 max-w-3xl mx-auto">Buyer orders on platform → Escrow with MTN&apos;s momo → AfricanIES collects from manufacturers & delivers → Buyer confirms - MTN&apos;s momo pays</p>
-        
-        <div className="max-w-3xl mx-auto mt-4 bg-yellow-50 border-2 border-yellow-300 rounded-xl p-3 text-sm text-center">
-          <b>{welcomeText[lang] || welcomeText.en}</b>
-          <div className="mt-2">
-            <button onClick={() => {
-              try {
-                const msg = welcomeText[lang] || welcomeText.en
-                const u = new SpeechSynthesisUtterance(msg)
-                u.lang = lang === 'en' || lang === 'pidgin' ? 'en-NG' : 'en-NG'
-                u.rate = 0.85
-                window.speechSynthesis.cancel()
-                window.speechSynthesis.speak(u)
-              } catch {}
-            }} className="text-xs px-3 py-1 bg-black text-white rounded-full">🔊 Hear Welcome</button>
-          </div>
-        </div>
-        
-        <div className="max-w-2xl mx-auto mt-4 flex gap-2 items-center">
-          <SearchMic lang={lang} onResult={(txt) => setSearchTerm(txt)} />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            placeholder="Type product name e.g. Solar Bike, Pump, Freezer..."
-            className="flex-1 px-4 py-3 rounded-full border-2 border-black text-sm focus:outline-none focus:border-green-600"
-            id="searchInput"
-          />
-          <button
-            onClick={handleSearch}
-            className="px-8 py-3 bg-black text-white rounded-full text-sm font-black hover:bg-gray-800"
-          >
-            🔍 Search
+      <div className="max-w-5xl mx-auto p-4 text-center">
+        <h2 className="text-lg font-bold text-gray-800 mt-4">{t.everything}</h2>
+        <div className="text-sm text-gray-600 mt-1">{t.marketplace}</div>
+        <div className="text-[11px] text-gray-500 mt-1">{t.escrowFlow}</div>
+
+        <div className="mt-6 bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4 max-w-2xl mx-auto">
+          <div className="font-bold text-sm">{t.welcomeBox}</div>
+          <button onClick={speakWelcome} disabled={isMuted} className={`mt-2 px-4 py-1.5 rounded-full text-xs font-bold ${isMuted ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-black text-white'}`}>
+            {isMuted ? `🔇 ${t.voiceComingSoon}` : `🔊 ${t.hearWelcome}`}
           </button>
         </div>
-        <div className="text-xs text-gray-500 mt-2 hidden"></div>
-      </section>
 
-      <section id="products-grid" className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 max-w-6xl mx-auto">
-        {filtered.map((m) => {
-          const pt = (productTranslations[lang] || productTranslations.en)[m.id]
-          const total = calcTotal(m.basePrice)
-          return (
-            <a key={m.id} href={`/product/${m.id}?lang=${lang}`} className="bg-white rounded-2xl shadow border p-4 hover:shadow-lg transition">
-              <div className="text-3xl">{m.img}</div>
-              <h3 className="font-black mt-2">{pt.name}</h3>
-              <p className="text-xs text-gray-600 mt-1 line-clamp-2">{pt.intro}</p>
-              <div className="mt-3 flex justify-between items-center">
-                <span className="text-xs text-gray-500">Total</span>
-                <span className="font-black text-green-700">₦{total.toLocaleString()}</span>
-              </div>
-            </a>
-          )
-        })}
-        {filtered.length === 0 && (
-          <div className="col-span-3 text-center py-10">
-            <div className="text-4xl mb-2">🔍</div>
-            <div className="font-bold">No product found for &quot;{searchTerm}&quot;</div>
-            <div className="text-sm text-gray-600 mt-1">Try Solar Bike, Pump, Freezer, Dryer, Tractor</div>
-            <button onClick={() => setSearchTerm('')} className="mt-3 px-4 py-2 bg-black text-white rounded-full text-sm">Show All Products</button>
-          </div>
-        )}
-      </section>
-
-      <footer className="bg-black text-white p-6 text-xs mt-8">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div>
-            <div className="font-bold mb-2">Marketplace Model</div>
-            <div>GSPI/NiChAm: Platform owner only</div>
-            <div>AfricanIES: Delivers Nationwide</div>
-          </div>
-          <div>
-            <div className="font-bold mb-2">How It Works</div>
-            <div>Buyer orders → Escrow with MTN MoMo → Collection & Delivery → Buyer confirms - MoMo pays</div>
-          </div>
-          <div>
-            <div className="font-bold mb-2">Carbon Mission</div>
-            <div>Mission: Reduce Nigerians using fossil fuel</div>
-          </div>
-          <div>
-            <div className="font-bold mb-2">Follow Us</div>
-            <div>© GSPI Associates Ltd • Platform Owner Only | Delivers Nationwide</div>
-          </div>
+        <div className="mt-4 flex justify-center gap-2 max-w-xl mx-auto">
+          <input value={searchTerm} onChange={e=>setSearchTerm(e.target.value)} placeholder={t.searchPlaceholder} className="flex-1 px-4 py-2.5 rounded-full border-2 border-black text-sm" />
+          <button className="px-6 py-2.5 bg-black text-white rounded-full text-sm font-bold">🔍 {t.searchBtn}</button>
+          <SearchMic lang={lang} setSearchTerm={setSearchTerm} />
         </div>
-      </footer>
+
+        <div className="grid md:grid-cols-3 gap-4 mt-8 text-left">
+          {filtered.map(p=>{
+            const meta = pTr[p.id] || { name: "Solar Product", desc: "" }
+            const total = calcTotal(p.basePrice)
+            return (
+              <a key={p.id} href={`/product/${p.id}?lang=${lang}`} className="bg-white rounded-2xl shadow p-4 hover:shadow-lg transition">
+                <div className="text-3xl">{p.img}</div>
+                <div className="font-black mt-2 text-sm">{meta.name}</div>
+                <div className="text-[11px] text-gray-600 mt-1 line-clamp-3">{meta.desc}</div>
+                <div className="text-green-700 font-black mt-2 text-sm">₦{total.toLocaleString()}</div>
+              </a>
+            )
+          })}
+        </div>
+      </div>
     </main>
   )
 }
