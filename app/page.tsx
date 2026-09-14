@@ -161,7 +161,7 @@ export default function Home() {
         <div className="mt-4 flex justify-center gap-2 max-w-xl mx-auto">
           <input value={searchTerm} onChange={e=>setSearchTerm(e.target.value)} placeholder={t.searchPlaceholder} className="flex-1 px-4 py-2.5 rounded-full border-2 border-black text-sm" />
           <button className="px-6 py-2.5 bg-black text-white rounded-full text-sm font-bold">🔍 {t.searchBtn}</button>
-          <SearchMic lang={lang} setSearchTerm={setSearchTerm} />
+          <SearchMic lang={lang} onResult={(txt:string)=>setSearchTerm(txt)} />
         </div>
 
         <div className="grid md:grid-cols-3 gap-4 mt-8 text-left">
