@@ -5,6 +5,7 @@ export default function OrdersPage() {
   const [balance, setBalance] = useState(50000)
   const [momoNumber, setMomoNumber] = useState('0803 123 4567')
   const [payingId, setPayingId] = useState('')
+  const [showFundMsg, setShowFundMsg] = useState(false)
   useEffect(() => {
     try{ setOrders(JSON.parse(localStorage.getItem('nicham_orders') || '[]')) }catch{ setOrders([]) }
     setBalance(parseInt(localStorage.getItem('momo_balance')||'50000'))
@@ -49,7 +50,7 @@ export default function OrdersPage() {
     if (!order) return
     setPayingId(orderId)
     setTimeout(()=>{
-      if (balance < order.total){ alert('Insufficient balance'); setPayingId(''); return }
+      if (balance < order.total){ setShowFundMsg(true); setPayingId(''); setTimeout(()=>setShowFundMsg(false), 2500); return }
       const nb = balance - order.total
       setBalance(nb); localStorage.setItem('momo_balance', nb.toString())
       const updated = orders.map((o:any)=> o.orderId===orderId ? {...o, status:'paid_escrow', momoTxn:'MOMO-'+Date.now().toString().slice(-6)} : o)
@@ -62,6 +63,13 @@ export default function OrdersPage() {
   }
   return (
     <main className="min-h-screen bg-gray-50 p-4">
+      {showFundMsg && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl px-8 py-6 shadow-2xl text-center">
+            <div className="text-sm font-bold text-red-600">insufficient fund</div>
+          </div>
+        </div>
+      )}
       <a href="/" className="text-sm font-bold flex items-center gap-2">← Back to NiChAm Trade <img src="/logo.png" className="w-6 h-6 rounded-full" /></a>
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow p-6 mt-4">
         <h1 className="text-xl font-black">My Orders</h1>
