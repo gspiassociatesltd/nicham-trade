@@ -49,7 +49,7 @@ export default function ProductPage({ params }: any){
     const aff = found && (found as any).cat==='Trending Affiliate'
     if(aff){ setProd(null); return }
     if(found && found.type==='chemical'){
-      setProd({(found as any), sourcedBy: (found as any).sourcedBy || 'AFRICANIES', chemPrice: (found as any).chemPrice || `$${found.basePrice}/ton` })
+      setProd({...((found as any) as any), sourcedBy: (found as any).sourcedBy || 'AFRICANIES', chemPrice: (found as any).chemPrice || `$${found.basePrice}/ton` })
     } else {
       setProd(found || (productsMeta as any[])[0])
     }
