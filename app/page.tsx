@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
 import SearchMic from '../components/SearchMic'
-import LangToggle from '../components/LangToggle'
 
 const categories = ["All", "Farm & Agro", "Home & Kitchen", "Salon & Beauty", "Tailoring & Workshop", "Industrial Chemicals", "Trending Affiliate"]
 
@@ -79,7 +78,7 @@ export default function Home(){
             <div className="text-[11px] font-bold text-gray-600 tracking-widest">SOLAR + CHEMICALS MARKETPLACE</div>
           </div>
           <div className="flex gap-2 mt-3 flex-wrap justify-center">
-            <LangToggle lang={lang} setLang={setLang} />
+            
             <a href="/orders" className="px-4 py-1.5 bg-black text-white rounded-full text-xs font-bold">Orders</a>
             <a href="/agent" className="px-4 py-1.5 bg-yellow-400 text-black rounded-full text-xs font-bold">Agent - Cash + Points</a>
             <button onClick={()=>setShowTut(true)} className="px-4 py-1.5 bg-green-600 text-white rounded-full text-xs font-bold">How It Works</button>
@@ -90,7 +89,7 @@ export default function Home(){
       <div className="max-w-6xl mx-auto px-4 py-4">
         <div className="bg-white border-2 border-green-200 rounded-xl p-3 mb-3 text-center">
           <div className="text-sm font-bold text-green-800">Welcome to NiChAm Trade, type the product you want into the search box and click Search OR click the microphone and say the name of the product you want.</div>
-          <div className="text-[10px] text-gray-500 mt-1">Barka da zuwa - Rubuta sunan kaya | Ka te oruko oja | Pinye aha ngwa ahia</div>
+          <div className="text-[10px] text-gray-500 mt-1">Agent helps farmers who cannot read or write English</div>
         </div>
         <div className="bg-white rounded-2xl shadow p-3 flex gap-2 items-center">
           <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Type product e.g. Caustic Soda, Solar Fan..." className="flex-1 px-4 py-2 rounded-full border border-gray-300 text-sm outline-none" />

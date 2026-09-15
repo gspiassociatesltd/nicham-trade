@@ -59,12 +59,12 @@ export default function ProductPage({ params }: any){
     const oid='NCH-'+Date.now().toString().slice(-6)
     orders.unshift({orderId:oid, productName:prod.name, total:totalVAT, points, date:new Date().toLocaleDateString(), status:'awaiting_payment'})
     localStorage.setItem('nicham_orders', JSON.stringify(orders))
-    window.location.href=`/orders?lang=${lang}`
+    window.location.href='/orders'
   }
   return (
     <main className="min-h-screen bg-[#f6f7e8]">
       <header className="bg-white shadow p-3 flex justify-between items-center">
-        <a href={`/?lang=${lang}`} className="font-bold text-sm">← Back to NiChAm Trade</a>
+        <a href={'/'} className="font-bold text-sm">← Back to NiChAm Trade</a>
         <div className="flex items-center gap-2"><img src="/logo.png" className="w-10 h-10 rounded-full border-2 border-green-600" /><span className="text-xl font-black text-green-700">NiChAm Trade</span></div>
         <div className="w-20"></div>
       </header>

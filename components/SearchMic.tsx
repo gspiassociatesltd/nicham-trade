@@ -6,7 +6,7 @@ export default function SearchMic({ lang, onResult }: { lang: string, onResult: 
   const [listening, setListening] = useState(false)
 
   // Language Committee: Only show mic for English in V50 to avoid English-on-Yoruba bug
-  const showMic = true // V89 FIX: show mic for all languages
+  const showMic = true // V90 ENGLISH ONLY - mic always shown, agent handles translation
 
   const handleMic = () => {
     listenFor((txt) => {

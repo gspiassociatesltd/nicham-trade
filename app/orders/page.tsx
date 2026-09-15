@@ -6,11 +6,11 @@ export default function OrdersPage() {
   const [balance, setBalance] = useState(0)
   const [momoNumber, setMomoNumber] = useState('0803 123 4567')
   const [payingId, setPayingId] = useState('')
-  const [lang, setLang] = useState('en')
+  const [en, setLang] = useState('en')
 
   useEffect(() => {
     const sp = new URLSearchParams(window.location.search)
-    setLang(sp.get('lang') || localStorage.getItem('nicham_lang') || 'en')
+    setLang(sp.get('en') || localStorage.getItem('nicham_en') || 'en')
     try{ setOrders(JSON.parse(localStorage.getItem('nicham_orders') || '[]')) }catch{ setOrders([]) }
     setBalance(parseInt(localStorage.getItem('momo_balance')||'50000'))
     setMomoNumber(localStorage.getItem('momo_number')||'0803 123 4567')
@@ -42,13 +42,13 @@ export default function OrdersPage() {
       admin.unshift({orderId, total:order.total, stage1:'30% on collection', stage2:'70% on delivery', hidden:true})
       localStorage.setItem('nicham_admin_escrow', JSON.stringify(admin))
       setPayingId('')
-      try{ const u=new SpeechSynthesisUtterance('Payment of '+order.total.toLocaleString()+' naira secured in escrow with MTN MoMo for order '+orderId+'. AfricanIES will deliver.'); u.lang='en-NG'; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u)}catch{}
+      try{ const u=new SpeechSynthesisUtterance('Payment of '+order.total.toLocaleString()+' naira secured in escrow with MTN MoMo for order '+orderId+'. AfricanIES will deliver.'); u.en='en-NG'; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u)}catch{}
     },1000)
   }
 
   return (
     <main className="min-h-screen bg-gray-50 p-4">
-      <a href={`/?lang=${lang}`} className="text-sm">{"<-"} Back to Market</a>
+      <a href={`/?en=${en}`} className="text-sm">{"<-"} Back to Market</a>
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow p-6 mt-4">
         <h1 className="text-xl font-black">My Orders - Saved and Paid</h1>
         <div className="mt-3 bg-yellow-50 border rounded-xl p-3 text-xs">
