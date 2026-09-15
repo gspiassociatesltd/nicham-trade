@@ -63,9 +63,11 @@ export default function ProductPage({ params }: any){
     window.open(wa,'_blank')
   }
   const order=()=>{
+    const affRef = localStorage.getItem('affiliate_ref')||''
+    const affPhone = localStorage.getItem('aff_buyer_phone')||''
     const orders=JSON.parse(localStorage.getItem('nicham_orders')||'[]')
     const oid='NCH-'+Date.now().toString().slice(-6)
-    orders.unshift({orderId:oid, productName:prod.name, total:totalVAT, date:new Date().toLocaleDateString(), status:'awaiting_payment', type:prod.type, sourcedBy: prod.sourcedBy || 'AFRICANIES', agentPhone: localStorage.getItem('agent_phone')||'' })
+    orders.unshift({orderId:oid, productName:prod.name, total:totalVAT, date:new Date().toLocaleDateString(), status:'awaiting_payment', type:prod.type, sourcedBy: prod.sourcedBy || 'AFRICANIES', agentPhone: localStorage.getItem('agent_phone')||'', affiliateCode: affRef, buyerPhone: localStorage.getItem('momo_number')||'' })
     localStorage.setItem('nicham_orders', JSON.stringify(orders))
     window.location.href='/orders'
   }

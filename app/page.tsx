@@ -57,6 +57,10 @@ export default function Home(){
   const [showOnlySolar,setShowOnlySolar]=useState(false)
 
   useEffect(()=>{
+    const urlParams = new URLSearchParams(window.location.search)
+    const ref = urlParams.get('ref')
+    if(ref){ localStorage.setItem('affiliate_ref', ref); localStorage.setItem('affiliate_tag_date', new Date().toISOString()); }
+
     // English only platform - agents handle non-English offline
   },[])
 
@@ -83,6 +87,7 @@ export default function Home(){
           <div className="flex gap-2 mt-3 flex-wrap justify-center">
             <a href="/orders" className="px-5 py-1.5 bg-black text-white rounded-full text-xs font-bold">Orders</a>
             <a href="/agent" className="px-5 py-1.5 bg-yellow-400 text-black rounded-full text-xs font-bold">Agent Dashboard</a>
+            <a href="/affiliate" className="px-5 py-1.5 bg-purple-600 text-white rounded-full text-xs font-bold">Affiliate</a>
           </div>
         </div>
         <div className="bg-green-600 text-white text-center py-1.5 text-[11px] font-bold tracking-wide">Secure Trading via MTN Escrow | Traders & Farmers Marketplace</div>
