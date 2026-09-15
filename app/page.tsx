@@ -1,8 +1,5 @@
 'use client'
 import { useState, useEffect } from 'react'
-import SearchMic from '../components/SearchMic'
-
-const categories = ["All", "Farm & Agro", "Home & Kitchen", "Salon & Beauty", "Tailoring & Workshop", "Industrial Chemicals", "Trending Affiliate"]
 
 const productsMeta = [
   { id: 1, cat: "Farm & Agro", basePrice: 450000, img: "🥚", keywords: "incubator egg 500 hatching chicken solar", name: "Solar Incubator 500 Eggs", desc: "Hatch 500 chicks with sun. No NEPA. Hatchery business.", type: "solar" },
@@ -44,28 +41,34 @@ const productsMeta = [
   { id: 303, cat: "Trending Affiliate", basePrice: 263000, img: "🔋", keywords: "power station lifepo4", name: "Power Tank 500W + 1KWh LiFePO4", desc: "All-in-One Solar Power Station. itel Energy booming 2026.", type: "affiliate", affiliate: "https://www.jumia.com.ng/power-tank-500w-inverter-1kwh-lifepo4-battery-all-in-one-solar-power-station-123.html" },
 ]
 
+// Add sourcedBy for traceability - who sourced the chemical
+const productsWithSource = (productsMeta as any[]).map((p:any)=>{
+  if(p.type==='chemical'){
+    return {...p, sourcedBy: (p as any).sourcedBy || 'AFRICANIES', sourcingAgentId: (p as any).sourcingAgentId || 'AFR-001', chemPrice: (p as any).chemPrice || `$${p.basePrice}/ton` }
+  }
+  return p
+})
+
+const categories = ["All", "Farm & Agro", "Home & Kitchen", "Salon & Beauty", "Tailoring & Workshop", "Industrial Chemicals"]
+
 export default function Home(){
   const [query,setQuery]=useState('')
   const [cat,setCat]=useState('All')
-  const [showTut,setShowTut]=useState(false)
-  const [lang,setLang]=useState('en')
+  const [showOnlySolar,setShowOnlySolar]=useState(false)
+
   useEffect(()=>{
-    const sp=new URLSearchParams(window.location.search)
-    const l=sp.get('lang')||localStorage.getItem('nicham_lang')||'en'
-    setLang(l)
-    try{
-      const msg=new SpeechSynthesisUtterance('Welcome to Nicham Trade, type the product you want into the search box and click search or click the microphone and say the name of the product you want')
-      msg.lang='en-NG'
-      window.speechSynthesis.speak(msg)
-    }catch{}
+    // English only platform - agents handle non-English offline
   },[])
-  const filtered=(productsMeta as any[]).filter((p:any)=>{
+
+  const filtered = productsWithSource.filter((p:any)=>{
     const q=query.toLowerCase()
+    const isAffiliate = p.cat==='Trending Affiliate' || (p.cat && p.cat.includes('Affiliate'))
+    if(isAffiliate) return false // Hide affiliate from user homepage - admin only standalone later
     const matchQ=!q|| p.keywords.toLowerCase().includes(q)|| p.name.toLowerCase().includes(q)
     const matchC=cat==='All'||p.cat===cat
     return matchQ&&matchC
   })
-  const calcPoints=(price:number, type:string)=>{ if(type==='chemical') return 0; return Math.round(price*0.01) }
+
   return (
     <main className="min-h-screen bg-[#f6f7e8]">
       <header className="bg-white shadow sticky top-0 z-20">
@@ -78,44 +81,55 @@ export default function Home(){
             <div className="text-[11px] font-bold text-gray-600 tracking-widest">SOLAR + CHEMICALS MARKETPLACE</div>
           </div>
           <div className="flex gap-2 mt-3 flex-wrap justify-center">
-            
-            <a href="/orders" className="px-4 py-1.5 bg-black text-white rounded-full text-xs font-bold">Orders</a>
-            <a href="/agent" className="px-4 py-1.5 bg-yellow-400 text-black rounded-full text-xs font-bold">Agent - Cash + Points</a>
-            <button onClick={()=>setShowTut(true)} className="px-4 py-1.5 bg-green-600 text-white rounded-full text-xs font-bold">How It Works</button>
+            <a href="/orders" className="px-5 py-1.5 bg-black text-white rounded-full text-xs font-bold">Orders</a>
+            <a href="/agent" className="px-5 py-1.5 bg-yellow-400 text-black rounded-full text-xs font-bold">Agent Dashboard</a>
           </div>
         </div>
-        <div className="bg-green-600 text-white text-center py-1.5 text-[11px] font-bold tracking-wide">Green Points on Every Solar Purchase | Voice Ordering | 30/40/30% MTN Escrow | Platform 5%</div>
+        <div className="bg-green-600 text-white text-center py-1.5 text-[11px] font-bold tracking-wide">Secure Trading via MTN Escrow | Traders & Farmers Marketplace</div>
       </header>
+
       <div className="max-w-6xl mx-auto px-4 py-4">
         <div className="bg-white border-2 border-green-200 rounded-xl p-3 mb-3 text-center">
-          <div className="text-sm font-bold text-green-800">Welcome to NiChAm Trade, type the product you want into the search box and click Search OR click the microphone and say the name of the product you want.</div>
-          <div className="text-[10px] text-gray-500 mt-1">Agent helps farmers who cannot read or write English</div>
+          <div className="text-sm font-bold text-green-800">Welcome to NiChAm Trade, type the product you want into the search box and click Search.</div>
+          <div className="text-[10px] text-gray-500 mt-1">Marketplace for traders to sell, farmers and traders to buy. Agent helps those who cannot read or write English.</div>
         </div>
+
         <div className="bg-white rounded-2xl shadow p-3 flex gap-2 items-center">
           <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Type product e.g. Caustic Soda, Solar Fan..." className="flex-1 px-4 py-2 rounded-full border border-gray-300 text-sm outline-none" />
-          <button className="px-5 py-2 bg-green-600 text-white rounded-full text-sm font-bold">Search</button>
-          <SearchMic lang={lang} onResult={setQuery} />
+          <button className="px-6 py-2 bg-green-600 text-white rounded-full text-sm font-bold">Search</button>
         </div>
+
         <div className="flex gap-2 overflow-x-auto mt-4 pb-2">
-          {categories.map((c:any)=>(<button key={c} onClick={()=>setCat(c)} className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap border ${cat===c?'bg-black text-white':'bg-white text-gray-700'}`}>{c}</button>))}
+          {categories.map((c:any)=>(
+            <button key={c} onClick={()=>setCat(c)} className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap border ${cat===c?'bg-black text-white':'bg-white text-gray-700'}`}>{c}</button>
+          ))}
         </div>
         <div className="text-xs text-gray-600 mt-2">Showing: {cat} ({filtered.length})</div>
+
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-3">
           {filtered.map((p:any)=>{
             const isChem=p.type==='chemical'
-            const points=calcPoints(p.basePrice, p.type)
             return (
-              <a key={p.id} href={`/product/${p.id}?lang=${lang}`} className="bg-white rounded-2xl shadow p-3 hover:shadow-lg transition">
+              <a key={p.id} href={`/product/${p.id}`} className="bg-white rounded-2xl shadow p-3 hover:shadow-lg transition">
                 <div className="text-4xl text-center">{p.img}</div>
                 <div className="font-bold text-sm mt-2 line-clamp-2">{p.name}</div>
                 <div className="text-[11px] text-gray-600 line-clamp-2">{p.desc}</div>
-                {isChem ? (<div className="mt-2"><div className="text-sm font-black text-green-700">{(p as any).chemPrice}</div></div>):(<div className="mt-2"><div className="text-sm font-black">N{p.basePrice.toLocaleString()}</div><div className="text-[10px] text-green-700 font-bold">+ {points} Green Points</div><div className="text-[10px] text-gray-500">Total (VAT 7.5% inclusive) N{Math.round(p.basePrice*1.075).toLocaleString()}</div></div>)}
+                {isChem ? (
+                  <div className="mt-2">
+                    <div className="text-sm font-black text-green-700">{p.chemPrice} <span className="text-[10px] font-normal text-gray-500">indicative</span></div>
+                    <div className="text-[10px] text-gray-500">MOQ: {(p as any).moq || '1 ton'} | Request Quote for final price</div>
+                  </div>
+                ):(
+                  <div className="mt-2">
+                    <div className="text-sm font-black">N{p.basePrice.toLocaleString()}</div>
+                    <div className="text-[10px] text-gray-500">Total (VAT 7.5% inclusive) N{Math.round(p.basePrice*1.075).toLocaleString()}</div>
+                  </div>
+                )}
               </a>
             )
           })}
         </div>
       </div>
-      {showTut && (<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 overflow-y-auto"><div className="bg-white rounded-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto"><div className="flex justify-between items-center"><h2 className="text-xl font-black">How It Works</h2><button onClick={()=>setShowTut(false)} className="text-xl">X</button></div><div className="mt-4 space-y-3 text-xs"><div className="bg-green-50 p-3 rounded-xl"><b>Buyer:</b> Type or mic say → YES → MTN Escrow → AfricanIES delivers</div><div className="bg-yellow-50 p-3 rounded-xl"><b>Agent Cash+Points:</b> Save MoMo → Help farmer → 2% cash via MTN Disbursement 30/40/30%</div><div className="bg-purple-50 p-3 rounded-xl"><b>Sourcing China/USA:</b> 3% per ton via Juicyway Naira to CNY Alipay / Grey Naira to USD - solves MTN forex CBN block</div><div className="bg-orange-50 p-3 rounded-xl"><b>Seller:</b> Platform 5% Flutterwave, AfricanIES 15%, Seller 75%, Agent 2%, Sourcing 3%</div></div></div></div>)}
     </main>
   )
 }

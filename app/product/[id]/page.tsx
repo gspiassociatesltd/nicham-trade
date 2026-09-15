@@ -1,3 +1,4 @@
+
 'use client'
 import { useState, useEffect } from 'react'
 const productsMeta = [
@@ -42,30 +43,40 @@ const productsMeta = [
 
 export default function ProductPage({ params }: any){
   const [prod,setProd]=useState<any>(null)
-  const [lang,setLang]=useState('en')
   useEffect(()=>{
-    const sp=new URLSearchParams(window.location.search)
-    setLang(sp.get('lang')||'en')
     const pid = params.id || window.location.pathname.split('/').pop()
     const found = (productsMeta as any[]).find((p:any)=>String(p.id)===String(pid))
-    setProd(found || (productsMeta as any[])[0])
+    const aff = found && (found as any).cat==='Trending Affiliate'
+    if(aff){ setProd(null); return }
+    if(found && found.type==='chemical'){
+      setProd({(found as any), sourcedBy: (found as any).sourcedBy || 'AFRICANIES', chemPrice: (found as any).chemPrice || `$${found.basePrice}/ton` })
+    } else {
+      setProd(found || (productsMeta as any[])[0])
+    }
   },[])
-  if(!prod) return <div className="p-4">Loading...</div>
+  if(!prod) return <div className="p-6 text-center">Loading... <a href="/" className="text-green-700 font-bold">Back to NiChAm Trade</a></div>
   const isChem=prod.type==='chemical'
-  const points=isChem?0:Math.round(prod.basePrice*0.01)
   const totalVAT=isChem?prod.basePrice:Math.round(prod.basePrice*1.075)
+  const requestQuote=()=>{
+    const msg=`Hello NiChAm Trade, I request quotation for ${prod.name} Quantity: [enter] tons Delivery Location: [Lagos/Kano]`
+    const wa=`https://wa.me/2348030000000?text=${encodeURIComponent(msg)}`
+    window.open(wa,'_blank')
+  }
   const order=()=>{
     const orders=JSON.parse(localStorage.getItem('nicham_orders')||'[]')
     const oid='NCH-'+Date.now().toString().slice(-6)
-    orders.unshift({orderId:oid, productName:prod.name, total:totalVAT, points, date:new Date().toLocaleDateString(), status:'awaiting_payment'})
+    orders.unshift({orderId:oid, productName:prod.name, total:totalVAT, date:new Date().toLocaleDateString(), status:'awaiting_payment', type:prod.type, sourcedBy: prod.sourcedBy || 'AFRICANIES', agentPhone: localStorage.getItem('agent_phone')||'' })
     localStorage.setItem('nicham_orders', JSON.stringify(orders))
     window.location.href='/orders'
   }
   return (
     <main className="min-h-screen bg-[#f6f7e8]">
       <header className="bg-white shadow p-3 flex justify-between items-center">
-        <a href={'/'} className="font-bold text-sm">← Back to NiChAm Trade</a>
-        <div className="flex items-center gap-2"><img src="/logo.png" className="w-10 h-10 rounded-full border-2 border-green-600" /><span className="text-xl font-black text-green-700">NiChAm Trade</span></div>
+        <a href="/" className="font-bold text-sm">← Back to NiChAm Trade</a>
+        <div className="flex items-center gap-2">
+          <img src="/logo.png" className="w-10 h-10 rounded-full border-2 border-green-600" />
+          <span className="text-xl font-black text-green-700">NiChAm Trade</span>
+        </div>
         <div className="w-20"></div>
       </header>
       <div className="max-w-xl mx-auto p-4">
@@ -73,14 +84,28 @@ export default function ProductPage({ params }: any){
           <div className="text-5xl text-center">{prod.img}</div>
           <h1 className="text-xl font-black mt-3">{prod.name}</h1>
           <div className="text-sm text-gray-600 mt-1">{prod.desc}</div>
+          {isChem && <div className="mt-2 text-[10px] text-gray-500">Sourced by: {prod.sourcedBy} - Identified via B/L and factory invoice. Sourcing 3% tracked.</div>}
           <div className="mt-4 bg-green-50 border-2 border-green-200 rounded-xl p-4">
-            <div className="font-bold text-sm">Order - Click YES - Voice Ordering</div>
-            {!isChem && <div className="text-[11px] text-green-700 mt-1">✓ Earn {points} Green Points | Total (VAT 7.5% incl.) N{totalVAT.toLocaleString()}</div>}
-            {isChem && <div className="text-[11px] text-gray-700 mt-1">Chemical - {(prod as any).chemPrice} | No Green Points | MTN Escrow 30/40/30% Platform 5%</div>}
-            <button onClick={order} className="mt-3 w-full py-3 bg-green-600 text-white rounded-full font-black text-sm">YES - Confirm</button>
+            {isChem ? (
+              <div>
+                <div className="font-bold text-sm">Request Final Quotation</div>
+                <div className="text-[11px] text-gray-700 mt-1">Indicative: {prod.chemPrice} | MOQ {(prod as any).moq || '1 ton'} | Final quote via WhatsApp after confirmation from logistics & sourcing company</div>
+                <button onClick={requestQuote} className="mt-3 w-full py-3 bg-blue-600 text-white rounded-full font-black text-sm">Request Quote via WhatsApp</button>
+                <div className="mt-2 text-center text-[10px] text-gray-500">Platform will request quote from logistics & sourcing company, build up, and send to you via WhatsApp</div>
+              </div>
+            ):(
+              <div>
+                <div className="font-bold text-sm">Order Now</div>
+                <div className="text-[11px] text-gray-700 mt-1">Total (VAT 7.5% inclusive) N{totalVAT.toLocaleString()}</div>
+                <button onClick={order} className="mt-3 w-full py-3 bg-green-600 text-white rounded-full font-black text-sm">YES - Confirm Order</button>
+              </div>
+            )}
           </div>
-          <div className="mt-4 bg-gray-50 rounded-xl p-3 text-center"><div className="text-xs">Total (VAT 7.5% inclusive)</div><div className="text-2xl font-black text-green-700">N{totalVAT.toLocaleString()}</div></div>
-          <div className="mt-3 text-[9px] text-center text-gray-500">Platform 5% + AfricanIES 15% + Seller 75% + Agent 2% + Sourcing 3% =100%. Forex via Juicyway/Grey.</div>
+          <div className="mt-4 bg-gray-50 rounded-xl p-3 text-center">
+            <div className="text-xs">{isChem ? 'Indicative Price' : 'Total (VAT 7.5% inclusive)'}</div>
+            <div className="text-2xl font-black text-green-700">{isChem ? prod.chemPrice : `N${totalVAT.toLocaleString()}`}</div>
+            {!isChem && <div className="text-[10px] text-gray-500">No stock held by platform - Direct from trader</div>}
+          </div>
         </div>
       </div>
     </main>
