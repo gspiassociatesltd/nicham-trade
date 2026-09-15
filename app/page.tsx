@@ -91,7 +91,7 @@ export default function Home(){
       <div className="max-w-6xl mx-auto px-4 py-4">
         <div className="bg-white border-2 border-green-200 rounded-xl p-3 mb-3 text-center">
           <div className="text-sm font-bold text-green-800">Welcome to NiChAm Trade, type the product you want into the search box and click Search.</div>
-          <div className="text-[10px] text-gray-500 mt-1">Marketplace for traders to sell, farmers and traders to buy. Agent helps those who cannot read or write English.</div>
+          <div className="text-[10px] text-gray-500 mt-1">Marketplace for Manufacturers to sell, farmers and traders to buy. Agent helps those who cannot read or write English.</div>
         </div>
 
         <div className="bg-white rounded-2xl shadow p-3 flex gap-2 items-center">

@@ -31,7 +31,7 @@ export default function AgentPage() {
           <div className="bg-yellow-50 p-3 rounded-xl text-center"><div className="text-[10px]">My Orders</div><div className="font-black">{myOrders.length}</div></div>
           <div className="bg-blue-50 p-3 rounded-xl text-center"><div className="text-[10px]">Paid</div><div className="font-black">{paid.length}</div></div>
         </div>
-        <div className="mt-4 text-xs">Platform is marketplace for traders to sell. Farmers and traders can buy. Platform holds no stock. If no agent for transaction, commission goes to platform.</div>
+        <div className="mt-4 text-xs">Marketplace for Manufacturers to sell, farmers and traders to buy. Platform holds no stock. If no agent for transaction, commission goes to platform.</div>
         <div className="mt-2 text-[10px] text-gray-500">Affiliate marketing is admin only and will stand alone later - not shown to users.</div>
       </div>
     </main>
