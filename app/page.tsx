@@ -61,7 +61,7 @@ export default function Home(){
         <div className="bg-white rounded-2xl shadow p-3 flex gap-2 items-center">
           <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Type product e.g. Caustic Soda, Solar Fan..." className="flex-1 px-4 py-2 rounded-full border border-gray-300 text-sm outline-none" />
           <button className="px-5 py-2 bg-green-600 text-white rounded-full text-sm font-bold">Search</button>
-          <SearchMic onResult={setQuery} />
+          <SearchMic lang="en" onResult={setQuery} />
         </div>
         <div className="flex gap-2 overflow-x-auto mt-4 pb-2">
           {categories.map(c=>(
