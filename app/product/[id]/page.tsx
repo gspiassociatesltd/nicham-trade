@@ -20,11 +20,9 @@ const productsMeta: any = {
   15: { name: "Solar Grinder / Grinding Mill", price: 120000, earn: "Earn N4k daily grinding", desc: "Grind pepper, corn, beans with solar." },
 }
 
-function calcTotal(base: number) {
-  const competitivePrice = Math.round(base * 0.98)
-  const vat = Math.round(competitivePrice * 0.075)
-  const escrow = Math.round(competitivePrice * 0.01)
-  return competitivePrice + vat + escrow
+function calcTotal(base: number) { // FIX: VAT inclusive only as requested
+  const vat = Math.round(base * 0.075)
+  return base + vat
 }
 
 export default function ProductPage({ params }: { params: { id: string } }) {
@@ -126,7 +124,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           )}
           {step==='insufficient' && <div className="mt-3 p-3 bg-red-50 border-2 border-red-300 rounded-xl text-center"><div className="font-black text-red-700 text-sm">Insufficient MoMo Balance</div><div className="text-xs mt-1">Required N{total.toLocaleString()} | Balance N{balance.toLocaleString()}</div><button onClick={()=>{const add=total-balance+10000; setBalance(balance+add); localStorage.setItem('momo_balance',(balance+add).toString()); setStep('confirmed')}} className="mt-2 w-full py-2 bg-green-600 text-white rounded-full text-xs font-bold">Top Up MoMo</button></div>}
         </div>
-        <div className="mt-4 bg-gray-50 rounded-xl p-3 text-center"><div className="text-xs text-gray-600">Total (Competitive -2% + VAT 7.5% + Escrow 1%)</div><div className="text-2xl font-black text-green-700">N{total.toLocaleString()}</div><div className="text-[10px] font-bold text-green-600 mt-1">+ {pointsEarned} Green Points + {meta.earn}</div></div>
+        <div className="mt-4 bg-gray-50 rounded-xl p-3 text-center"><div className="text-xs text-gray-600">Total (VAT 7.5% inclusive)</div><div className="text-2xl font-black text-green-700">N{total.toLocaleString()}</div><div className="text-[10px] font-bold text-green-600 mt-1">+ {pointsEarned} Green Points + {meta.earn}</div></div>
       </div>
     </main>
   )
