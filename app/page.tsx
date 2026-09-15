@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import SearchMic from '../components/SearchMic'
+import LangToggle from '../components/LangToggle'
 
 const categories = ["All", "Farm & Agro", "Home & Kitchen", "Salon & Beauty", "Tailoring & Workshop", "Industrial Chemicals", "Trending Affiliate"]
 
@@ -8,26 +9,58 @@ const productsMeta = [
   { id: 1, cat: "Farm & Agro", basePrice: 450000, img: "🥚", keywords: "incubator egg 500 hatching chicken solar", name: "Solar Incubator 500 Eggs", desc: "Hatch 500 chicks with sun. No NEPA. Hatchery business.", type: "solar" },
   { id: 2, cat: "Farm & Agro", basePrice: 180000, img: "🌽", keywords: "corn sheller maize thresher solar", name: "Solar Corn Sheller", desc: "Shell corn fast with solar. 500kg per hour. No diesel.", type: "solar" },
   { id: 3, cat: "Farm & Agro", basePrice: 220000, img: "🫒", keywords: "oil press groundnut palm kernel solar", name: "Solar Oil Press Machine", desc: "Press groundnut, palm kernel oil with solar. No fuel.", type: "solar" },
+  { id: 4, cat: "Farm & Agro", basePrice: 150000, img: "🌶️", keywords: "vegetable meat dryer tomato solar", name: "Solar Vegetable & Meat Dryer 100kg", desc: "Dry tomatoes, pepper, meat, fish clean. No dust.", type: "solar" },
+  { id: 5, cat: "Farm & Agro", basePrice: 850000, img: "🚜", keywords: "tractor solar mini 12hp low price", name: "Solar Mini Tractor 12HP Low Price", desc: "Low price solar tractor for small farms. No diesel.", type: "solar" },
+  { id: 6, cat: "Farm & Agro", basePrice: 95000, img: "🐀", keywords: "animal pest repellant solar farm rat", name: "Solar Animal & Pest Repellant", desc: "Repel rats, birds, pests from farm with solar sound.", type: "solar" },
+  { id: 7, cat: "Farm & Agro", basePrice: 280000, img: "💧", keywords: "water pump solar irrigation", name: "Solar Water Pump 1HP", desc: "Pump water with sun. Farm all year.", type: "solar" },
+  { id: 8, cat: "Farm & Agro", basePrice: 400000, img: "🚲", keywords: "cargo bike solar 500w", name: "Solar Cargo Bike 500W", desc: "Carry 200kg farm produce to market. No fuel.", type: "solar" },
+  { id: 9, cat: "Farm & Agro", basePrice: 120000, img: "⚙️", keywords: "grinder solar grinding mill", name: "Solar Grinder / Grinding Mill", desc: "Grind pepper, corn, beans with solar.", type: "solar" },
   { id: 10, cat: "Home & Kitchen", basePrice: 75000, img: "🍳", keywords: "cooker solar electric cooking blender", name: "Solar Cooker + Blender", desc: "Cook and blend with sun. No gas. No NEPA.", type: "solar" },
-  { id: 12, cat: "Home & Kitchen", basePrice: 58900, img: "🌀", keywords: "rechargeable solar fan tinmo miratec trending affiliate", name: "Rechargeable Solar Fan 16 Panel + 2 Bulbs", desc: "TINMO 18 12 Months Warranty + Panel 2 Bulbs. Best seller.", type: "affiliate" },
+  { id: 11, cat: "Home & Kitchen", basePrice: 65000, img: "🥤", keywords: "blender solar kitchen", name: "Solar Blender 1.5L", desc: "Blend pepper, tomatoes with solar battery.", type: "solar" },
+  { id: 12, cat: "Home & Kitchen", basePrice: 58900, img: "🌀", keywords: "rechargeable solar fan tinmo miratec trending affiliate", name: "Rechargeable Solar Fan 16\"+ Panel + 2 Bulbs", desc: "TINMO 18\"+ 12 Months Warranty + Panel 2 Bulbs. Best seller.", type: "affiliate", affiliate: "https://www.jumia.com.ng/tinmo-18-inches-rechargeable-standing-fan-12-months-warranty-solar-panel-2-bulbs-401703906.html" },
+  { id: 13, cat: "Home & Kitchen", basePrice: 25000, img: "💡", keywords: "solar rechargeable bulb lamp emergency home lighting kit", name: "Solar Rechargeable Bulbs 4pcs + Panel", desc: "YOBOLIFE Mini DC Solar Kit 4 Bulbs + Panel + FM.", type: "affiliate", affiliate: "https://www.jumia.com.ng/solar-home-lighting-system-kit-led-solar-flood-light-3-hanging-bulbs-rechargeable-303045678.html" },
+  { id: 14, cat: "Home & Kitchen", basePrice: 60999, img: "☀️", keywords: "solar panel jinko 300w affiliate", name: "Jinko 300W Solar Panel", desc: "Monocrystalline FAST charging", type: "affiliate", affiliate: "https://www.jumia.com.ng/jinko-300watts-24v3648v-monocrystalline-solar-123.html" },
+  { id: 15, cat: "Home & Kitchen", basePrice: 18000, img: "🔋", keywords: "solar power bank usb charger affiliate", name: "Solar Power Bank 20000mAh", desc: "Charge phone with sun. No NEPA.", type: "affiliate", affiliate: "https://www.jumia.com.ng/solar-power-bank-20000mah-123.html" },
+  { id: 16, cat: "Salon & Beauty", basePrice: 45000, img: "💇", keywords: "hair dryer solar salon", name: "Solar Hair Dryer", desc: "Dry hair with solar. Salon no need NEPA.", type: "solar" },
+  { id: 17, cat: "Salon & Beauty", basePrice: 35000, img: "✂️", keywords: "clipper solar barbing rechargeable", name: "Solar Clippers Rechargeable", desc: "Barbing clipper with solar charging. Barbers work 24hrs.", type: "solar" },
+  { id: 18, cat: "Salon & Beauty", basePrice: 85000, img: "💨", keywords: "hair dryer blower solar", name: "Solar Hair Blower + Straightener", desc: "Salon tools powered by sun.", type: "solar" },
+  { id: 19, cat: "Tailoring & Workshop", basePrice: 320000, img: "🧵", keywords: "sewing embroidery machine solar tailoring", name: "Solar Sewing + Embroidery Machine", desc: "Sew and embroider with solar. Tailors work without NEPA.", type: "solar" },
   { id: 201, cat: "Industrial Chemicals", basePrice: 8500, img: "💊", keywords: "paracetamol powder pharma", name: "Paracetamol Powder BP/USP", desc: "Pharma grade 99% purity 25kg drum COA. NAFDAC permit required.", type: "chemical", chemPrice: "$5.5/kg MOQ 500kg" },
+  { id: 202, cat: "Industrial Chemicals", basePrice: 6500, img: "🍬", keywords: "sorbitol crystallized", name: "Crystallized Sorbitol", desc: "Food grade 25kg bag sweetener. Pharma, food, toothpaste.", type: "chemical", chemPrice: "$0.85/kg MOQ 1000kg" },
   { id: 203, cat: "Industrial Chemicals", basePrice: 420000, img: "🧼", keywords: "caustic soda flakes", name: "Caustic Soda Flakes 99%", desc: "NaOH 99% 25kg bag Shandong China. Soap, detergent, textile.", type: "chemical", chemPrice: "$420/ton MOQ 5 tons" },
   { id: 204, cat: "Industrial Chemicals", basePrice: 180000, img: "🧪", keywords: "hydrochloric acid", name: "Hydrochloric Acid 31-33%", desc: "HCl 31% 30kg jerry can industrial grade.", type: "chemical", chemPrice: "$180/ton MOQ 10 tons" },
-  { id: 211, cat: "Industrial Chemicals", basePrice: 280000, img: "🌊", keywords: "soda ash", name: "Soda Ash Light", desc: "Na2CO3 99.2% 50kg bag.", type: "chemical", chemPrice: "$280/ton MOQ 10 tons" },
+  { id: 205, cat: "Industrial Chemicals", basePrice: 380000, img: "⚗️", keywords: "nitric acid", name: "Nitric Acid 68%", desc: "HNO3 68% 35kg can. Fertilizer, etching, lab.", type: "chemical", chemPrice: "$380/ton MOQ 5 tons" },
+  { id: 206, cat: "Industrial Chemicals", basePrice: 1100000, img: "🕯️", keywords: "stearic acid", name: "Stearic Acid Triple Pressed", desc: "C18 25kg bag rubber grade. Rubber, candle, cosmetics.", type: "chemical", chemPrice: "$1100/ton MOQ 3 tons" },
+  { id: 207, cat: "Industrial Chemicals", basePrice: 650000, img: "🧴", keywords: "acetic acid", name: "Acetic Acid Glacial 99.8%", desc: "CH3COOH 99.8% 30kg drum. Textile, vinegar.", type: "chemical", chemPrice: "$650/ton MOQ 5 tons" },
+  { id: 208, cat: "Industrial Chemicals", basePrice: 520000, img: "💧", keywords: "hydrogen peroxide", name: "Hydrogen Peroxide 50%", desc: "H2O2 50% 30kg drum industrial. Bleaching, water treatment.", type: "chemical", chemPrice: "$520/ton MOQ 5 tons" },
+  { id: 209, cat: "Industrial Chemicals", basePrice: 3200000, img: "🎨", keywords: "natrosol", name: "Natrosol 250 HHR (HEC)", desc: "Hydroxyethyl Cellulose 25kg bag thickener. Paint, building.", type: "chemical", chemPrice: "$3200/ton MOQ 1 ton" },
+  { id: 210, cat: "Industrial Chemicals", basePrice: 85000, img: "🏳️", keywords: "calcium carbonate", name: "Calcium Carbonate Powder", desc: "CaCO3 98% 50kg bag 800-1250 mesh. Paint, PVC, paper.", type: "chemical", chemPrice: "$85/ton MOQ 20 tons" },
+  { id: 211, cat: "Industrial Chemicals", basePrice: 280000, img: "🌊", keywords: "soda ash", name: "Soda Ash Light", desc: "Na2CO3 99.2% 50kg bag. Water treatment, detergent, glass.", type: "chemical", chemPrice: "$280/ton MOQ 10 tons" },
+  { id: 212, cat: "Industrial Chemicals", basePrice: 1450000, img: "🏊", keywords: "calcium hypochlorite", name: "Calcium Hypochlorite 65-70%", desc: "Ca(ClO)2 70% 45kg drum water treatment grade.", type: "chemical", chemPrice: "$1450/ton MOQ 3 tons" },
+  { id: 213, cat: "Industrial Chemicals", basePrice: 350000, img: "🚰", keywords: "poly aluminum chloride pac", name: "Poly Aluminum Chloride PAC 30%", desc: "PAC 30% Yellow/White 25kg bag. Water treatment coagulant.", type: "chemical", chemPrice: "$350/ton MOQ 10 tons" },
+  { id: 214, cat: "Industrial Chemicals", basePrice: 190000, img: "🧫", keywords: "aluminum sulphate", name: "Aluminum Sulphate 17%", desc: "Al2(SO4)3 17% 50kg bag. Water treatment, paper.", type: "chemical", chemPrice: "$190/ton MOQ 15 tons" },
+  { id: 215, cat: "Industrial Chemicals", basePrice: 320000, img: "🔬", keywords: "ferric chloride", name: "Ferric Chloride 40% Liquid", desc: "FeCl3 40% liquid 30kg jerry can. Water treatment.", type: "chemical", chemPrice: "$320/ton MOQ 10 tons" },
+  { id: 301, cat: "Trending Affiliate", basePrice: 74984, img: "🌀", keywords: "miratec solar fan trending", name: "Miratec 16 AC/DC Solar Fan + 25W Panel", desc: "46% off N74,984 from N140k. 757 reviews. Best seller.", type: "affiliate", affiliate: "https://www.jumia.com.ng/miratec-16-inches-acdc-solar-rechargeable-fan-25w-panel-a-bulb-121549172.html" },
+  { id: 302, cat: "Trending Affiliate", basePrice: 96800, img: "📹", keywords: "v380 solar street light cctv", name: "V380 Pro Solar Street Light + CCTV 450W", desc: "3in1: Solar Panel + Street Light + CCTV Camera. 100% solar.", type: "affiliate", affiliate: "https://www.jumia.com.ng/generic-v380-pro-solar-street-light-with-cctv-camera-450w-123.html" },
+  { id: 303, cat: "Trending Affiliate", basePrice: 263000, img: "🔋", keywords: "power station lifepo4", name: "Power Tank 500W + 1KWh LiFePO4", desc: "All-in-One Solar Power Station. itel Energy booming 2026.", type: "affiliate", affiliate: "https://www.jumia.com.ng/power-tank-500w-inverter-1kwh-lifepo4-battery-all-in-one-solar-power-station-123.html" },
 ]
 
 export default function Home(){
   const [query,setQuery]=useState('')
   const [cat,setCat]=useState('All')
   const [showTut,setShowTut]=useState(false)
+  const [lang,setLang]=useState('en')
   useEffect(()=>{
+    const sp=new URLSearchParams(window.location.search)
+    const l=sp.get('lang')||localStorage.getItem('nicham_lang')||'en'
+    setLang(l)
     try{
       const msg=new SpeechSynthesisUtterance('Welcome to Nicham Trade, type the product you want into the search box and click search or click the microphone and say the name of the product you want')
       msg.lang='en-NG'
       window.speechSynthesis.speak(msg)
     }catch{}
   },[])
-  const filtered=productsMeta.filter(p=>{
+  const filtered=(productsMeta as any[]).filter((p:any)=>{
     const q=query.toLowerCase()
     const matchQ=!q|| p.keywords.toLowerCase().includes(q)|| p.name.toLowerCase().includes(q)
     const matchC=cat==='All'||p.cat===cat
@@ -45,7 +78,8 @@ export default function Home(){
             </div>
             <div className="text-[11px] font-bold text-gray-600 tracking-widest">SOLAR + CHEMICALS MARKETPLACE</div>
           </div>
-          <div className="flex gap-2 mt-3">
+          <div className="flex gap-2 mt-3 flex-wrap justify-center">
+            <LangToggle lang={lang} setLang={setLang} />
             <a href="/orders" className="px-4 py-1.5 bg-black text-white rounded-full text-xs font-bold">Orders</a>
             <a href="/agent" className="px-4 py-1.5 bg-yellow-400 text-black rounded-full text-xs font-bold">Agent - Cash + Points</a>
             <button onClick={()=>setShowTut(true)} className="px-4 py-1.5 bg-green-600 text-white rounded-full text-xs font-bold">How It Works</button>
@@ -55,61 +89,34 @@ export default function Home(){
       </header>
       <div className="max-w-6xl mx-auto px-4 py-4">
         <div className="bg-white border-2 border-green-200 rounded-xl p-3 mb-3 text-center">
-          <div className="text-sm font-bold text-green-800">Welcome to NiChAm Trade, type the product you want into the search box and click Search OR click the microphone 🎙️ and say the name of the product you want.</div>
-          <div className="text-[10px] text-gray-500 mt-1">Barka da zuwa - Rubuta sunan kaya | Ka te oruko oja | Pịnye aha ngwa ahịa</div>
+          <div className="text-sm font-bold text-green-800">Welcome to NiChAm Trade, type the product you want into the search box and click Search OR click the microphone and say the name of the product you want.</div>
+          <div className="text-[10px] text-gray-500 mt-1">Barka da zuwa - Rubuta sunan kaya | Ka te oruko oja | Pinye aha ngwa ahia</div>
         </div>
         <div className="bg-white rounded-2xl shadow p-3 flex gap-2 items-center">
           <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Type product e.g. Caustic Soda, Solar Fan..." className="flex-1 px-4 py-2 rounded-full border border-gray-300 text-sm outline-none" />
           <button className="px-5 py-2 bg-green-600 text-white rounded-full text-sm font-bold">Search</button>
-          <SearchMic lang="en" onResult={setQuery} />
+          <SearchMic lang={lang} onResult={setQuery} />
         </div>
         <div className="flex gap-2 overflow-x-auto mt-4 pb-2">
-          {categories.map(c=>(
-            <button key={c} onClick={()=>setCat(c)} className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap border ${cat===c?'bg-black text-white':'bg-white text-gray-700'}`}>{c}</button>
-          ))}
+          {categories.map((c:any)=>(<button key={c} onClick={()=>setCat(c)} className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap border ${cat===c?'bg-black text-white':'bg-white text-gray-700'}`}>{c}</button>))}
         </div>
         <div className="text-xs text-gray-600 mt-2">Showing: {cat} ({filtered.length})</div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-3">
-          {filtered.map(p=>{
+          {filtered.map((p:any)=>{
             const isChem=p.type==='chemical'
             const points=calcPoints(p.basePrice, p.type)
             return (
-              <a key={p.id} href={`/product/${p.id}`} className="bg-white rounded-2xl shadow p-3 hover:shadow-lg transition">
+              <a key={p.id} href={`/product/${p.id}?lang=${lang}`} className="bg-white rounded-2xl shadow p-3 hover:shadow-lg transition">
                 <div className="text-4xl text-center">{p.img}</div>
                 <div className="font-bold text-sm mt-2 line-clamp-2">{p.name}</div>
                 <div className="text-[11px] text-gray-600 line-clamp-2">{p.desc}</div>
-                {isChem ? (
-                  <div className="mt-2"><div className="text-sm font-black text-green-700">{p.chemPrice}</div></div>
-                ):(
-                  <div className="mt-2">
-                    <div className="text-sm font-black">N{p.basePrice.toLocaleString()}</div>
-                    <div className="text-[10px] text-green-700 font-bold">+ {points} Green Points</div>
-                    <div className="text-[10px] text-gray-500">Total (VAT 7.5% inclusive) N{Math.round(p.basePrice*1.075).toLocaleString()}</div>
-                  </div>
-                )}
+                {isChem ? (<div className="mt-2"><div className="text-sm font-black text-green-700">{(p as any).chemPrice}</div></div>):(<div className="mt-2"><div className="text-sm font-black">N{p.basePrice.toLocaleString()}</div><div className="text-[10px] text-green-700 font-bold">+ {points} Green Points</div><div className="text-[10px] text-gray-500">Total (VAT 7.5% inclusive) N{Math.round(p.basePrice*1.075).toLocaleString()}</div></div>)}
               </a>
             )
           })}
         </div>
       </div>
-      {showTut && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-black">NiChAm Trade - How It Works</h2>
-              <button onClick={()=>setShowTut(false)} className="text-xl">✕</button>
-            </div>
-            <div className="mt-4 space-y-4 text-xs">
-              <div className="bg-green-50 p-3 rounded-xl"><div className="font-bold">1. How to Use (Buyer)</div><div className="mt-1">Type product or mic say name. Click YES. Pay MTN MoMo escrow. AfricanIES delivers. Confirm → Points.</div></div>
-              <div className="bg-yellow-50 p-3 rounded-xl"><div className="font-bold">2. Agent - Cash + Points</div><div className="mt-1">Save Name+MoMo. Help farmer. Earn 2% cash via MTN Disbursement same time seller paid (30/40/30%). N193,500 → N3,870 cash + 1935 pts.</div></div>
-              <div className="bg-blue-50 p-3 rounded-xl"><div className="font-bold">3. Affiliate</div><div className="mt-1">Share link /?ref=CODE. Earn cash+points. Chemicals $3-5/ton perpetual.</div></div>
-              <div className="bg-purple-50 p-3 rounded-xl"><div className="font-bold">4. Sourcing Agent China/USA</div><div className="mt-1">Find factory, COA, MOQ. Earn 3% per ton after B/L. Paid via Juicyway Naira→CNY Alipay, Grey Naira→USD. MTN cannot forex due CBN.</div></div>
-              <div className="bg-orange-50 p-3 rounded-xl"><div className="font-bold">5. Seller (Chemicals)</div><div className="mt-1">List chemical with COA, $/ton, MOQ. Buyer pays MTN Escrow. Split: Platform 5%, AfricanIES 15%, Seller 75%, Agent 2%, Sourcing 3%.</div></div>
-              <div className="bg-gray-50 p-3 rounded-xl border"><div className="font-bold">6. Payments - Platform NOT holding, Forex via Fintech</div><div className="mt-1">Buyer→MTN Escrow→Stage 30/40/30% on AfricanIES confirm→MTN auto-split: Platform→Flutterwave, Local→MoMo, China→Juicyway, USA→Grey.</div></div>
-            </div>
-          </div>
-        </div>
-      )}
+      {showTut && (<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 overflow-y-auto"><div className="bg-white rounded-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto"><div className="flex justify-between items-center"><h2 className="text-xl font-black">How It Works</h2><button onClick={()=>setShowTut(false)} className="text-xl">X</button></div><div className="mt-4 space-y-3 text-xs"><div className="bg-green-50 p-3 rounded-xl"><b>Buyer:</b> Type or mic say → YES → MTN Escrow → AfricanIES delivers</div><div className="bg-yellow-50 p-3 rounded-xl"><b>Agent Cash+Points:</b> Save MoMo → Help farmer → 2% cash via MTN Disbursement 30/40/30%</div><div className="bg-purple-50 p-3 rounded-xl"><b>Sourcing China/USA:</b> 3% per ton via Juicyway Naira to CNY Alipay / Grey Naira to USD - solves MTN forex CBN block</div><div className="bg-orange-50 p-3 rounded-xl"><b>Seller:</b> Platform 5% Flutterwave, AfricanIES 15%, Seller 75%, Agent 2%, Sourcing 3%</div></div></div></div>)}
     </main>
   )
 }

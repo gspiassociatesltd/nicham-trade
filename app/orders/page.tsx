@@ -1,55 +1,81 @@
 'use client'
 import { useState, useEffect } from 'react'
+
 export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([])
-  const [balance, setBalance] = useState(50000)
+  const [balance, setBalance] = useState(0)
   const [momoNumber, setMomoNumber] = useState('0803 123 4567')
   const [payingId, setPayingId] = useState('')
+  const [lang, setLang] = useState('en')
+
   useEffect(() => {
+    const sp = new URLSearchParams(window.location.search)
+    setLang(sp.get('lang') || localStorage.getItem('nicham_lang') || 'en')
     try{ setOrders(JSON.parse(localStorage.getItem('nicham_orders') || '[]')) }catch{ setOrders([]) }
     setBalance(parseInt(localStorage.getItem('momo_balance')||'50000'))
+    setMomoNumber(localStorage.getItem('momo_number')||'0803 123 4567')
   }, [])
+
   const topUp = () => {
-    const val = prompt('Enter top up amount')
+    const val = prompt('Enter top up amount e.g. 300000')
     const amount = parseInt(val||'0')
-    if (amount>0){ const nb=balance+amount; setBalance(nb); localStorage.setItem('momo_balance', nb.toString()) }
+    if (amount>0){ const nb=balance+amount; setBalance(nb); localStorage.setItem('momo_balance', nb.toString()); alert('Topped up! New balance N'+nb.toLocaleString()) }
   }
+
   const handlePay = (orderId: string) => {
     const order = orders.find((o:any)=>o.orderId===orderId)
     if (!order) return
     setPayingId(orderId)
     setTimeout(()=>{
-      if (balance < order.total){ alert('Insufficient'); setPayingId(''); return }
+      if (balance < order.total){
+        alert('Still insufficient. Balance N'+balance.toLocaleString()+' Required N'+order.total.toLocaleString()+' Please top up.')
+        setPayingId('')
+        return
+      }
       const nb = balance - order.total
-      setBalance(nb); localStorage.setItem('momo_balance', nb.toString())
-      const updated = orders.map((o:any)=> o.orderId===orderId ? {...o, status:'paid_escrow', momoTxn:'MOMO-'+Date.now().toString().slice(-6)} : o)
-      setOrders(updated); localStorage.setItem('nicham_orders', JSON.stringify(updated)); setPayingId('')
-    },800)
+      setBalance(nb)
+      localStorage.setItem('momo_balance', nb.toString())
+      const updated = orders.map((o:any)=> o.orderId===orderId ? {...o, status:'paid_escrow', momoTxn:'MOMO-'+Date.now().toString().slice(-6), paidAt:new Date().toLocaleString()} : o)
+      setOrders(updated)
+      localStorage.setItem('nicham_orders', JSON.stringify(updated))
+      const admin = JSON.parse(localStorage.getItem('nicham_admin_escrow')||'[]')
+      admin.unshift({orderId, total:order.total, stage1:'30% on collection', stage2:'70% on delivery', hidden:true})
+      localStorage.setItem('nicham_admin_escrow', JSON.stringify(admin))
+      setPayingId('')
+      try{ const u=new SpeechSynthesisUtterance('Payment of '+order.total.toLocaleString()+' naira secured in escrow with MTN MoMo for order '+orderId+'. AfricanIES will deliver.'); u.lang='en-NG'; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u)}catch{}
+    },1000)
   }
-  const getSplit = (total:number)=>({ platform: Math.round(total*0.05), african: Math.round(total*0.15), seller: Math.round(total*0.75), agentNG: Math.round(total*0.02), sourcing: Math.round(total*0.03) })
+
   return (
     <main className="min-h-screen bg-gray-50 p-4">
-      <a href="/" className="text-sm font-bold flex items-center gap-2">← Back to NiChAm Trade <img src="/logo.png" className="w-6 h-6 rounded-full" /></a>
+      <a href={`/?lang=${lang}`} className="text-sm">{"<-"} Back to Market</a>
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow p-6 mt-4">
-        <h1 className="text-xl font-black">My Orders - MTN Escrow</h1>
+        <h1 className="text-xl font-black">My Orders - Saved and Paid</h1>
         <div className="mt-3 bg-yellow-50 border rounded-xl p-3 text-xs">
           <div>MoMo: {momoNumber} | Balance: <b>N{balance.toLocaleString()}</b></div>
-          <button onClick={topUp} className="mt-2 px-4 py-1.5 bg-green-600 text-white rounded-full text-xs font-bold">Top Up</button>
-          <div className="mt-2 text-[9px] text-gray-500">TODO MTN MoMo Collections API. Platform NOT holding money.</div>
+          <button onClick={topUp} className="mt-2 px-4 py-1.5 bg-green-600 text-white rounded-full text-xs font-bold">Top Up MoMo Wallet</button>
         </div>
-        {orders.map((o:any)=>{
-          const s=getSplit(o.total)
-          return (
-          <div key={o.orderId} className="mt-4 border-2 rounded-xl p-3">
-            <div className="flex justify-between"><div><div className="font-bold text-sm">{o.productName}</div><div className="text-xs">ID: {o.orderId}</div><div className="font-black">N{o.total?.toLocaleString()}</div><div className="text-[10px] px-2 py-0.5 rounded-full bg-orange-100 inline-block">{o.status}</div></div><div>{o.status==='awaiting_payment'&&<button onClick={()=>handlePay(o.orderId)} className="px-4 py-1.5 bg-green-600 text-white rounded-full text-xs font-bold">Pay Escrow</button>}</div></div>
-            <div className="mt-3 bg-gray-50 rounded-xl p-2 text-[10px]">
-              <div className="font-bold">MTN Split 30/40/30% - Platform 5% included:</div>
-              <div>Platform 5%: N{s.platform} → Flutterwave | AfricanIES 15%: N{s.african} | Seller 75%: N{s.seller}</div>
-              <div>Agent NG 2%: N{s.agentNG} MoMo | Sourcing 3%: N{s.sourcing} → Juicyway CN¥ Alipay / Grey US$</div>
-              <div className="text-[8px] text-gray-500 mt-1">Forex: MTN cannot source USD/CNY (CBN). Use Juicyway for China, Grey for USA. MTN→Flutterwave→Fintech.</div>
+        {orders.length===0 && <div className="mt-6 text-center text-gray-500 text-sm">No saved orders yet. Place order and click Save - Pay Later.</div>}
+        {orders.map((o:any)=>(
+          <div key={o.orderId} className="mt-4 border-2 rounded-xl p-3 flex justify-between items-center">
+            <div>
+              <div className="font-bold text-sm">{o.productName}</div>
+              <div className="text-xs text-gray-600">ID: {o.orderId} | {o.date}</div>
+              <div className="text-sm font-black">N{o.total?.toLocaleString()}</div>
+              <div className={`text-[10px] px-2 py-0.5 rounded-full inline-block mt-1 ${o.status==='paid_escrow'?'bg-green-100 text-green-700':'bg-orange-100 text-orange-700'}`}>{o.status}</div>
+              {o.momoTxn && <div className="text-[10px] text-gray-500">MoMo Txn: {o.momoTxn}</div>}
+            </div>
+            <div>
+              {o.status==='awaiting_payment' ? (
+                <button disabled={payingId===o.orderId} onClick={()=>handlePay(o.orderId)} className="px-4 py-2 bg-black text-white rounded-full text-xs font-bold">
+                  {payingId===o.orderId ? 'Paying...' : 'Pay Now with MoMo'}
+                </button>
+              ) : (
+                <div className="text-xs text-green-600 font-bold">Secured in Escrow</div>
+              )}
             </div>
           </div>
-        )})}
+        ))}
       </div>
     </main>
   )

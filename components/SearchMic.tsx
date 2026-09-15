@@ -6,8 +6,7 @@ export default function SearchMic({ lang, onResult }: { lang: string, onResult: 
   const [listening, setListening] = useState(false)
 
   // Language Committee: Only show mic for English in V50 to avoid English-on-Yoruba bug
-  const showMic = lang === 'en' || lang === 'pidgin' // pidgin uses en-NG voice safely
-  if (!showMic) return null
+  const showMic = true // V89 FIX: show mic for all languages
 
   const handleMic = () => {
     listenFor((txt) => {
