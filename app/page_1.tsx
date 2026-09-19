@@ -72,6 +72,6 @@ export default function Home(){
       <div className="mt-2 flex gap-2"><input placeholder="Farmer phone +234..." className="border rounded-xl px-3 py-2 flex-1"/><button className="btn-green">{t[lang].orderFor}</button></div>
     </div>
 
-    <footer className="mt-8 text-center text-xs opacity-60 pb-20"><a href="/admin" className="underline">Admin Vault</a> • Built with GitHub + Vercel + Render + Supabase + Ubuntu • Zero Budget MVP • gspiassociatesltd-/nicham-trade • MTN MoMo Sandbox • Green Points → Airtime</footer>
+    <footer className="mt-8 text-center text-xs opacity-60 pb-20">Built with GitHub + Vercel + Render + Supabase + Ubuntu • Zero Budget MVP • gspiassociatesltd-/nicham-trade • MTN MoMo Sandbox • Green Points → Airtime</footer>
   </div>
 }
