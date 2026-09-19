@@ -1,73 +1,121 @@
 "use client"
-import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
-import Link from 'next/link'
+import { useState, useEffect } from 'react'
 
-export default function Home(){
-  const [products, setProducts] = useState<any[]>([])
+type Product = {
+  id: string
+  name: string
+  category: string
+  manufacturer: string
+  sourcedBy: string
+  factoryPrice: number
+  appPrice: number
+  euLink: string
+  bizLink: string
+  videoLink: string
+  testLink: string
+  exportLink: string
+  logisticsStatus: string
+  status: string
+  proofs: {eu:boolean,biz:boolean,video:boolean,test:boolean,export:boolean}
+}
+
+export default function Admin(){
+  const [products, setProducts] = useState<Product[]>([])
+  const [form, setForm] = useState({name:'', category:'Solar Inverter', manufacturer:'', sourcedBy:'AfricanIES', factoryPrice:1000, euLink:'', bizLink:'', videoLink:'', testLink:'', exportLink:'', logisticsStatus:'Pending', status:'Draft'})
+  const [proofs, setProofs] = useState({eu:false,biz:false,video:false,test:false,export:false})
+  const [editingId, setEditingId] = useState<string|null>(null)
 
   useEffect(()=>{
-    const local = localStorage.getItem('nicham_v103_products')
-    if(local){
-      try{
-        const parsed = JSON.parse(local)
-        const approved = parsed.filter((p:any)=> p.status==='Approved')
-        if(approved.length>0){ setProducts(approved); return }
-      }catch{}
-    }
-    supabase.from('products').select('*').eq('status','approved').limit(20).then(({data})=> setProducts(data||[]))
+    const saved = localStorage.getItem('nicham_v103_products')
+    if(saved) try{ setProducts(JSON.parse(saved)) }catch{}
   },[])
 
-  return <div className="max-w-5xl mx-auto p-4">
-    <header className="flex justify-between items-center border rounded-xl p-3 sticky top-2 z-10 bg-white">
-      <div className="flex gap-2 items-center"><div className="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center text-white">☀</div><div><div className="font-black">NiChAm Trade</div><div className="text-xs text-green-700">Verified Solar & Chemicals • Pay on Arrival • Nigeria</div></div></div>
-      <div className="flex gap-2"><Link href="/admin" className="text-xs border px-3 py-1.5 rounded-lg">Admin Vault</Link><Link href="/chemicals" className="text-xs bg-black text-white px-3 py-1.5 rounded-lg">Chemicals</Link></div>
-    </header>
+  const save = (list: Product[])=>{
+    setProducts(list)
+    localStorage.setItem('nicham_v103_products', JSON.stringify(list))
+  }
 
-    <div className="mt-4 border rounded-xl p-5 bg-gradient-to-br from-yellow-50 to-green-50">
-      <div className="inline-block bg-white px-3 py-1 rounded-full text-xs font-bold border">• All Nigeria • MTN MoMo Escrow • Pay on Arrival • QIMA Verified</div>
-      <h1 className="text-4xl font-black mt-3 leading-[0.9]">Verified <br/><span className="text-green-700">Solar & Chemicals</span><br/>for Nigerian Businesses.</h1>
-      <p className="mt-3 text-sm opacity-80">Every product is verified by AfricanIES (₦10k sourcing verification) + QIMA inspection. Pay 10% commitment, balance on arrival after you see goods + QIMA certificate at AfricanIES office.</p>
-      <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-        <div className="bg-white border rounded-lg p-2">📦 Pay on Arrival<br/>See before you pay</div>
-        <div className="bg-white border rounded-lg p-2">✅ AfricanIES Verified<br/>₦10k sourcing + 5% procurement</div>
-        <div className="bg-white border rounded-lg p-2">🔍 QIMA Inspected<br/>Supplier Audit $500 + PSI $350</div>
-        <div className="bg-white border rounded-lg p-2">🛡️ Guarantor<br/>Failed inspection = AfricanIES bears cost</div>
+  const calcApp = (f:number)=> f + f*0.15 + f*0.05 + f*0.03 + f*0.01
+
+  const handleAdd = ()=>{
+    if(!form.name || !form.manufacturer){ alert('Name + Manufacturer required'); return }
+    const appPrice = calcApp(form.factoryPrice)
+    const newProd: Product = {
+      id: editingId || Date.now().toString(),
+      name: form.name, category: form.category, manufacturer: form.manufacturer, sourcedBy: form.sourcedBy,
+      factoryPrice: form.factoryPrice, appPrice,
+      euLink: form.euLink, bizLink: form.bizLink, videoLink: form.videoLink, testLink: form.testLink, exportLink: form.exportLink,
+      logisticsStatus: form.logisticsStatus, status: form.status, proofs: {...proofs}
+    }
+    const list = editingId ? products.map(p=> p.id===editingId ? newProd : p) : [newProd, ...products]
+    save(list)
+    setForm({name:'', category:'Solar Inverter', manufacturer:'', sourcedBy:'AfricanIES', factoryPrice:1000, euLink:'', bizLink:'', videoLink:'', testLink:'', exportLink:'', logisticsStatus:'Pending', status:'Draft'})
+    setProofs({eu:false,biz:false,video:false,test:false,export:false})
+    setEditingId(null)
+  }
+
+  return <div className="min-h-screen bg-gray-50 p-3">
+    <div className="max-w-6xl mx-auto">
+      <div className="bg-white border rounded-xl p-3 flex justify-between">
+        <div><h1 className="font-black">Admin Vault — Add / Remove Products</h1><p className="text-xs opacity-60">Total {products.length} • English Only • No pay on delivery text in marketplace</p></div>
+        <div className="flex gap-2"><a href="/" className="text-xs border px-3 py-1 rounded">Home</a><button onClick={()=>{ const blob=new Blob([JSON.stringify(products,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='products.json'; a.click() }} className="text-xs bg-black text-white px-3 py-1 rounded">Export</button></div>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-3 mt-3">
+        <div className="md:col-span-2 bg-white border rounded-xl p-3">
+          <h2 className="font-bold text-sm">{editingId ? 'Edit' : 'Add'} Product</h2>
+          <div className="grid grid-cols-2 gap-2 mt-2">
+            <input value={form.name} onChange={e=>setForm({...form, name:e.target.value})} placeholder="Product Name *" className="border rounded px-2 py-1.5 col-span-2 text-sm"/>
+            <select value={form.category} onChange={e=>setForm({...form, category:e.target.value})} className="border rounded px-2 py-1.5 text-sm"><option>Solar Inverter</option><option>Solar Panel</option><option>Battery</option><option>Agro Chemicals</option><option>Industrial Chemicals</option></select>
+            <input value={form.manufacturer} onChange={e=>setForm({...form, manufacturer:e.target.value})} placeholder="Manufacturer *" className="border rounded px-2 py-1.5 text-sm"/>
+            <select value={form.sourcedBy} onChange={e=>setForm({...form, sourcedBy:e.target.value})} className="border rounded px-2 py-1.5 text-sm"><option>AfricanIES</option><option>Betterluck</option><option>External</option></select>
+            <input type="number" value={form.factoryPrice} onChange={e=>setForm({...form, factoryPrice: parseFloat(e.target.value)||0})} className="border rounded px-2 py-1.5 text-sm"/>
+            <select value={form.status} onChange={e=>setForm({...form, status:e.target.value})} className="border rounded px-2 py-1.5 text-sm"><option>Draft</option><option>Approved</option><option>Rejected</option><option>Blacklisted</option></select>
+          </div>
+
+          <div className="mt-3 border rounded p-2">
+            <p className="text-xs font-bold">5 Proofs Gate</p>
+            <div className="grid grid-cols-2 gap-1 mt-1 text-xs">
+              <label className="flex gap-1"><input type="checkbox" checked={proofs.eu} onChange={e=>setProofs({...proofs, eu:e.target.checked})}/> EU Cert</label>
+              <label className="flex gap-1"><input type="checkbox" checked={proofs.biz} onChange={e=>setProofs({...proofs, biz:e.target.checked})}/> Business License</label>
+              <label className="flex gap-1"><input type="checkbox" checked={proofs.video} onChange={e=>setProofs({...proofs, video:e.target.checked})}/> Factory Video</label>
+              <label className="flex gap-1"><input type="checkbox" checked={proofs.test} onChange={e=>setProofs({...proofs, test:e.target.checked})}/> Test Report</label>
+              <label className="flex gap-1"><input type="checkbox" checked={proofs.export} onChange={e=>setProofs({...proofs, export:e.target.checked})}/> Export History</label>
+            </div>
+            <div className="grid grid-cols-1 gap-1 mt-2">
+              <input value={form.euLink} onChange={e=>setForm({...form, euLink:e.target.value})} placeholder="EU cert TUV link" className="border rounded px-2 py-1 text-xs"/>
+              <input value={form.bizLink} onChange={e=>setForm({...form, bizLink:e.target.value})} placeholder="Business license link" className="border rounded px-2 py-1 text-xs"/>
+              <input value={form.videoLink} onChange={e=>setForm({...form, videoLink:e.target.value})} placeholder="Factory video link" className="border rounded px-2 py-1 text-xs"/>
+            </div>
+          </div>
+
+          <div className="mt-2">
+            <select value={form.logisticsStatus} onChange={e=>setForm({...form, logisticsStatus:e.target.value})} className="w-full border rounded px-2 py-1.5 text-sm">
+              <option>Pending</option><option>Approved by AfricanIES</option><option>Rejected by AfricanIES</option>
+            </select>
+          </div>
+
+          <div className="mt-2 text-xs bg-gray-50 p-2 rounded">App Price: ${calcApp(form.factoryPrice).toFixed(2)} (Factory ${form.factoryPrice} + 15% logistics + 5% + 3% + 1%)</div>
+
+          <button onClick={handleAdd} className="mt-3 bg-black text-white px-4 py-1.5 rounded text-sm">{editingId ? 'Update' : 'Add Product'}</button>
+        </div>
+
+        <div className="bg-white border rounded-xl p-3">
+          <h3 className="font-bold text-sm">Products ({products.length}) — Add / Remove</h3>
+          <div className="mt-2 space-y-2 max-h-[700px] overflow-auto">
+            {products.map(p=><div key={p.id} className="border rounded p-2 text-xs">
+              <div className="font-bold">{p.name}</div>
+              <div>{p.manufacturer} • {p.category}</div>
+              <div>${p.factoryPrice} → ${p.appPrice.toFixed(2)}</div>
+              <div>{p.logisticsStatus} • {p.status} • {Object.values(p.proofs).filter(Boolean).length}/5 proofs</div>
+              <div className="flex gap-1 mt-1">
+                <button onClick={()=>{ setForm({name:p.name, category:p.category, manufacturer:p.manufacturer, sourcedBy:p.sourcedBy, factoryPrice:p.factoryPrice, euLink:p.euLink, bizLink:p.bizLink, videoLink:p.videoLink, testLink:p.testLink, exportLink:p.exportLink, logisticsStatus:p.logisticsStatus, status:p.status}); setProofs(p.proofs); setEditingId(p.id)}} className="border px-2 py-0.5 rounded">Edit</button>
+                <button onClick={()=> save(products.filter(x=>x.id!==p.id))} className="bg-red-600 text-white px-2 py-0.5 rounded">Remove</button>
+              </div>
+            </div>)}
+          </div>
+        </div>
       </div>
     </div>
-
-    <h2 className="mt-6 font-black text-xl">Approved Products — Verified by AfricanIES + QIMA ({products.length})</h2>
-    {products.length===0 && <div className="mt-3 border rounded-xl p-6 text-center text-sm opacity-60">No approved products yet. Go to /admin to add products. After you approve with 5 proofs + Logistics Approved by AfricanIES, they appear here.</div>}
-    
-    <div className="grid md:grid-cols-3 gap-3 mt-3">
-      {products.map(p=>{
-        const displayName = p.name || p.name_en
-        const factoryPrice = p.factoryPrice || p.price_usd || 0
-        const appPrice = p.appPrice || p.app_price_usd || 0
-        return <div key={p.id} className="border rounded-xl p-3 bg-white">
-          <div className="h-32 bg-gray-100 rounded-lg flex items-center justify-center text-xs">IMG: {p.category}</div>
-          <div className="mt-2 flex gap-1"><span className="text-[10px] bg-green-100 px-2 py-0.5 rounded-full">✓ Verified</span><span className="text-[10px] bg-yellow-100 px-2 py-0.5 rounded-full">{p.category}</span><span className="text-[10px] bg-blue-100 px-2 py-0.5 rounded-full">{p.sourcedBy || p.sourced_by}</span></div>
-          <div className="font-bold mt-1">{displayName}</div>
-          <div className="text-xs opacity-70">{p.manufacturer} • Factory ${factoryPrice} → App ${appPrice.toFixed ? appPrice.toFixed(2) : appPrice} inclusive</div>
-          <div className="mt-2 text-xs"><span className="bg-gray-50 border px-2 py-0.5 rounded">Logistics: {p.logisticsStatus || p.logistics_status}</span></div>
-          <div className="mt-2 font-black">App ${appPrice.toFixed ? appPrice.toFixed(2) : appPrice} = ₦{((appPrice||0)*1500).toLocaleString()} inclusive</div>
-          <div className="text-[10px] opacity-60 mt-1">Factory + 15% logistics (AfricanIES ₦10k + 5% + shipping) + 5% platform + 3% sourcing + 1% insurance</div>
-          <Link href={`/product/${p.id}`} className="mt-2 block text-center bg-black text-white rounded-lg py-2 text-sm">View → Order with Pay on Arrival</Link>
-        </div>
-      })}
-    </div>
-
-    <div className="mt-8 border rounded-xl p-4 bg-white">
-      <h3 className="font-bold text-sm">How It Works — English Only MVP</h3>
-      <ol className="text-xs mt-2 list-decimal pl-4 space-y-1 opacity-80">
-        <li>Buyer pays AfricanIES ₦10,000 sourcing fee directly — AfricanIES verifies factory (company visit + recommendation)</li>
-        <li>If AfricanIES approves, buyer pays 5% procurement + 10% commitment — AfricanIES pays China factory</li>
-        <li>NiChAm books QIMA Supplier Audit $500 (one-time per factory) + PSI $350 per shipment — AfricanIES bears cost if fails (guarantor)</li>
-        <li>Ship → Clearing → Arrives AfricanIES office — Buyer sees goods + QIMA certificate, pays balance (Pay on Arrival)</li>
-        <li>MTN MoMo escrow holds 10% commitment until buyer confirms delivery</li>
-      </ol>
-    </div>
-
-    <footer className="mt-8 text-center text-xs opacity-60 pb-10">English Only MVP • Post-MVP: Hausa, Yoruba, Igbo, Pidgin • gspiassociatesltd/nicham-trade • V104 English Only • <a href="/admin" className="underline">Admin Vault</a></footer>
   </div>
 }
