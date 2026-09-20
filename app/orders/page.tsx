@@ -1,99 +1,25 @@
-'use client'
-import { useState, useEffect } from 'react'
-export default function OrdersPage() {
-  const [orders, setOrders] = useState<any[]>([])
-  const [balance, setBalance] = useState(50000)
-  const [momoNumber, setMomoNumber] = useState('0803 123 4567')
-  const [payingId, setPayingId] = useState('')
-  const [showFundMsg, setShowFundMsg] = useState(false)
-  useEffect(() => {
-    try{ setOrders(JSON.parse(localStorage.getItem('nicham_orders') || '[]')) }catch{ setOrders([]) }
-    setBalance(parseInt(localStorage.getItem('momo_balance')||'50000'))
-    setMomoNumber(localStorage.getItem('momo_number')||'0803 123 4567')
-  }, [])
-  const topUp = () => {
-    const val = prompt('Enter top up amount')
-    const amount = parseInt(val||'0')
-    if (amount>0){ const nb=balance+amount; setBalance(nb); localStorage.setItem('momo_balance', nb.toString()) }
-  }
-  
-  const getSplit = (o:any)=>{
-    const total=o.total
-    const hasAgent = !!o.agentPhone
-    const hasAffiliate = !!o.affiliateCode
-    const sourcedBy = o.sourcedBy || 'AFRICANIES'
-    const isAfricanSourced = sourcedBy==='AFRICANIES' || sourcedBy.includes('AFRICAN')
-    // FRAUD-PROOF XOR: A or B, never both same order
-    let agentNG = 0
-    let affiliate = 0
-    if(hasAgent){
-      agentNG = Math.round(total*0.02) // Agent assisted = 2% only
-      affiliate = 0 // Affiliate 0% for this order even if code exists
-    } else if(hasAffiliate){
-      affiliate = Math.round(total*0.01) // Self-order via referral = 1% perpetual
-      agentNG = 0
-    }
-    let platform = Math.round(total*0.05) - affiliate
-    if(platform<0) platform=0
-    let african = Math.round(total*0.15)
-    let seller = Math.round(total*0.75)
-    let sourcing = 0
-    if(isAfricanSourced){
-      african += Math.round(total*0.03) // AfricanIES sourced = 18%
-    } else {
-      sourcing = Math.round(total*0.03)
-    }
-    if(!hasAgent){
-      platform += Math.round(total*0.02) // Unassigned agent goes to platform
-    }
-    return { platform, african, seller, agentNG, sourcing, affiliate, hasAgent, hasAffiliate, isAfricanSourced, sourcedBy }
-  }
-
-  const handlePay = (orderId: string) => {
-    const order = orders.find((o:any)=>o.orderId===orderId)
-    if (!order) return
-    setPayingId(orderId)
-    setTimeout(()=>{
-      if (balance < order.total){ setShowFundMsg(true); setPayingId(''); setTimeout(()=>setShowFundMsg(false), 2500); return }
-      const nb = balance - order.total
-      setBalance(nb); localStorage.setItem('momo_balance', nb.toString())
-      const updated = orders.map((o:any)=> o.orderId===orderId ? {...o, status:'paid_escrow', momoTxn:'MOMO-'+Date.now().toString().slice(-6)} : o)
-      setOrders(updated); localStorage.setItem('nicham_orders', JSON.stringify(updated))
-      const admin = JSON.parse(localStorage.getItem('nicham_admin_escrow')||'[]')
-      admin.unshift({orderId, total:order.total, status:'held_escrow'})
-      localStorage.setItem('nicham_admin_escrow', JSON.stringify(admin))
-      setPayingId('')
-    },1000)
-  }
+"use client"
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+export default function Orders(){
+  const [orders,setOrders]=useState<any[]>([])
+  useEffect(()=>{
+    const saved=localStorage.getItem('nicham_orders')
+    if(saved) try{ setOrders(JSON.parse(saved)) }catch{}
+  },[])
+  const clear=()=>{ localStorage.removeItem('nicham_orders'); setOrders([])}
   return (
-    <main className="min-h-screen bg-gray-50 p-4">
-      {showFundMsg && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl px-8 py-6 shadow-2xl text-center">
-            <div className="text-sm font-bold text-red-600">insufficient fund</div>
+    <div className="min-h-screen bg-[#FFFEF5]">
+      <header className="bg-white border-b"><div className="max-w-4xl mx-auto px-4 py-3 flex justify-between"><Link href="/" className="text-xs border px-4 py-2 rounded-full">← Marketplace</Link><button onClick={clear} className="text-xs border px-3 py-2 rounded-full">Clear</button></div></header>
+      <div className="max-w-4xl mx-auto p-4">
+        <h1 className="font-black text-xl">Orders ({orders.length})</h1>
+        <div className="text-xs text-gray-500 mt-1">Secure trading via MTN Escrow. Orders saved when you click Order via WhatsApp.</div>
+        {orders.length===0 ? <div className="mt-10 bg-white rounded-2xl p-10 text-center border text-sm text-gray-400">No orders yet. Go to marketplace and order a product.<br/><Link href="/" className="mt-3 inline-block bg-black text-white px-5 py-2 rounded-full text-xs">Go to Marketplace</Link></div> :
+          <div className="mt-4 space-y-2">
+            {orders.map((o:any)=><div key={o.id} className="bg-white rounded-2xl p-4 border flex justify-between items-center"><div><div className="font-bold text-sm">{o.product}</div><div className="text-xs text-gray-500">Qty {o.qty} • {o.date}</div><div className="text-xs mt-1 bg-yellow-100 inline-block px-2 py-0.5 rounded-full">{o.status}</div></div><div className="font-black text-sm">N{o.total.toLocaleString()}</div></div>)}
           </div>
-        </div>
-      )}
-      <a href="/" className="text-sm font-bold flex items-center gap-2">← Back to NiChAm Trade <img src="/logo.png" className="w-6 h-6 rounded-full" /></a>
-      <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow p-6 mt-4">
-        <h1 className="text-xl font-black">My Orders</h1>
-        <div className="mt-3 bg-yellow-50 border rounded-xl p-3 text-xs">
-          <div>MoMo: {momoNumber} | Balance: <b>N{balance.toLocaleString()}</b></div>
-          <button onClick={topUp} className="mt-2 px-4 py-1.5 bg-green-600 text-white rounded-full text-xs font-bold">Top Up</button>
-        </div>
-        {orders.length===0 && <div className="mt-4 text-sm text-gray-500">No orders yet. Marketplace for traders to sell, farmers and traders to buy. Platform holds no stock.</div>}
-        {orders.map((o:any)=>{
-          const s=getSplit(o)
-          return (
-          <div key={o.orderId} className="mt-4 border-2 rounded-xl p-3">
-            <div className="flex justify-between"><div><div className="font-bold text-sm">{o.productName}</div><div className="text-xs">ID: {o.orderId} | {o.date}</div><div className="font-black">N{o.total?.toLocaleString()}</div><div className="text-[10px] px-2 py-0.5 rounded-full bg-orange-100 inline-block">{o.status}</div></div><div>{o.status==='awaiting_payment'&&<button onClick={()=>handlePay(o.orderId)} disabled={!!payingId} className="px-4 py-1.5 bg-green-600 text-white rounded-full text-xs font-bold">{payingId===o.orderId?'Processing...':'Pay via MoMo'}</button>}</div></div>
-            <div className="mt-3 bg-gray-50 rounded-xl p-2 text-[10px]">
-              <div>Order type: {o.type==='chemical' ? `Chemical - Direct from manufacturer` : 'Solar - Direct from manufacturer'} | {s.hasAgent ? `Agent assisted (A)` : s.hasAffiliate ? `Referral order (B)` : 'Direct order'} </div>
-              {o.status==='paid_escrow' && <div className="mt-1">Payment secured in MTN MoMo escrow. Delivery by AfricanIES logistics.</div>}
-            </div>
-          </div>
-        )})}
+        }
       </div>
-    </main>
+    </div>
   )
 }
