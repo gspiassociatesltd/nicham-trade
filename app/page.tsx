@@ -3,23 +3,19 @@ import { useState } from 'react'
 import Link from 'next/link'
 const PRODUCTS = [
   {id:'1', name:'Solar Incubator 500 Eggs', desc:'Hatch 500 chicks with sun. No NEPA.', price:450000, cat:'Farm & Agro', emoji:'🥚'},
-  {id:'2', name:'Solar Corn Sheller', desc:'Shell corn fast with solar. 500kg/hour.', price:180000, cat:'Farm & Agro', emoji:'🌽'},
-  {id:'3', name:'Solar Oil Press Machine', desc:'Press groundnut oil with solar.', price:220000, cat:'Farm & Agro', emoji:'🫒'},
-  {id:'4', name:'Solar Veg Dryer 100kg', desc:'Dry tomatoes, pepper, meat clean.', price:150000, cat:'Farm & Agro', emoji:'🌶️'},
-  {id:'5', name:'Caustic Soda 25kg', desc:'Industrial grade for soap.', price:45000, cat:'Industrial Chemicals', emoji:'🧪'},
-  {id:'6', name:'Solar Fan 16 inch', desc:'Cool home with solar.', price:65000, cat:'Home & Kitchen', emoji:'🌀'},
+  {id:'2', name:'Solar Corn Sheller', desc:'Shell corn fast with solar.', price:180000, cat:'Farm & Agro', emoji:'🌽'},
   {id:'7', name:'Hammer 2kg', desc:'Heavy duty hand tool.', price:8000, cat:'Hand Tools', emoji:'🔨'},
   {id:'8', name:'Solar Drill Machine', desc:'Drill without NEPA.', price:55000, cat:'Hand Tools', emoji:'🔧'},
-  {id:'9', name:'Cutlass + Shovel Set', desc:'Farm hand tools set.', price:12000, cat:'Hand Tools', emoji:'⛏️'},
+  {id:'9', name:'Cutlass + Shovel Set', desc:'Farm hand tools set. Strong and durable.', price:12000, cat:'Hand Tools', emoji:'⛏️'},
   {id:'10', name:'Solar Welding Machine', desc:'Weld gates with solar 200A.', price:180000, cat:'Hand Tools', emoji:'⚡'},
 ]
 export default function Home(){
-  const [search, setSearch] = useState('')
-  const [cat, setCat] = useState('All')
-  const cats = ['All','Farm & Agro','Home & Kitchen','Salon & Beauty','Tailoring & Workshop','Industrial Chemicals','Hand Tools']
-  const filtered = PRODUCTS.filter(p=> (p.name.toLowerCase().includes(search.toLowerCase())) && (cat==='All'||p.cat===cat))
-  const total = (pr:number)=> Math.round(pr*1.075)
-  return (
+  const [search,setSearch]=useState('')
+  const [cat,setCat]=useState('All')
+  const cats=['All','Farm & Agro','Home & Kitchen','Salon & Beauty','Tailoring & Workshop','Industrial Chemicals','Hand Tools']
+  const filtered=PRODUCTS.filter(p=>(p.name.toLowerCase().includes(search.toLowerCase()))&&(cat==='All'||p.cat===cat))
+  const total=(pr:number)=>Math.round(pr*1.075)
+  return(
     <div className="min-h-screen bg-[#FFFEF5]">
       <header className="bg-white shadow-sm sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-4 py-3">
@@ -52,9 +48,9 @@ export default function Home(){
         </div>
         <div className="text-xs text-gray-500 mt-3">Showing: {cat} ({filtered.length})</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-          {filtered.map(p=>(<div key={p.id} className="bg-white rounded-2xl p-4 border shadow-sm hover:shadow-md transition"><div className="w-full h-16 bg-gradient-to-br from-green-50 to-yellow-50 rounded-xl flex items-center justify-center text-4xl">{p.emoji}</div><div className="font-bold text-sm mt-3">{p.name}</div><div className="text-[11px] text-gray-500 mt-1">{p.desc}</div><div className="font-black text-sm mt-3">N{p.price.toLocaleString()}</div><div className="text-[10px] text-gray-400">Total (VAT 7.5% inc) N{total(p.price).toLocaleString()}</div><Link href={`/product/${p.id}`} className="mt-3 block w-full text-center bg-gray-900 text-white rounded-full py-2 text-xs font-bold">View</Link></div>))}
+          {filtered.map(p=>(<div key={p.id} className="bg-white rounded-2xl p-4 border shadow-sm"><div className="w-full h-16 bg-gradient-to-br from-green-50 to-yellow-50 rounded-xl flex items-center justify-center text-4xl">{p.emoji}</div><div className="font-bold text-sm mt-3">{p.name}</div><div className="text-[11px] text-gray-500 mt-1">{p.desc}</div><div className="font-black text-sm mt-3">N{p.price.toLocaleString()}</div><div className="text-[10px] text-gray-400">Total (VAT 7.5% inc) N{total(p.price).toLocaleString()}</div><Link href={`/product/${p.id}`} className="mt-3 block w-full text-center bg-gray-900 text-white rounded-full py-2 text-xs font-bold">View</Link></div>))}
         </div>
-        <footer className="mt-12 text-center text-[10px] text-gray-400 pb-10">V111 Beautiful + Hand Tools • Secure via MTN Escrow</footer>
+        <footer className="mt-12 text-center text-[10px] text-gray-400 pb-10">V113 Text Fix • Sourced and delivered by AfricanIES</footer>
       </div>
     </div>
   )

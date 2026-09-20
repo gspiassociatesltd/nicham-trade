@@ -1,6 +1,6 @@
 {
   "name": "nicham-trade",
-  "version": "12.0.0-orders-working",
+  "version": "13.0.0-text-fix",
   "private": true,
   "scripts": {
     "dev": "next dev",
