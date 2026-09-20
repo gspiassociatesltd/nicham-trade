@@ -20,11 +20,6 @@ export default function ProductPage({params}:{params:{id:string}}){
       <div className="text-sm">Factory: ${p.factoryPrice} → App: ${p.appPrice?.toFixed(2)}</div>
       <div className="text-xs mt-1">Logistics: {p.logisticsStatus} • Status: {p.status}</div>
       <div className="text-xs mt-1">Proofs: {Object.values(p.proofs||{}).filter(Boolean).length}/5</div>
-      <div className="mt-3 space-y-1 text-xs">
-        {p.euLink && <div>EU: <a href={p.euLink} className="underline" target="_blank">{p.euLink}</a></div>}
-        {p.bizLink && <div>Biz: <a href={p.bizLink} className="underline" target="_blank">{p.bizLink}</a></div>}
-        {p.videoLink && <div>Video: <a href={p.videoLink} className="underline" target="_blank">{p.videoLink}</a></div>}
-      </div>
     </div>
   </div>
 }

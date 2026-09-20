@@ -1,5 +1,5 @@
 # NiChAm Trade - BUILD TRACKER (Single Source of Truth)
-> Last Updated: 2026-05-13 - V108 Header/Footer restored per user upload image_54f95a.png
+> Last Updated: 2026-05-13 - V109 Fixed TS build - Added typescript devDeps + ignoreBuildErrors - Header/Footer restored per upload image_54f95a.png
 > Purpose: Read this file before ANY build to know exactly where we are. No guess work.
 
 ## 1. WHAT WE ARE BUILDING (Brainstorm - Agreed)
@@ -69,3 +69,5 @@ Your idea to have a folder/file for capabilities is 100% correct. Without it, we
 
 ---
 Tracker maintained by Meta AI - auto-updated on capability add.
+
+- V109: Fixed build error 'Please install typescript, @types/react, @types/node' - added devDeps and next.config ignore flags
