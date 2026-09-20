@@ -1,6 +1,6 @@
 {
   "name": "nicham-trade",
-  "version": "7.0.1-mvp-zero-budget-fixed-ts",
+  "version": "8.0.0-preferred-marketplace",
   "private": true,
   "scripts": {
     "dev": "next dev",

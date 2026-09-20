@@ -7,19 +7,33 @@ export default function ProductPage({params}:{params:{id:string}}){
     if(saved){
       try{
         const list=JSON.parse(saved)
-        setP(list.find((x:any)=>x.id===params.id))
+        const found=list.find((x:any)=>x.id===params.id)
+        if(found) setP(found)
       }catch{}
     }
-  },[])
-  if(!p) return <div className="p-4 text-sm">Loading...</div>
-  return <div className="max-w-2xl mx-auto p-4">
-    <a href="/" className="text-xs border px-3 py-1 rounded">← Home</a>
-    <h1 className="mt-4 font-black text-xl">{p.name}</h1>
-    <div className="text-xs opacity-60">{p.manufacturer} • {p.category} • {p.sourcedBy}</div>
-    <div className="mt-3 border rounded-xl p-3 bg-white">
-      <div className="text-sm">Factory: ${p.factoryPrice} → App: ${p.appPrice?.toFixed(2)}</div>
-      <div className="text-xs mt-1">Logistics: {p.logisticsStatus} • Status: {p.status}</div>
-      <div className="text-xs mt-1">Proofs: {Object.values(p.proofs||{}).filter(Boolean).length}/5</div>
+    // fallback default
+    if(!p){
+      const defaults: any = {
+        '1':{name:'Solar Incubator 500 Eggs', manufacturer:'AfricanIES', category:'Farm & Agro', factoryPrice:281, appPrice:450000, desc:'Hatch 500 chicks with sun. No NEPA. Hatchery business.'},
+        '2':{name:'Solar Corn Sheller', manufacturer:'AfricanIES', category:'Farm & Agro', factoryPrice:112, appPrice:180000},
+        '3':{name:'Solar Oil Press Machine', manufacturer:'AfricanIES', category:'Farm & Agro', factoryPrice:137, appPrice:220000},
+        '4':{name:'Solar Vegetable & Meat Dryer 100kg', manufacturer:'AfricanIES', category:'Farm & Agro', factoryPrice:93, appPrice:150000},
+      }
+      if(defaults[params.id]) setP(defaults[params.id])
+    }
+  },[params.id])
+  if(!p) return <div className="p-4 text-sm">Loading... <a href="/" className="underline">Home</a></div>
+  return <div className="min-h-screen bg-[#fefce8] p-4">
+    <div className="max-w-2xl mx-auto bg-white rounded-xl p-4 border">
+      <a href="/" className="text-xs border px-3 py-1 rounded-full">← Back to Marketplace</a>
+      <h1 className="mt-4 font-black text-xl">{p.name || p.name_en}</h1>
+      <div className="text-xs opacity-60">{p.manufacturer} • {p.category}</div>
+      <div className="mt-3 border rounded-xl p-3">
+        <div className="text-sm font-bold">Price: N{(p.appPrice||p.price||0).toLocaleString()}</div>
+        <div className="text-xs mt-1">Factory: ${p.factoryPrice||0} → App: ${p.appPrice?.toFixed?.(2)||p.appPrice}</div>
+        <div className="text-xs mt-2 opacity-70">Secure trading via MTN Escrow. QIMA inspected. AfricanIES guarantor.</div>
+      </div>
+      <button className="mt-4 w-full bg-green-600 text-white py-2 rounded-full font-bold text-sm">Order via WhatsApp</button>
     </div>
   </div>
 }
