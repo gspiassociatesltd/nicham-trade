@@ -56,8 +56,8 @@ export default function Admin(){
 
   return <div className="min-h-screen bg-gray-50 p-3">
     <div className="max-w-6xl mx-auto">
-      <div className="bg-white border rounded-xl p-3 flex justify-between">
-        <div><h1 className="font-black">Admin Vault — Add / Remove Products</h1><p className="text-xs opacity-60">Total {products.length} • English Only • No pay on delivery text in marketplace</p></div>
+      <div className="bg-white border rounded-xl p-3 flex justify-between items-center">
+        <div><h1 className="font-black text-sm">Admin Vault</h1><p className="text-xs opacity-60">{products.length} products</p></div>
         <div className="flex gap-2"><a href="/" className="text-xs border px-3 py-1 rounded">Home</a><button onClick={()=>{ const blob=new Blob([JSON.stringify(products,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='products.json'; a.click() }} className="text-xs bg-black text-white px-3 py-1 rounded">Export</button></div>
       </div>
 

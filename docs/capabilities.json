@@ -1,0 +1,47 @@
+{
+  "project": "NiChAm Trade",
+  "mvp_language": "English Only",
+  "post_mvp_languages": [
+    "Hausa",
+    "Yoruba",
+    "Igbo",
+    "Pidgin"
+  ],
+  "marketplace_must_have": [
+    "Header with Admin link",
+    "Products count",
+    "Grid of Approved products only",
+    "No banner",
+    "No Pay on Delivery text"
+  ],
+  "admin_must_have": [
+    "Add Product",
+    "Edit",
+    "Remove",
+    "5 Proofs Gate",
+    "Logistics Status",
+    "Status",
+    "App Price calc",
+    "Export"
+  ],
+  "formula": "appPrice = factoryPrice * 1.24 (15% logistics + 5% platform + 3% sourcing + 1% insurance)",
+  "storage": "localStorage nicham_v103_products - Approved only shown",
+  "files": {
+    "app/page.tsx": "DONE - 35 lines minimal - needs GitHub push",
+    "app/admin/page.tsx": "DONE - 121 lines clean - needs GitHub push",
+    "app/product/[id]/page.tsx": "OUTSTANDING - needs minimal rebuild",
+    "lib/i18n.ts": "DELETED - must stay deleted"
+  },
+  "history": [
+    "V90/V91 English Only success",
+    "V105 Hausa regression due to page_1.tsx backups",
+    "V106 build fail useState x3",
+    "V107 ultra minimal clean"
+  ],
+  "outstanding": [
+    "Push V107 to GitHub",
+    "Decide order flow",
+    "Decide product detail minimal fields",
+    "Await user share last redeployment to copy"
+  ]
+}
