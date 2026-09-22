@@ -2,163 +2,129 @@
 import { useState, useEffect } from 'react'
 
 type Product = { id:string; name:string; category:string; manufacturer:string; status:string; source:string }
-type Manufacturer = { name:string; country:string; email:string; phone:string; website:string; products:string[]; wantsNigeria:boolean; trendingScore:number }
-type Trend = { name:string; category:string; demand:string; reason:string; score:number; source:string }
-
-const MANUFACTURERS: Manufacturer[] = [
-  {name:'ChemChina AgroChem Ltd', country:'China', email:'export@chemchina.cn', phone:'+86 21 1234 5678', website:'chemchina.cn', products:['Glyphosate','NPK','Atrazine'], wantsNigeria:true, trendingScore:95},
-  {name:'Shandong Caustic Industrial', country:'China', email:'sales@sdcaustic.com', phone:'+86 531 8765 4321', website:'sdcaustic.com', products:['Caustic Soda','Sulphuric Acid'], wantsNigeria:true, trendingScore:88},
-  {name:'SolarTech China', country:'China', email:'export@solartech.cn', phone:'+86 755 1234 5678', website:'solartech.cn', products:['Solar Incubator','Solar Corn Sheller'], wantsNigeria:true, trendingScore:92},
-  {name:'AgroChem USA LLC', country:'USA', email:'info@agrochemusa.com', phone:'+1 713 555 0100', website:'agrochemusa.com', products:['Glyphosate','NPK'], wantsNigeria:true, trendingScore:85},
-]
-
-const TRENDING_BASE: Trend[] = [
-  {name:'Glyphosate 360SL Herbicide 20L', category:'Agro Chemicals', demand:'Very High', reason:'Planting season Niger State, 500L+ bulk request', score:98, source:'Ready buyer'},
-  {name:'NPK 20-10-10 Fertilizer 50kg', category:'Fertilizers', demand:'High', reason:'Subsidy removal, farmers direct import', score:92, source:'Market'},
-  {name:'Caustic Soda Flakes 25kg', category:'Industrial Chemicals', demand:'High', reason:'Soap makers Kano/Lagos', score:88, source:'Brochure'},
-]
 
 export default function Admin(){
   const [products,setProducts]=useState<Product[]>([])
-  const [paste,setPaste]=useState('')
-  const [category,setCategory]=useState('Agro Chemicals')
-  const [brochureText,setBrochureText]=useState('')
-  const [contacts,setContacts]=useState<any[]>([])
-  const [discovered,setDiscovered]=useState<Manufacturer[]>(MANUFACTURERS)
-  const [trending,setTrending]=useState<Trend[]>(TRENDING_BASE)
-  // Cap 3 Price Comparison
-  const [quoteProduct,setQuoteProduct]=useState('')
-  const [finalLanded,setFinalLanded]=useState('')
-  const [localSource,setLocalSource]=useState('')
+  const [sourcedBy,setSourcedBy]=useState('Discovery Engine → Accepted by AfricanIES/QIMA (Platform earns 3%)')
+  const [sourcedByApp,setSourcedByApp]=useState(true)
+  const [buyerByApp,setBuyerByApp]=useState(true)
+  const [affiliateInvolved,setAffiliateInvolved]=useState(false)
+  const [affiliateCode,setAffiliateCode]=useState('')
+  const [fieldAgentInvolved,setFieldAgentInvolved]=useState(false)
+  const [fieldAgentCode,setFieldAgentCode]=useState('')
+  const [factoryVisitDone,setFactoryVisitDone]=useState(false)
+  // Placeholders for Post-MVP — 0% in MVP
+  const [escrowEnabled,setEscrowEnabled]=useState(false) // Placeholder: false MVP, true post-MVP with MTN MoMo license
+  const [insuranceEnabled,setInsuranceEnabled]=useState(false) // Placeholder: false MVP, true post-MVP with MTN
+  const [factoryPrice,setFactoryPrice]=useState('1000')
+  const [shipping,setShipping]=useState('300')
+  const [customs,setCustoms]=useState('200')
+  const [delivery,setDelivery]=useState('50')
+  const [qimaCost,setQimaCost]=useState('20')
+  const [qty,setQty]=useState('1')
   const [localPrice,setLocalPrice]=useState('')
-  const [comparison,setComparison]=useState<any>(null)
+  const [finalCalc,setFinalCalc]=useState<any>(null)
 
   useEffect(()=>{
     const saved=localStorage.getItem('nicham_v103_products'); if(saved) try{ setProducts(JSON.parse(saved)) }catch{}
-    const savedContacts=localStorage.getItem('nicham_contacts'); if(savedContacts) try{ setContacts(JSON.parse(savedContacts)) }catch{}
+    // Read placeholders from env if set
+    if(typeof window!=='undefined'){
+      // @ts-ignore
+      const esc = (window as any).NEXT_PUBLIC_ENABLE_ESCROW; const ins = (window as any).NEXT_PUBLIC_ENABLE_INSURANCE;
+      // For MVP, env false — placeholders 0%
+    }
   },[])
 
-  const save=(list:Product[])=>{ setProducts(list); localStorage.setItem('nicham_v103_products', JSON.stringify(list)) }
-  const saveContacts=(list:any[])=>{ setContacts(list); localStorage.setItem('nicham_contacts', JSON.stringify(list)) }
+  const calculateFinal=()=>{
+    const f=parseFloat(factoryPrice)||0; const s=parseFloat(shipping)||0; const c=parseFloat(customs)||0; const d=parseFloat(delivery)||0; const q=parseFloat(qimaCost)||0; const qTy=parseFloat(qty)||1
+    const productCost=f*qTy; const transport=s+c+d; const ratio=transport/productCost
+    let economyAdvice=''; let makesSense=true; let minQty=1
+    if(productCost>0 && transport>productCost){ makesSense=false; minQty=Math.ceil(50000/f); economyAdvice=`⚠️ Too small: Product $${productCost} < Transport $${transport}. Advise MOQ ${minQty} units.` }
+    else if(ratio>0.3){ makesSense=false; economyAdvice=`⚠️ Transport ${Math.round(ratio*100)}% of product — advise MOQ.` }
+    else { economyAdvice=`✅ Economical: Transport ${Math.round(ratio*100)}%` }
 
-  const parseAndAdd=()=>{
-    if(!paste.trim()){ alert('Paste list first'); return }
-    const lines=paste.split(/[\n,]+/).map(s=>s.trim()).filter(Boolean)
-    const newProducts: Product[]=lines.map((name,i)=>({ id:Date.now().toString()+i, name, category, manufacturer:'Discovery', status:'Approved', source:'Bulk Paste' }))
-    save([...newProducts,...products]); setPaste('')
-    const newTrends=newProducts.map(p=>({ name:p.name, category:p.category, demand:'New', reason:'Just pasted — ready buyer?', score:80, source:'Bulk Paste' } as Trend))
-    setTrending(prev=> [...newTrends,...prev].slice(0,12))
-    alert(`${newProducts.length} added + trending updated`)
-  }
+    const visitFee = factoryVisitDone?0:10000/1500
+    const africanIESNet = s+c+d+visitFee
+    const base = f*qTy + q
+    const landed = base + africanIESNet
+    let sourcingFee=0; let sourcingTo='';
+    if(sourcedBy.includes('Discovery')){ sourcingFee=landed*0.03; sourcingTo='Platform (Discovery Engine)'; }
+    else if(sourcedBy.includes('External')){ sourcingFee=landed*0.03; sourcingTo=sourcedBy; }
+    else { sourcingFee=0; sourcingTo='All-in (no extra 3%)' }
+    const platform5=landed*0.05; const affiliate1=affiliateInvolved?landed*0.01:0; const field2=fieldAgentInvolved?landed*0.02:0; const platformNet=platform5-affiliate1-field2
+    // PLACEHOLDERS — 0% MVP, 1% post-MVP with MTN MoMo license
+    const escrow = escrowEnabled? landed*0.01 : 0 // Placeholder: Escrow 1% post-MVP
+    const insurance = insuranceEnabled? landed*0.01 : 0 // Placeholder: Insurance 1% post-MVP MTN
+    const appPrice=landed+platform5+sourcingFee+escrow+insurance
 
-  const parseBrochure=()=>{
-    if(!brochureText.trim()){ alert('Paste brochure text'); return }
-    const emailRegex=/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g; const phoneRegex=/(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/g; const webRegex=/https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9.-]+\.(com|cn|net)/g
-    const emails=brochureText.match(emailRegex)||[]; const phones=brochureText.match(phoneRegex)||[]; const websites=brochureText.match(webRegex)||[]
-    const keywords=['glyphosate','npk','caustic','sulphuric','atrazine','fertilizer','herbicide','solar','incubator','sheller','welding']
-    const lines=brochureText.split('\n').map(l=>l.trim()).filter(Boolean)
-    const productLines=lines.filter(l=> keywords.some(k=> l.toLowerCase().includes(k)) && l.length>5 && l.length<100)
-    const newProducts: Product[]=productLines.map((name,i)=>{
-      let cat='Industrial Chemicals'; if(/glyphosate|atrazine|herbicide/i.test(name)) cat='Agro Chemicals'; else if(/npk|fertilizer/i.test(name)) cat='Fertilizers'; else if(/solar|incubator|sheller/i.test(name)) cat='Farm & Agro'
-      return { id:Date.now().toString()+'b'+i, name, category:cat, manufacturer:'From Brochure', status:'Approved', source:'Brochure' }
+    const local=parseFloat(localPrice)||0; let competitiveness=''; if(local>0){ const diff=((appPrice-local)/local)*100; competitiveness=appPrice<local?`✅ ${Math.abs(diff).toFixed(1)}% CHEAPER than local`:`⚠️ ${diff.toFixed(1)}% MORE than local` }
+
+    setFinalCalc({
+      productCost, transport, ratio:(ratio*100).toFixed(1)+'%', economyAdvice, makesSense, minQty,
+      base, landed, appPrice, visitFee, escrowEnabled, insuranceEnabled,
+      breakdown:{ factory:f*qTy, africanIESNet, qima:q, platformNet, affiliate1, field2, sourcingFee, sourcingTo, escrow, insurance, platform5 },
+      competitiveness, sourcedBy
     })
-    const contact={ id:Date.now().toString(), emails:[...new Set(emails)], phones:[...new Set(phones)], websites:[...new Set(websites)], products:productLines, date:new Date().toLocaleString() }
-    saveContacts([contact,...contacts]); save([...newProducts,...products])
-    const matching=MANUFACTURERS.filter(m=> productLines.some(p=> m.products.some(mp=> p.toLowerCase().includes(mp.toLowerCase()))))
-    setDiscovered(matching.length>0?matching:MANUFACTURERS)
-    setTrending(prev=> [...newProducts.map(p=>({ name:p.name, category:p.category, demand:'Discovered', reason:'From brochure — wants Nigeria', score:85, source:'Brochure' } as Trend)),...prev].slice(0,12))
-    alert(`Brochure: ${newProducts.length} products + ${emails.length} contacts → tabs + admin console + trending`); setBrochureText('')
-  }
-
-  const handleFileUpload=(e:any)=>{ const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=(ev:any)=>{ setBrochureText(ev.target.result as string); alert(`Brochure ${file.name} loaded. Click Parse.`) }; reader.readAsText(file) }
-
-  const sendToAfricanIES=()=>{
-    const listText=products.map((p,i)=>`${i+1}. ${p.name} (${p.category})`).join('%0A')
-    const msg=`BULK RFQ - ${products.length} ITEMS:%0A${listText}%0A%0AQUOTE NEEDED: Factory visit (except if previously done) + Sourcing + Logistics + Customs + Delivery%0A%0ATrending: ${trending.slice(0,3).map(t=>t.name).join(', ')}`
-    window.open(`https://wa.me/2348012345678?text=${msg}`,'_blank')
-  }
-  const sendToQIMA=()=>{
-    const listText=products.map((p,i)=>`${i+1}. ${p.name}`).join('%0A')
-    const msg=`BULK PSI REQUEST - ${products.length} ITEMS:%0A${listText}`
-    window.open(`https://wa.me/2348098765432?text=${msg}`,'_blank')
-  }
-
-  const discoverManufacturers=()=>{ setDiscovered([...MANUFACTURERS].sort((a,b)=>b.trendingScore-a.trendingScore)); setTrending(prev=> [...MANUFACTURERS.slice(0,3).map(m=>({ name:m.products[0], category:'Manufacturer Wants Nigeria', demand:'Trending', reason:`${m.name} (${m.country}) seeking Nigeria — ${m.trendingScore}%`, score:m.trendingScore, source:`Discovery ${m.country}` } as Trend)),...prev].slice(0,12)) }
-
-  const comparePrice=()=>{
-    if(!finalLanded ||!localPrice){ alert('Enter final landed price and local verifiable price'); return }
-    const landed=parseFloat(finalLanded.replace(/[^0-9.]/g,'')); const local=parseFloat(localPrice.replace(/[^0-9.]/g,''))
-    if(!landed ||!local){ alert('Enter valid numbers'); return }
-    const diff = ((landed - local)/local)*100; const competitive = landed < local
-    const result={
-      product: quoteProduct||'Selected Product',
-      landed, local, diff: diff.toFixed(1),
-      competitive,
-      message: competitive? `✅ ${Math.abs(diff).toFixed(1)}% CHEAPER than local — Very Competitive! Forward to buyer.` : `⚠️ ${diff.toFixed(1)}% MORE expensive than local — Check: reduce shipping/customs or negotiate factory price.`,
-      advice: competitive? 'Forward quote to buyer with confidence. Highlight QIMA verified + EU standards.' : 'Do NOT forward yet. Ask AfricanIES for cheaper shipping, or find alternative manufacturer via Discovery Machine.'
-    }
-    setComparison(result)
-    const compList=JSON.parse(localStorage.getItem('nicham_comparisons')||'[]'); compList.unshift({...result, date:new Date().toLocaleString(), localSource}); localStorage.setItem('nicham_comparisons', JSON.stringify(compList))
   }
 
   return <div className="min-h-screen bg-black p-4"><div className="max-w-6xl mx-auto">
-    <div className="bg-white rounded- p-6 flex justify-between items-center"><div><h1 className="font-black text-lg">Admin Vault — Cap 1+2+3: Bulk + Brochure + Discovery + Price Comparison</h1><p className="text-xs text-gray-500 mt-1">{products.length} products • {trending.length} trending • Price comparison key before forwarding to buyer • No visible link on marketplace</p></div><a href="/" className="bg-black text-white text-xs px-5 py-2.5 rounded-full font-bold">View Marketplace</a></div>
-
-    <div className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded- p-5 mt-4 text-black">
-      <h2 className="font-black text-sm">🔥 Trending Now — Discovery Always Tells Admin What Is Trending</h2>
-      <div className="grid md:grid-cols-3 gap-3 mt-3">{trending.slice(0,6).map((t,i)=><div key={i} className="bg-white rounded-xl p-3"><div className="font-bold text-xs">{t.name}</div><div className="text- mt-1">{t.category} • {t.demand} • Score {t.score}</div><div className="text- text-gray-600 mt-1">Why: {t.reason}</div><div className="text- mt-1 opacity-60">{t.source}</div></div>)}</div>
+    <div className="bg-white rounded- p-6 flex justify-between items-center">
+      <div><h1 className="font-black">Admin Vault — MVP with Placeholders (Escrow + Insurance for Post-MVP)</h1><p className="text-xs text-gray-500 mt-1">MVP: No escrow holding (0%), No insurance (0%) — No license risk — Post-MVP: Flip flags to 1%+1% with MTN MoMo</p></div>
+      <a href="/" className="bg-black text-white text-xs px-5 py-2.5 rounded-full font-bold">Marketplace (No Admin Link)</a>
     </div>
 
-    <div className="grid md:grid-cols-2 gap-4 mt-4">
-      <div className="bg-white rounded- p-6">
-        <h2 className="font-black">1. Paste List + 2. Brochure Upload</h2>
-        <textarea value={paste} onChange={e=>setPaste(e.target.value)} placeholder="Glyphosate 360SL 20L&#10;NPK 50kg&#10;Caustic Soda 25kg" className="w-full border rounded-xl p-3 text-sm mt-3 h-20" />
-        <div className="flex gap-2 mt-2"><select value={category} onChange={e=>setCategory(e.target.value)} className="border rounded-full px-3 py-2 text-xs font-bold"><option>Agro Chemicals</option><option>Industrial Chemicals</option><option>Fertilizers</option><option>Farm & Agro</option><option>Solar Power</option></select><button onClick={parseAndAdd} className="flex-1 bg-green-700 text-white rounded-full py-2 text-sm font-bold">+ Add List</button></div>
-        <input type="file" accept=".pdf,.txt,.csv" onChange={handleFileUpload} className="w-full border rounded-xl p-2 text-xs mt-4" />
-        <textarea value={brochureText} onChange={e=>setBrochureText(e.target.value)} placeholder="Paste brochure text with contacts: Glyphosate 20L - ChemChina export@chemchina.cn +86..." className="w-full border rounded-xl p-3 text-sm mt-2 h-20" />
-        <button onClick={parseBrochure} className="w-full bg-black text-white rounded-full py-2.5 text-sm font-bold mt-2">📄 Parse Brochure → Tabs + Contacts + Trending</button>
+    <div className="bg-yellow-50 border-2 border-yellow-400 rounded- p-5 mt-4">
+      <h2 className="font-black text-sm">🔧 Placeholders for Post-MVP — Escrow + Insurance (0% Now, 1%+1% Later)</h2>
+      <p className="text-xs mt-2"><b>Escrow 1% Placeholder:</b> In MVP, platform never holds fund — Buyer pays AfricanIES directly via Paystack split (Factory+Shipping+Customs+Delivery → AfricanIES wallet → AfricanIES pays manufacturer before pickup). No escrow license needed. Post-MVP with MTN MoMo license: Escrow 1% activates — Platform holds in MTN MoMo escrow wallet until delivery confirmed.</p>
+      <p className="text-xs mt-2"><b>Insurance 1% Placeholder:</b> In MVP, 0% — MTN not yet part of platform. Post-MVP: Insurance 1% activates via MTN MoMo insurance product.</p>
+      <p className="text-xs mt-2"><b>.env.local MVP:</b> NEXT_PUBLIC_ENABLE_ESCROW=false, NEXT_PUBLIC_ENABLE_INSURANCE=false → 0%+0% = 8% total (5% platform + 3% sourcing)</p>
+      <p className="text-xs mt-2"><b>.env.local Post-MVP:</b> NEXT_PUBLIC_ENABLE_ESCROW=true, NEXT_PUBLIC_ENABLE_INSURANCE=true → 1%+1% = 10% total (5% + 3% + 1% + 1%) — No code rewrite, just flip flags.</p>
+    </div>
 
-        <h2 className="font-black mt-6">3. Discovery + Dual Quote</h2>
-        <div className="flex gap-2 mt-3"><button onClick={discoverManufacturers} className="flex-1 bg-green-700 text-white rounded-full py-2.5 text-xs font-bold">🌍 Discover Manufacturers</button><button onClick={sendToAfricanIES} className="flex-1 bg-black text-white rounded-full py-2.5 text-xs font-bold">📤 AfricanIES</button><button onClick={sendToQIMA} className="flex-1 border border-black rounded-full py-2.5 text-xs font-bold">🔍 QIMA</button></div>
-        <div className="mt-3 space-y-2 max-h-40 overflow-auto">{discovered.map((m,i)=><div key={i} className="border rounded-xl p-2 text-xs"><b>{m.name}</b> • {m.country} • Score {m.trendingScore} • {m.email} • {m.phone}</div>)}</div>
-      </div>
-
-      <div className="bg-white rounded- p-6">
-        <h2 className="font-black">Cap 3: Price Comparison — Competitive Before Forwarding to Buyer (KEY)</h2>
-        <p className="text-xs text-gray-500 mt-1">Compare final landed quote vs verifiable local source — know competitiveness before forwarding</p>
-        <div className="space-y-3 mt-4">
-          <input value={quoteProduct} onChange={e=>setQuoteProduct(e.target.value)} placeholder="Product: e.g. Glyphosate 360SL 20L" className="w-full border rounded-xl px-4 py-2.5 text-sm" />
-          <input value={finalLanded} onChange={e=>setFinalLanded(e.target.value)} placeholder="Final Landed Quote: Factory+Shipping+Customs+Delivery+10% e.g. 14500" className="w-full border rounded-xl px-4 py-2.5 text-sm" />
-          <input value={localSource} onChange={e=>setLocalSource(e.target.value)} placeholder="Verifiable Local Source: e.g. Jumia.com, Market in Minna, Kano" className="w-full border rounded-xl px-4 py-2.5 text-sm" />
-          <input value={localPrice} onChange={e=>setLocalPrice(e.target.value)} placeholder="Local Verifiable Price e.g. 18000" className="w-full border rounded-xl px-4 py-2.5 text-sm" />
-          <button onClick={comparePrice} className="w-full bg-black text-white rounded-full py-3 text-sm font-bold">⚖️ Compare Price — Is My Quote Competitive?</button>
+    <div className="bg-white rounded- p-6 mt-4">
+      <h2 className="font-black">Admin Checkboxes — Guide App Before Calculating Final Price + Placeholders</h2>
+      <div className="grid md:grid-cols-2 gap-4 mt-4">
+        <div>
+          <label className="text-xs font-bold">Who Sourced?</label>
+          {['Discovery Engine → Accepted by AfricanIES/QIMA (Platform earns 3%)','AfricanIES all-in (charges all-in, no extra 3%)','Betterluck all-in (charges all-in, no extra 3%)','External China Agent (3% to external)','External America Agent (3% to external)'].map(opt=><label key={opt} className="flex gap-2 text-xs mt-2"><input type="radio" name="sourcedBy" checked={sourcedBy===opt} onChange={()=>setSourcedBy(opt)} />{opt}</label>)}
         </div>
-
-        {comparison && <div className={`mt-4 rounded-xl p-4 ${comparison.competitive?'bg-green-50 border-green-200 border':'bg-red-50 border-red-200 border'}`}>
-          <div className="font-black text-sm">{comparison.product}</div>
-          <div className="text-xs mt-2">Our Landed: ₦{comparison.landed.toLocaleString()} vs Local ({localSource}): ₦{comparison.local.toLocaleString()} → {comparison.diff}% {comparison.competitive?'cheaper':'more expensive'}</div>
-          <div className="text-xs mt-2 font-bold">{comparison.message}</div>
-          <div className="text- mt-2 text-gray-700">Advice: {comparison.advice}</div>
-          <div className="flex gap-2 mt-3">
-            <button onClick={()=>{ const msg=`QUOTE for ${comparison.product}: Our landed ₦${comparison.landed} vs Local ₦${comparison.local} (${localSource}) = ${comparison.diff}% ${comparison.competitive?'cheaper':'more'}. ${comparison.competitive?'✅ Competitive, verified by QIMA':'⚠️ Check needed'}`; window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank') }} className="bg-black text-white px-4 py-2 rounded-full text-xs font-bold">Forward to Buyer if Competitive</button>
-            <button onClick={()=>setComparison(null)} className="border px-4 py-2 rounded-full text-xs">Clear</button>
+        <div className="space-y-3">
+          <label className="flex gap-2 text-xs"><input type="checkbox" checked={sourcedByApp} onChange={e=>setSourcedByApp(e.target.checked)} /> Sourcing done by app? (Discovery?)</label>
+          <label className="flex gap-2 text-xs"><input type="checkbox" checked={buyerByApp} onChange={e=>setBuyerByApp(e.target.checked)} /> Buyer discovered by app?</label>
+          <label className="flex gap-2 text-xs"><input type="checkbox" checked={affiliateInvolved} onChange={e=>setAffiliateInvolved(e.target.checked)} /> Affiliate involved? 1% → <input value={affiliateCode} onChange={e=>setAffiliateCode(e.target.value)} placeholder="AFF123" className="border rounded px-2 py-1 text-xs w-20" /></label>
+          <label className="flex gap-2 text-xs"><input type="checkbox" checked={fieldAgentInvolved} onChange={e=>setFieldAgentInvolved(e.target.checked)} /> Field agent involved? 2% → <input value={fieldAgentCode} onChange={e=>setFieldAgentCode(e.target.value)} placeholder="FIELD123" className="border rounded px-2 py-1 text-xs w-20" /></label>
+          <label className="flex gap-2 text-xs"><input type="checkbox" checked={factoryVisitDone} onChange={e=>setFactoryVisitDone(e.target.checked)} /> Factory visit previously done? → Skip N10k if checked</label>
+          <label className="flex gap-2 text-xs font-bold text-green-700"><input type="checkbox" checked={true} readOnly /> AfricanIES pays manufacturer before pickup (Always)</label>
+          <div className="border-2 border-dashed border-yellow-400 rounded-xl p-3 mt-3 bg-yellow-50">
+            <div className="font-bold text-xs">Placeholders for Post-MVP (0% Now, 1% Later — Flip Flags, No Rewrite)</div>
+            <label className="flex gap-2 text-xs mt-2"><input type="checkbox" checked={escrowEnabled} onChange={e=>setEscrowEnabled(e.target.checked)} /> Escrow 1% Placeholder — MVP: OFF (0%, no holding, no license) — Post-MVP with MTN MoMo license: ON (1% — platform holds in escrow)</label>
+            <label className="flex gap-2 text-xs mt-2"><input type="checkbox" checked={insuranceEnabled} onChange={e=>setInsuranceEnabled(e.target.checked)} /> Insurance 1% Placeholder — MVP: OFF (0%, MTN not yet) — Post-MVP: ON (1% — MTN MoMo insurance)</label>
+            <p className="text- mt-2 text-gray-600">When MTN MoMo joins: Set NEXT_PUBLIC_ENABLE_ESCROW=true, NEXT_PUBLIC_ENABLE_INSURANCE=true in.env.local — Calculation auto adds 1%+1% — No code change.</p>
           </div>
-        </div>}
-
-        <div className="bg-gray-50 rounded-xl p-3 text-xs mt-4">
-          <b>How Price Comparison Works (Key):</b><br/>
-          • Final Landed = Factory + Shipping + Customs + Delivery + 10% (Platform 5% [Affiliate 1% + Field 2% + Net] + Sourcing 3% + Escrow 1% + Insurance 1%)<br/>
-          • Verifiable Local Source = Jumia link, market price, or buyer-quoted local price<br/>
-          • App shows % cheaper/more expensive + advice before forwarding to buyer<br/>
-          • Saves to localStorage for audit
         </div>
-
-        <h3 className="font-bold text-sm mt-6">Products ({products.length}) — Auto Tabs</h3>
-        <div className="mt-2 space-y-1 max-h-32 overflow-auto">{products.map(p=><div key={p.id} className="border rounded-lg p-2 text-xs flex justify-between"><span><b>{p.name}</b> • {p.category}</span><button onClick={()=>save(products.filter(x=>x.id!==p.id))} className="text-red-600">Remove</button></div>)}</div>
-
-        <h3 className="font-bold text-sm mt-4">Brochure Contacts ({contacts.length})</h3>
-        <div className="mt-2 space-y-1 max-h-24 overflow-auto">{contacts.map(c=><div key={c.id} className="border rounded-lg p-2 text-xs bg-yellow-50">Emails: {c.emails.join(', ')} • Phones: {c.phones.join(', ')}</div>)}</div>
       </div>
+
+      <div className="grid md:grid-cols-4 gap-3 mt-6">
+        <input value={factoryPrice} onChange={e=>setFactoryPrice(e.target.value)} placeholder="Factory $1000" className="border rounded-xl px-3 py-2 text-sm" />
+        <input value={shipping} onChange={e=>setShipping(e.target.value)} placeholder="Shipping $300" className="border rounded-xl px-3 py-2 text-sm" />
+        <input value={customs} onChange={e=>setCustoms(e.target.value)} placeholder="Customs $200" className="border rounded-xl px-3 py-2 text-sm" />
+        <input value={delivery} onChange={e=>setDelivery(e.target.value)} placeholder="Delivery $50" className="border rounded-xl px-3 py-2 text-sm" />
+        <input value={qimaCost} onChange={e=>setQimaCost(e.target.value)} placeholder="QIMA PSI $20" className="border rounded-xl px-3 py-2 text-sm" />
+        <input value={qty} onChange={e=>setQty(e.target.value)} placeholder="Qty 1" className="border rounded-xl px-3 py-2 text-sm" />
+        <input value={localPrice} onChange={e=>setLocalPrice(e.target.value)} placeholder="Local verifiable ₦18000" className="border rounded-xl px-3 py-2 text-sm col-span-2" />
+      </div>
+
+      <button onClick={calculateFinal} className="w-full bg-black text-white rounded-full py-3 text-sm font-bold mt-4">Calculate Final Price (MVP 8% with Placeholders 0%, Post-MVP 10%) + Economy Check</button>
+
+      {finalCalc && (
+        <div className="mt-4 p-4 bg-gray-50 rounded-xl text-xs">
+          <div className={`font-bold ${finalCalc.makesSense?'text-green-700':'text-red-600'}`}>{finalCalc.economyAdvice}</div>
+          <div className="mt-3">Landed: ${finalCalc.landed.toFixed(2)} = Base (${finalCalc.base.toFixed(2)}) + AfricanIES Net</div>
+          <div className="mt-2">App Price: ${finalCalc.landed.toFixed(2)} + Platform 5% (${finalCalc.breakdown.platform5.toFixed(2)}) + Sourcing 3% (${finalCalc.breakdown.sourcingFee.toFixed(2)} to {finalCalc.breakdown.sourcingTo}) + Escrow {finalCalc.escrowEnabled?'1%':'0% (Placeholder MVP OFF, Post-MVP ON)'} ${finalCalc.breakdown.escrow.toFixed(2)} + Insurance {finalCalc.insuranceEnabled?'1%':'0% (Placeholder MVP OFF, Post-MVP ON)'} ${finalCalc.breakdown.insurance.toFixed(2)} = <b>${finalCalc.appPrice.toFixed(2)}</b></div>
+          <div className="mt-2 font-bold">{finalCalc.competitiveness}</div>
+          <div className="mt-2 text- text-gray-500">MVP: {finalCalc.escrowEnabled?'Escrow 1% ON':'Escrow 0% OFF (no holding, no license)'} • {finalCalc.insuranceEnabled?'Insurance 1% ON':'Insurance 0% OFF (MTN not yet)'} • Post-MVP flip flags in.env.local to enable — no rewrite.</div>
+        </div>
+      )}
     </div>
   </div></div>
 }
