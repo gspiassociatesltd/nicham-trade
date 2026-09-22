@@ -1,136 +1,76 @@
 "use client"
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import { useState } from 'react'
 
-const DATA:any = {
-  '1': {name:'Solar Incubator 500 Eggs', cat:'Farm & Agro'},
-  '2': {name:'Solar Corn Sheller', cat:'Farm & Agro'},
-  '9': {name:'Cutlass + Shovel Set', cat:'Hand Tools'},
-  '10': {name:'Solar Welding Machine', cat:'Hand Tools'},
-}
+export default function Admin(){
+  const [form,setForm]=useState({
+    name:'', category:'Farm & Agro', manufacturer:'',
+    sourcedBy:'Discovery Engine -> Accepted by AfricanIES/QIMA (Platform earns 3%)',
+    factoryPrice:0, shipping:0, customs:0, delivery:0, visitFee:10000, qima:0,
+    affiliateCode:'', fieldAgentCode:'', sourcingAgentCode:'', status:'Discovery'
+  })
 
-export default function ProductPage({params}:{params:{id:string}}){
-  const p = DATA[params.id] || {name:'Product '+params.id, cat:'Hand Tools'}
-  const [qty,setQty]=useState(1)
-  const [state,setState]=useState('')
-  const [warehouse,setWarehouse]=useState('')
-  const [phone,setPhone]=useState('')
-  const [agentCode,setAgentCode]=useState('')
-  const [affCode,setAffCode]=useState('')
-  const [includeCustoms,setIncludeCustoms]=useState(true)
-  const [includeDelivery,setIncludeDelivery]=useState(true)
-  const [visitFeePaid,setVisitFeePaid]=useState(false)
-
-  useEffect(()=>{
-    const ref = new URLSearchParams(window.location.search).get('ref')
-    if(ref) setAffCode(ref)
-    else {
-      const saved = localStorage.getItem('nicham_affiliate')
-      if(saved) setAffCode(saved)
-    }
-  },[])
-
-  const requestQuote=()=>{
-    if(!phone ||!state){ alert('Phone + State required'); return }
-    if(!visitFeePaid){ alert('Please pay N10,000 factory visit fee to AfricanIES first (deductible from shipping). Covers factory visit in China.'); return }
-
-    const rfq = {
-      id: 'RFQ'+Date.now().toString().slice(-6),
-      productId: params.id,
-      productName: p.name,
-      qty, state, warehouse, phone, agentCode, affiliateCode: affCode,
-      includeCustoms, includeDelivery,
-      visitFeePaid: 10000,
-      visitFeeDeductible: true,
-      sourcingType: 'Discovery Engine -> Accepted by AfricanIES/QIMA (Platform earns 3%)',
-      status: 'Quote Requested - Awaiting AfricanIES',
-      date: new Date().toLocaleString(),
-      flags: {
-        isAffiliateInvolved:!!affCode,
-        isFieldAgentInvolved:!!agentCode,
-        isDiscoveryEngineSourcing: true,
-        isFactoryVisitFeePaid: true
-      },
-      breakdown: {
-        platformGross: '5% (shared)',
-        affiliate: affCode? `1% perpetual from platform 5% (Platform net 4%)` : 'None -> Platform keeps full 5%',
-        fieldAgent: agentCode? `2% per order from platform 5% (Platform net 3% if no affiliate, 2% if both)` : 'None -> Platform keeps full 5%',
-        sourcingAgent: '3% - Platform earns (Discovery Engine -> Accepted by AfricanIES/QIMA)',
-        escrow: '1%',
-        insurance: '1%',
-        totalMarkup: '10% total to buyer (affiliate/field deducted from platform 5%, not extra)',
-        factoryVisitFee: 'N10,000 per item type paid, deductible from shipping'
-      }
-    }
-
-    const rfqs = JSON.parse(localStorage.getItem('nicham_rfqs')||'[]')
-    rfqs.unshift(rfq)
-    localStorage.setItem('nicham_rfqs', JSON.stringify(rfqs))
-
-    const msgAfricanIES = `New RFQ ${rfq.id}: ${p.name} x${qty} -> ${state}. Phone ${phone}. Warehouse:${warehouse}. Include Customs:${includeCustoms} (must be part of AfricanIES quote), Include Delivery:${includeDelivery} (must be part). Affiliate:${affCode||'None'} 1% perpetual from platform 5%, Field Agent:${agentCode||'None'} 2% from platform 5%. Factory Visit Fee N10k paid (deductible). Sourcing: Discovery Engine -> Platform earns 3% (accepted by AfricanIES/QIMA). Need Factory + Shipping + Customs + Delivery quote.`
-    window.open(`https://wa.me/2348012345678?text=${encodeURIComponent(msgAfricanIES)}`,'_blank')
-    alert(`RFQ ${rfq.id} created! Affiliate ${affCode||'None'} 1% from platform 5%, Field ${agentCode||'None'} 2% from platform 5%, Sourcing: Platform earns 3% (Discovery). Visit Fee N10k deductible. Sent to AfricanIES via WhatsApp. Check Orders/RFQs.`)
+  const calc = (f:number,s:number,c:number,d:number,vf:number,q:number,sb:string,aff:string,field:string)=>{
+    const total = s + c + d
+    const net = Math.max(0, total - vf/1600)
+    const base = f + net + q
+    const app = base * 1.10
+    const platNet = 0.05 - (aff?0.01:0) - (field?0.02:0)
+    const isDisc = sb.includes('Discovery')
+    const isExt = sb.includes('External')
+    const isAllIn = sb.includes('AfricanIES') || sb.includes('Betterluck')
+    let sourcingEarn = ''
+    if(isDisc) sourcingEarn = 'Platform earns 3% (Discovery Engine -> Accepted by AfricanIES/QIMA)'
+    else if(isExt) sourcingEarn = `External ${form.sourcingAgentCode||'Agent'} earns 3% (not AfricanIES/Betterluck, their charges all-in)`
+    else if(isAllIn) sourcingEarn = 'No extra 3% (AfricanIES/Betterluck all-in, charges all-in)'
+    return {total, net, base, app, platNet, sourcingEarn}
   }
 
-  return (
-    <div className="min-h-screen bg-[#FFFEF5]">
-      <header className="bg-white border-b sticky top-0 z-10"><div className="max-w-4xl mx-auto px-4 py-3 flex justify-between"><Link href="/" className="text-xs border px-4 py-2 rounded-full">← Marketplace</Link><Link href="/orders" className="text-xs bg-black text-white px-4 py-2 rounded-full">Orders/RFQs</Link></div></header>
+  const c = calc(form.factoryPrice,form.shipping,form.customs,form.delivery,form.visitFee,form.qima,form.sourcedBy,form.affiliateCode,form.fieldAgentCode)
 
-      <div className="max-w-4xl mx-auto p-4">
-        <div className="grid md:grid-cols-2 gap-4 mt-4">
-          <div className="bg-white rounded-2xl p-6 border">
-            <div className="w-full h-40 bg-gradient-to-br from-green-50 to-yellow-50 rounded-2xl flex items-center justify-center text-4xl font-black">RFQ</div>
-            <div className="mt-4 text-xs bg-gray-50 rounded-xl p-3">
-              <div className="font-bold">How Nicham knows who is involved:</div>
-              <div className="mt-2 text- space-y-1">
-                <div>• Affiliate: {affCode? `CODE ${affCode} from?ref= → 1% perpetual from platform 5% (Platform net 4%)` : 'None (no?ref=) → Platform keeps full 5%'}</div>
-                <div>• Field Agent: {agentCode? `CODE ${agentCode} entered → 2% from platform 5% (Platform net 3%)` : 'None (Agent Code empty) → Platform keeps full 5%'}</div>
-                <div>• Sourcing: Discovery Engine → Accepted → Platform earns 3% (not external). If External China/America (not AfricanIES/Betterluck) → External earns 3% (their charges NOT all-in). AfricanIES/Betterluck all-in → No extra 3%.</div>
-                <div>• Visit Fee: N10,000 per item type to AfricanIES, deductible from shipping. Covers factory visit in China.</div>
-              </div>
-            </div>
+  return (
+    <div className="min-h-screen bg-gray-50 p-3">
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-white border rounded-xl p-3 flex justify-between items-center">
+          <div><h1 className="font-black text-sm">Admin Vault V114 — RFQ Tracking</h1><p className="text-xs opacity-60">How Nicham knows: Affiliate?ref= -> localStorage, Field Agent Code field, SourcedBy dropdown</p></div>
+          <a href="/" className="text-xs border px-3 py-1 rounded">Marketplace</a>
+        </div>
+
+        <div className="bg-white border rounded-xl p-3 mt-3">
+          <h2 className="font-bold text-sm">Add Product — V114 Tracking</h2>
+          <div className="grid grid-cols-2 gap-2 mt-2">
+            <input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Product Name * (from Discovery Engine)" className="border rounded px-2 py-1.5 col-span-2 text-sm"/>
+            <select value={form.category} onChange={e=>setForm({...form,category:e.target.value})} className="border rounded px-2 py-1.5 text-sm"><option>Farm & Agro</option><option>Home & Kitchen</option><option>Industrial Chemicals</option><option>Hand Tools</option></select>
+            <input value={form.manufacturer} onChange={e=>setForm({...form,manufacturer:e.target.value})} placeholder="Manufacturer * (from Discovery)" className="border rounded px-2 py-1.5 text-sm"/>
+            <select value={form.sourcedBy} onChange={e=>setForm({...form,sourcedBy:e.target.value})} className="border rounded px-2 py-1.5 col-span-2 text-sm">
+              <option>Discovery Engine -> Accepted by AfricanIES/QIMA (Platform earns 3%)</option>
+              <option>AfricanIES all-in (charges all-in, no extra 3%)</option>
+              <option>Betterluck all-in (charges all-in, no extra 3%)</option>
+              <option>External China Agent (3% to external, not AfricanIES/Betterluck)</option>
+              <option>External America Agent (3% to external)</option>
+            </select>
+            <input type="number" value={form.factoryPrice} onChange={e=>setForm({...form,factoryPrice:parseFloat(e.target.value)||0})} placeholder="Factory Price USD (from AfricanIES quote)" className="border rounded px-2 py-1.5 text-sm"/>
+            <input type="number" value={form.shipping} onChange={e=>setForm({...form,shipping:parseFloat(e.target.value)||0})} placeholder="AfricanIES Shipping USD" className="border rounded px-2 py-1.5 text-sm"/>
+            <input type="number" value={form.customs} onChange={e=>setForm({...form,customs:parseFloat(e.target.value)||0})} placeholder="AfricanIES Customs USD (must be part)" className="border rounded px-2 py-1.5 text-sm"/>
+            <input type="number" value={form.delivery} onChange={e=>setForm({...form,delivery:parseFloat(e.target.value)||0})} placeholder="AfricanIES Delivery to warehouse USD (must be part)" className="border rounded px-2 py-1.5 text-sm"/>
+            <input type="number" value={form.visitFee} onChange={e=>setForm({...form,visitFee:parseFloat(e.target.value)||0})} placeholder="Factory Visit Fee Naira (10000 per item type, deductible)" className="border rounded px-2 py-1.5 text-sm"/>
+            <input type="number" value={form.qima} onChange={e=>setForm({...form,qima:parseFloat(e.target.value)||0})} placeholder="QIMA PSI Cost USD (via WhatsApp)" className="border rounded px-2 py-1.5 text-sm"/>
+            <input value={form.affiliateCode} onChange={e=>setForm({...form,affiliateCode:e.target.value})} placeholder="Affiliate Code (from?ref=, 1% perpetual from platform 5%)" className="border rounded px-2 py-1.5 text-sm"/>
+            <input value={form.fieldAgentCode} onChange={e=>setForm({...form,fieldAgentCode:e.target.value})} placeholder="Field Agent Code (from RFQ form, 2% from platform 5%)" className="border rounded px-2 py-1.5 text-sm"/>
+            <input value={form.sourcingAgentCode} onChange={e=>setForm({...form,sourcingAgentCode:e.target.value})} placeholder="Sourcing Agent Code (if external China/America, 3%)" className="border rounded px-2 py-1.5 text-sm col-span-2"/>
           </div>
 
-          <div className="bg-white rounded-2xl p-5 border">
-            <div className="font-black text-xl">{p.name}</div><div className="text-xs text-gray-500 mt-1">{p.cat} • Product Discovery Engine • No price — RFQ only</div>
-
-            <div className="mt-4 space-y-2">
-              <div className="flex gap-2"><input type="number" value={qty} onChange={e=>setQty(parseInt(e.target.value)||1)} className="w-1/2 border rounded px-2 py-1.5 text-sm" placeholder="Qty"/><input value={phone} onChange={e=>setPhone(e.target.value)} className="w-1/2 border rounded px-2 py-1.5 text-sm" placeholder="Phone *"/></div>
-              <input value={state} onChange={e=>setState(e.target.value)} className="w-full border rounded px-2 py-1.5 text-sm" placeholder="State * (Kano, Lagos...)"/>
-              <input value={warehouse} onChange={e=>setWarehouse(e.target.value)} className="w-full border rounded px-2 py-1.5 text-sm" placeholder="Warehouse Address"/>
-
-              <div className="border rounded p-2 bg-yellow-50 text-xs">
-                <div className="font-bold">AfricanIES Full Landed Quote (must include by default):</div>
-                <label className="flex gap-2 mt-1"><input type="checkbox" checked={includeCustoms} onChange={e=>setIncludeCustoms(e.target.checked)}/> Include Customs clearing (default checked, must be part of AfricanIES quote)</label>
-                <label className="flex gap-2 mt-1"><input type="checkbox" checked={includeDelivery} onChange={e=>setIncludeDelivery(e.target.checked)}/> Include Delivery to warehouse (default checked, must be part)</label>
-                <div className="text- text-gray-500 mt-1">AfricanIES responsible for Customs + Delivery unless buyer declines, but initially must be part of quote.</div>
-              </div>
-
-              <div className="border rounded p-2 text-xs">
-                <div className="font-bold">Agent Tracking — How Nicham knows:</div>
-                <input value={agentCode} onChange={e=>setAgentCode(e.target.value)} placeholder="Field Agent Code AGENT-4567 (optional, 2% from platform 5%)" className="w-full border rounded px-2 py-1 text-xs mt-1"/>
-                <div className="text- mt-1">{agentCode?`Field Agent ${agentCode} involved → 2% from platform 5% (Platform net 3% if no affiliate)`:'No field agent code → No field agent involved → Platform keeps full 5%'}</div>
-                <input value={affCode} onChange={e=>setAffCode(e.target.value)} placeholder="Affiliate Code AFF123 (auto from?ref=, 1% perpetual from platform 5%)" className="w-full border rounded px-2 py-1 text-xs mt-2"/>
-                <div className="text- mt-1">{affCode?`Affiliate ${affCode} involved → 1% perpetual from platform 5% (Platform net 4%)`:'No affiliate code → No affiliate involved → Platform keeps full 5%'}</div>
-                <div className="text- bg-blue-50 p-2 rounded mt-2">Sourcing Agent 3%: Platform earns if Discovery Engine → Accepted by AfricanIES/QIMA. External China/America agent (not AfricanIES/Betterluck) earns 3% if they sourced (their charges NOT all-in). AfricanIES/Betterluck all-in → No extra 3% (charges all-in). Affiliate 1% + Field 2% deducted from platform 5%, not extra to buyer.</div>
-              </div>
-
-              <div className="border rounded p-2 bg-green-50 text-xs">
-                <div className="font-bold">Factory Visit Fee:</div>
-                <div>N10,000 per item type to AfricanIES for factory visit (deductible from shipping)</div>
-                <label className="flex gap-2 mt-2"><input type="checkbox" checked={visitFeePaid} onChange={e=>setVisitFeePaid(e.target.checked)}/> I paid/will pay N10k visit fee (required to request quote)</label>
-              </div>
-
-              <div className="bg-gray-50 rounded-xl p-3 text-">
-                <div className="font-bold">Quote Breakdown (10% total to buyer always):</div>
-                <div>Base = Factory + AfricanIES Full Landed (Shipping+Customs+Delivery - N10k) + QIMA PSI (via WhatsApp quote)</div>
-                <div>App = Base * 1.10 = Platform 5% shared (-1% affiliate -2% field) + Sourcing 3% (Platform if Discovery) + Escrow 1% + Insurance 1%</div>
-                <div className="font-bold mt-1">Total always 10% — affiliate/field deducted from platform 5%, not extra</div>
-              </div>
-            </div>
-
-            <button onClick={requestQuote} className="mt-4 w-full bg-green-600 text-white py-3 rounded-full font-bold text-sm">Request for Quote via WhatsApp + Save RFQ</button>
-            <div className="text- text-center text-gray-500 mt-2">Secure via MTN Escrow • QIMA inspected • Sourced and delivered by AfricanIES • Factory visit fee deductible</div>
+          <div className="mt-3 text-xs bg-gray-50 p-3 rounded">
+            <div>AfricanIES Total: ${c.total} (Ship ${form.shipping}+Customs ${form.customs}+Delivery ${form.delivery}) — Must include Customs+Delivery by default</div>
+            <div>Less Visit Fee: N{form.visitFee} = ${(form.visitFee/1600).toFixed(2)} deductible → Net AfricanIES: ${c.net.toFixed(2)}</div>
+            <div>Base = Factory ${form.factoryPrice} + AfricanIES Net ${c.net.toFixed(2)} + QIMA ${form.qima} = ${c.base.toFixed(2)}</div>
+            <div className="font-bold">App Price = Base ${c.base.toFixed(2)} * 1.10 (10% total) = ${c.app.toFixed(2)}</div>
+            <div className="mt-2 font-bold">Breakdown (Always 10% total to buyer — affiliate/field deducted from platform 5%, not extra):</div>
+            <div>• Platform Gross 5% → Net {(c.platNet*100).toFixed(0)}% after deducting Affiliate {form.affiliateCode?'1%':''} Field {form.fieldAgentCode?'2%':''} from 5%</div>
+            <div>• Affiliate: {form.affiliateCode?`${form.affiliateCode} 1% perpetual from platform 5% (Platform net ${(c.platNet*100).toFixed(0)}%)`:'None → Platform keeps full 5%'}</div>
+            <div>• Field Agent: {form.fieldAgentCode?`${form.fieldAgentCode} 2% per order from platform 5% (Platform net ${(c.platNet*100).toFixed(0)}%)`:'None → Platform keeps full 5%'}</div>
+            <div>• Sourcing Agent 3%: {c.sourcingEarn}</div>
+            <div>• Escrow 1% + Insurance 1%</div>
+            <div>• Total: 10% always — affiliate 1% + field 2% removed from platform 5%, not charged differently to buyer</div>
           </div>
         </div>
       </div>
