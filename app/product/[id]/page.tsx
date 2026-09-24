@@ -1,48 +1,45 @@
 "use client"
 import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
 
-export default function ProductPage({params:{id:string}}){
-  const [p, setP] = useState<any>(null)
-  const [qty, setQty] = useState(1)
-
+export default function ProductPage(){
+  const params = useParams()
+  const [product, setProduct] = useState<any>(null)
   useEffect(()=>{
-    const saved = localStorage.getItem('nicham_v103_products')
+    const saved = localStorage.getItem('nicham_v200_products')
     if(saved){
       try{
         const list = JSON.parse(saved)
-        const found = list.find((x:any)=> x.id===params.id)
-        setP(found)
+        const found = list.find((p:any)=> p.id===params.id)
+        if(found) setProduct(found)
       }catch{}
     }
-  },[])
+  },[params.id])
 
-  if(!p) return <div className="min-h-screen flex items-center justify-center"><div className="bg-white border rounded-xl p-6 text-sm">Product not found. <Link href="/" className="underline">Home</Link></div></div>
+  if(!product) return <div className="p-6">Loading product {params.id as string}... <Link href="/" className="underline">Back to Home</Link></div>
 
-  // REAL numbers - NO fake 801 fallback
   const ADMIN_WA = process.env.NEXT_PUBLIC_ADMIN_WA || '2347050477950'
   const AFRICANIES_WA = process.env.NEXT_PUBLIC_AFRICANIES_WA || '2347050477950'
   const QIMA_WA = process.env.NEXT_PUBLIC_QIMA_WA || '2347050477950'
 
-  const total = (p.appPrice || 0) * qty
   const rfqId = `RFQ${Date.now().toString().slice(-6)}`
-
-  const waText = `NEW RFQ ${rfqId}: ${p.name} ${p.category} x${qty} to Lagos. Total $${total.toFixed(2)}. QUOTE NEEDED: Factory Visit N10k - QIMA Inspection. Product: ${p.manufacturer} Verified by AfricanIES`
+  const waText = `NEW RFQ ${rfqId}: ${product.name} ${product.category} x1 to Lagos. Total $${product.appPrice?.toFixed(2)}. QUOTE NEEDED: Factory Visit N10k + QIMA Inspection. Product: ${product.manufacturer} Verified by AfricanIES`
   const waLink = `https://api.whatsapp.com/send/?phone=${ADMIN_WA}&text=${encodeURIComponent(waText)}`
 
-  return <div className="min-h-screen bg-[#fefce8]/50">
-    <div className="max-w-5xl mx-auto p-3">
-      <header className="flex justify-between items-center border rounded-xl p-3 bg-white">
-        <Link href="/" className="flex gap-2 items-center"><div className="w-8 h-8 bg-green-600 rounded-xl flex items-center justify-center text-white">✳</div><div className="font-black text-sm">NiChAm Trade</div></Link>
-      </header>
-      <div className="mt-4 bg-white border rounded-xl p-4">
-        <div className="font-black text-xl">{p.name}</div>
-        <div className="text-xs opacity-60">{p.manufacturer} • {p.category}</div>
-        <div className="mt-3 text-3xl font-black">${p.appPrice?.toFixed(2)}</div>
-        <div className="text- opacity-50">No factory leak. Factory +15% logistics +5% platform +3% sourcing +1% affiliate +2% field agent.</div>
-        <a href={waLink} target="_blank" className="mt-4 block bg-green-600 text-white text-center py-2.5 rounded-xl text-sm font-bold">Request RFQ via WhatsApp ({ADMIN_WA})</a>
-        <div className="text- opacity-40 mt-2">Uses NEXT_PUBLIC_ADMIN_WA={ADMIN_WA} - No 801 number</div>
+  return <div className="max-w-3xl mx-auto p-4">
+    <Link href="/" className="text-sm underline">← Back to Marketplace</Link>
+    <h1 className="text-2xl font-black mt-3">{product.name}</h1>
+    <p className="text-sm opacity-70">{product.manufacturer} • {product.category} • Sourced by {product.sourcedBy}</p>
+    <div className="mt-4 border rounded-xl p-4">
+      <div className="font-black text-xl">₦{(product.appPrice*1500).toLocaleString()} • ${product.appPrice.toFixed(2)} verified</div>
+      <div className="text-xs opacity-60 mt-1">Includes: 15% logistics + 5% platform + 3% sourcing + 1% affiliate + 2% field agent = 26% markup. Escrow 1% + Insurance 1% disabled for MVP. MoMo 30/40/30% disabled.</div>
+      <div className="mt-3 text-xs space-y-1">
+        <div>Logistics: {product.logisticsStatus} (Guarantor: AfricanIES)</div>
+        <div>Status: {product.status} • Proofs: {Object.values(product.proofs||{}).filter(Boolean).length}/5</div>
       </div>
+      <a href={waLink} target="_blank" className="mt-4 block w-full bg-green-600 text-white rounded-lg py-2.5 text-center text-sm font-bold">Request RFQ via WhatsApp ({ADMIN_WA})</a>
+      <p className="text- opacity-60 mt-2">RFQ {rfqId} • Paystack Checkout • No factory leak • No Pay on Delivery • Uses NEXT_PUBLIC_ADMIN_WA={ADMIN_WA}</p>
     </div>
   </div>
 }
