@@ -1,64 +1,48 @@
 "use client"
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
-export const dynamic = 'force-dynamic'
-
-const PRODUCTS: any = {
-  '1': {name:'Solar Incubator 500 Eggs', cat:'Farm & Agro', manufacturer:'SolarTech China', sourcedBy:'Discovery Engine -> Accepted by AfricanIES/QIMA (Platform earns 3%)'},
-  '2': {name:'Solar Corn Sheller', cat:'Farm & Agro', manufacturer:'FarmPower China', sourcedBy:'Discovery Engine -> Accepted by AfricanIES/QIMA (Platform earns 3%)'},
-  '4': {name:'Glyphosate 360SL Herbicide 20L', cat:'Chemicals', manufacturer:'ChemChina', sourcedBy:'External China Agent (3% to external)'},
-  '5': {name:'NPK 20-10-10 Fertilizer 50kg', cat:'Chemicals', manufacturer:'ChemChina', sourcedBy:'AfricanIES all-in (charges all-in, no extra 3%)'},
-  '6': {name:'Caustic Soda Flakes 25kg', cat:'Chemicals', manufacturer:'ChemIndustrial', sourcedBy:'External China Agent (3% to external)'},
-  '9': {name:'Cutlass + Shovel Set', cat:'Hand Tools', manufacturer:'ToolMaster', sourcedBy:'AfricanIES all-in (charges all-in, no extra 3%)'},
-  '10': {name:'Solar Welding Machine 200A', cat:'Hand Tools', manufacturer:'WeldSolar', sourcedBy:'Discovery Engine -> Accepted by AfricanIES/QIMA (Platform earns 3%)'},
-}
-
-export default function ProductPage({params}:{params:{id:string}}){
-  const p = PRODUCTS[params.id] || {name:'Product '+params.id, cat:'Farm & Agro', manufacturer:'Unknown', sourcedBy:'Discovery Engine -> Accepted by AfricanIES/QIMA (Platform earns 3%)'}
-  const [qty,setQty]=useState(1)
-  const [state,setState]=useState('')
-  const [warehouse,setWarehouse]=useState('')
-  const [phone,setPhone]=useState('')
-  const [agentCode,setAgentCode]=useState('')
-  const [affCode,setAffCode]=useState('')
-  const [includeCustoms,setIncludeCustoms]=useState(true)
-  const [includeDelivery,setIncludeDelivery]=useState(true)
-  const [visitFeePaid,setVisitFeePaid]=useState(false)
+export default function ProductPage({params:{id:string}}){
+  const [p, setP] = useState<any>(null)
+  const [qty, setQty] = useState(1)
 
   useEffect(()=>{
-    const ref = new URLSearchParams(window.location.search).get('ref')
-    if(ref) setAffCode(ref)
-    else { const saved = localStorage.getItem('nicham_affiliate'); if(saved) setAffCode(saved) }
+    const saved = localStorage.getItem('nicham_v103_products')
+    if(saved){
+      try{
+        const list = JSON.parse(saved)
+        const found = list.find((x:any)=> x.id===params.id)
+        setP(found)
+      }catch{}
+    }
   },[])
 
-  const requestQuote=()=>{
-    if(!phone||!state){alert('Phone + State required');return}
-    if(!visitFeePaid){alert('Please pay N10,000 factory visit fee to AfricanIES first (deductible)');return}
-    const rfqId='RFQ'+Date.now().toString().slice(-6)
-    const isFactoryVisited = localStorage.getItem(`factory_visited_${p.manufacturer}`) === 'true'
-    const isDiscovery = p.sourcedBy.includes('Discovery')
-    const rfq={id:rfqId, productId:params.id, productName:p.name, qty, state, warehouse, phone, agentCode, affiliateCode:affCode, includeCustoms, includeDelivery, visitFeePaid:10000, status:'Quote Requested', date:new Date().toLocaleString()}
-    const rfqs=JSON.parse(localStorage.getItem('nicham_rfqs')||'[]'); rfqs.unshift(rfq); localStorage.setItem('nicham_rfqs',JSON.stringify(rfqs)); localStorage.setItem(`factory_visited_${p.manufacturer}`,'true')
-    let africanMsg = `NEW RFQ ${rfqId}: ${p.name} x${qty} to ${state}, Warehouse: ${warehouse}. Phone ${phone}.%0A%0AQUOTE NEEDED:%0A`
-    if(!isFactoryVisited) africanMsg += `- Factory Visit N10k (except if previously done) to ${p.manufacturer} - FIRST VISIT%0A`; else africanMsg += `- Factory Visit: Previously done (skip fee)%0A`
-    if(!isDiscovery) africanMsg += `- Sourcing Fee (except done through discovery engine) - ${p.sourcedBy}%0A`; else africanMsg += `- Sourcing: Discovery Engine -> Platform earns 3% (no external)%0A`
-    africanMsg += `- Logistics: Shipping + Customs ${includeCustoms?'INCLUDED':'EXCLUDED'} + Delivery ${includeDelivery?'INCLUDED':'EXCLUDED'} to ${warehouse}, ${state}%0A- Visit Fee N10k deductible%0A%0AAffiliate:${affCode||'None'} 1% from platform 5%, Field:${agentCode||'None'} 2% from platform 5%`
-    const qimaMsg = `NEW PSI REQUEST ${rfqId}: ${p.name} from ${p.manufacturer} x${qty}. Factory ${p.manufacturer}. QIMA to quote for PSI. Customer ${phone}, ${state}.`
-    window.open(`https://wa.me/2348012345678?text=${africanMsg}`,'_blank')
-    setTimeout(()=> window.open(`https://wa.me/2348098765432?text=${qimaMsg}`,'_blank'),1200)
-    alert(`RFQ ${rfqId} created! Sent to AfricanIES + QIMA`)
-  }
+  if(!p) return <div className="min-h-screen flex items-center justify-center"><div className="bg-white border rounded-xl p-6 text-sm">Product not found. <Link href="/" className="underline">Home</Link></div></div>
 
-  return (
-    <div className="min-h-screen bg-[#FFFEF5]">
-      <header className="bg-white border-b sticky top-0 z-10"><div className="max-w-4xl mx-auto px-4 py-3 flex justify-between"><Link href="/" className="text-xs border px-4 py-2 rounded-full font-bold">← Marketplace</Link><Link href="/orders" className="text-xs bg-black text-white px-4 py-2 rounded-full font-bold">Orders/RFQs</Link></div></header>
-      <div className="max-w-4xl mx-auto p-4">
-        <div className="grid md:grid-cols-2 gap-4 mt-4">
-          <div className="bg-white rounded-2xl p-6 border"><div className="w-full h-40 bg-gradient-to-br from-green-50 to-yellow-50 rounded-2xl flex items-center justify-center text-4xl font-black text-green-800">RFQ</div><div className="mt-4 text-xs bg-gray-50 rounded-xl p-3"><div className="font-bold">Dual WhatsApp:</div><div className="mt-2 text-">• AfricanIES: Factory visit (except if previously done) + Sourcing (except discovery) + Logistics + Customs + Delivery<br/>• QIMA: PSI quote only</div></div></div>
-          <div className="bg-white rounded-2xl p-5 border"><div className="font-black text-xl">{p.name}</div><div className="text-xs text-gray-500 mt-1">{p.cat} • {p.manufacturer} • {p.sourcedBy}</div><div className="mt-4 space-y-2"><div className="flex gap-2"><input type="number" value={qty} onChange={e=>setQty(parseInt(e.target.value)||1)} className="w-1/2 border rounded-xl px-3 py-2 text-sm" placeholder="Qty"/><input value={phone} onChange={e=>setPhone(e.target.value)} className="w-1/2 border rounded-xl px-3 py-2 text-sm" placeholder="Phone *"/></div><input value={state} onChange={e=>setState(e.target.value)} className="w-full border rounded-xl px-3 py-2 text-sm" placeholder="State *"/><input value={warehouse} onChange={e=>setWarehouse(e.target.value)} className="w-full border rounded-xl px-3 py-2 text-sm" placeholder="Warehouse"/><div className="border rounded-xl p-3 bg-yellow-50 text-xs"><label className="flex gap-2"><input type="checkbox" checked={includeCustoms} onChange={e=>setIncludeCustoms(e.target.checked)}/> Include Customs</label><label className="flex gap-2 mt-1"><input type="checkbox" checked={includeDelivery} onChange={e=>setIncludeDelivery(e.target.checked)}/> Include Delivery</label></div><div className="border rounded-xl p-3 text-xs"><input value={agentCode} onChange={e=>setAgentCode(e.target.value)} placeholder="Field Agent Code 2% from 5%" className="w-full border rounded-lg px-3 py-2 text-xs"/><input value={affCode} onChange={e=>setAffCode(e.target.value)} placeholder="Affiliate Code 1% from 5%" className="w-full border rounded-lg px-3 py-2 text-xs mt-2"/></div><div className="border rounded-xl p-3 bg-green-50 text-xs">Factory Visit Fee: N10,000 deductible<label className="flex gap-2 mt-2 font-bold"><input type="checkbox" checked={visitFeePaid} onChange={e=>setVisitFeePaid(e.target.checked)}/> I paid N10k (required)</label></div></div><button onClick={requestQuote} className="mt-4 w-full bg-green-700 text-white py-3 rounded-full font-bold text-sm">Request for Quote via WhatsApp (AfricanIES + QIMA)</button></div>
-        </div>
+  // REAL numbers - NO fake 801 fallback
+  const ADMIN_WA = process.env.NEXT_PUBLIC_ADMIN_WA || '2347050477950'
+  const AFRICANIES_WA = process.env.NEXT_PUBLIC_AFRICANIES_WA || '2347050477950'
+  const QIMA_WA = process.env.NEXT_PUBLIC_QIMA_WA || '2347050477950'
+
+  const total = (p.appPrice || 0) * qty
+  const rfqId = `RFQ${Date.now().toString().slice(-6)}`
+
+  const waText = `NEW RFQ ${rfqId}: ${p.name} ${p.category} x${qty} to Lagos. Total $${total.toFixed(2)}. QUOTE NEEDED: Factory Visit N10k - QIMA Inspection. Product: ${p.manufacturer} Verified by AfricanIES`
+  const waLink = `https://api.whatsapp.com/send/?phone=${ADMIN_WA}&text=${encodeURIComponent(waText)}`
+
+  return <div className="min-h-screen bg-[#fefce8]/50">
+    <div className="max-w-5xl mx-auto p-3">
+      <header className="flex justify-between items-center border rounded-xl p-3 bg-white">
+        <Link href="/" className="flex gap-2 items-center"><div className="w-8 h-8 bg-green-600 rounded-xl flex items-center justify-center text-white">✳</div><div className="font-black text-sm">NiChAm Trade</div></Link>
+      </header>
+      <div className="mt-4 bg-white border rounded-xl p-4">
+        <div className="font-black text-xl">{p.name}</div>
+        <div className="text-xs opacity-60">{p.manufacturer} • {p.category}</div>
+        <div className="mt-3 text-3xl font-black">${p.appPrice?.toFixed(2)}</div>
+        <div className="text- opacity-50">No factory leak. Factory +15% logistics +5% platform +3% sourcing +1% affiliate +2% field agent.</div>
+        <a href={waLink} target="_blank" className="mt-4 block bg-green-600 text-white text-center py-2.5 rounded-xl text-sm font-bold">Request RFQ via WhatsApp ({ADMIN_WA})</a>
+        <div className="text- opacity-40 mt-2">Uses NEXT_PUBLIC_ADMIN_WA={ADMIN_WA} - No 801 number</div>
       </div>
     </div>
-  )
+  </div>
 }
