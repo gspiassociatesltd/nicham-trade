@@ -4,82 +4,109 @@ import { supabase } from '../lib/supabase'
 
 type Product = { id: string, title: string, description: string, category: string }
 
+const icons: any = {
+  solar_panel: '☀️',
+  lithium_battery: '🔋',
+  tubular_battery: '🔋',
+  inverter: '⚡',
+  street_light: '💡',
+  solar_pump: '🚿',
+  default: '📦'
+}
+
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function load() {
-      const { data, error } = await supabase.from('products').select('*').eq('is_homepage_visible', true).order('title')
-      if (!error && data) setProducts(data)
+      const { data } = await supabase.from('products').select('*').eq('is_homepage_visible', true).order('title')
+      if (data) setProducts(data)
       setLoading(false)
     }
     load()
   }, [])
 
   return (
-    <main className="min-h-screen bg-white">
-      <header className="border-b sticky top-0 bg-white/90 backdrop-blur z-10">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="font-black text-xl text-[#0a3d1f]">NiChAm Trade <span className="text-[#f4b400]">.</span></div>
-          <div className="text-sm text-gray-600">GSPI Associates Ltd | Enugu</div>
-        </div>
-      </header>
+    <>
+      <style>{`
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#fff;color:#111}
+        .header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid #eee}
+        .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+        .hero{background:#0a3d1f;color:white;padding:72px 0}
+        .hero-grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:40px;align-items:center}
+        .badge{background:#f4b400;color:#0a3d1f;font-weight:800;font-size:11px;padding:6px 12px;border-radius:100px;letter-spacing:0.6px}
+        .h1{font-size:44px;line-height:1.05;font-weight:900;margin-top:16px;letter-spacing:-0.5px}
+        .sub{color:rgba(255,255,255,0.75);margin-top:16px;font-size:17px;line-height:1.5}
+        .btn{padding:14px 22px;border-radius:12px;font-weight:700;border:0;cursor:pointer}
+        .btn-gold{background:#f4b400;color:#0a3d1f}
+        .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.25);color:white}
+        .quote-card{background:white;color:#0a3d1f;border-radius:20px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,0.25)}
+        .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+        .pcard{border:1px solid #eee;border-radius:16px;padding:20px;transition:all 0.2s;background:white}
+        .pcard:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.08);border-color:#0a3d1f22}
+        .pill{display:inline-block;background:#e6f4ea;color:#137333;font-size:11px;font-weight:700;padding:5px 10px;border-radius:100px;text-transform:uppercase}
+        .icon{font-size:28px;margin-bottom:12px}
+        @media(max-width:900px){.hero-grid{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.h1{font-size:32px}}
+      `}</style>
 
-      <section className="bg-[#0a3d1f] text-white">
-        <div className="max-w-6xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
+      <div className="header">
+        <div className="wrap" style={{display:'flex',justifyContent:'space-between',alignItems:'center',height:64}}>
+          <div style={{fontWeight:900,fontSize:20,color:'#0a3d1f'}}>NiChAm Trade <span style={{color:'#f4b400'}}>.</span></div>
+          <div style={{fontSize:12,background:'#f5f5f5',padding:'6px 12px',borderRadius:100}}>GSPI Associates Ltd | Enugu • 13 Tables Ready</div>
+        </div>
+      </div>
+
+      <div className="hero">
+        <div className="wrap hero-grid">
           <div>
-            <div className="inline-block bg-[#f4b400] text-[#0a3d1f] px-3 py-1 text-xs font-bold rounded-full mb-4">DUAL-QUOTE MVP LIVE</div>
-            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">Source Solar & EV Direct from China - With Honest Naira Landed Cost</h1>
-            <p className="mt-4 text-white/80">Ex-China FOB + Africanies 72hr Naira Quote + Tax. No Hidden Factory Name. CE/TUV Verified.</p>
-            <div className="mt-6 flex gap-3">
-              <button className="bg-[#f4b400] text-[#0a3d1f] px-6 py-3 rounded font-bold">Request Quote</button>
-              <button className="border border-white/30 px-6 py-3 rounded font-bold">How It Works</button>
+            <span className="badge">DUAL-QUOTE MVP LIVE • SUPABASE kjeyqcxbqwiqenigpcot</span>
+            <h1 className="h1">Source Solar & EV Direct from China - With Honest Naira Landed Cost</h1>
+            <p className="sub">Ex-China FOB + Africanies 72hr Naira Quote + Tax. No Hidden Factory Name. CE/TUV Verified. Machinery is search-only hidden for compliance.</p>
+            <div style={{display:'flex',gap:12,marginTop:24}}>
+              <button className="btn btn-gold">Request Quote →</button>
+              <button className="btn btn-ghost">How It Works</button>
             </div>
-            <div className="mt-6 text-xs text-white/60">Supabase Project: kjeyqcxbqwiqenigpcot.supabase.co | 13 Tables Ready</div>
           </div>
-          <div className="bg-white text-[#0a3d1f] p-6 rounded-2xl shadow-2xl">
-            <div className="text-sm font-bold mb-3">Sample Dual Quote</div>
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between"><span>Ex-China (Factory)</span><span className="font-bold">$1,200 FOB</span></div>
-              <div className="flex justify-between"><span>Africanies (72hr NGN)</span><span className="font-bold">₦1,850,000</span></div>
-              <div className="border-t pt-2 flex justify-between font-black"><span>Landed Lagos</span><span>₦2,050,000 inc. Tax</span></div>
-            </div>
-            <div className="mt-4 text-xs text-gray-500">Manufacturer: Hidden | CE Verified ✓ | TUV ✓</div>
+          <div className="quote-card">
+            <div style={{fontWeight:800,fontSize:13,marginBottom:16,letterSpacing:0.5}}>SAMPLE DUAL QUOTE</div>
+            <div style={{display:'flex',justifyContent:'space-between',padding:'10px 0',borderBottom:'1px dashed #eee',fontSize:14}}><span>Ex-China (Factory)</span><strong>$1,200 FOB</strong></div>
+            <div style={{display:'flex',justifyContent:'space-between',padding:'10px 0',borderBottom:'1px dashed #eee',fontSize:14}}><span>Africanies (72hr NGN)</span><strong>₦1,850,000</strong></div>
+            <div style={{display:'flex',justifyContent:'space-between',padding:'14px 0',fontWeight:900,fontSize:15}}><span>Landed Lagos</span><span>₦2,050,000 inc. Tax</span></div>
+            <div style={{marginTop:12,fontSize:11,color:'#666'}}>Manufacturer: Hidden | CE ✓ | TUV ✓ | GSPI Tax Invoice</div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <section className="max-w-6xl mx-auto px-6 py-12">
-        <h2 className="text-2xl font-bold text-[#0a3d1f]">Homepage Products - From Supabase</h2>
-        <p className="text-gray-600 mt-2">{loading ? 'Loading from Supabase...' : `${products.length} products visible - machinery is search-only hidden as per your rule`}</p>
-        
-        <div className="grid md:grid-cols-3 gap-6 mt-8">
+      <div className="wrap" style={{padding:'48px 24px'}}>
+        <h2 style={{fontSize:24,fontWeight:800,color:'#0a3d1f'}}>Homepage Products - From Supabase</h2>
+        <p style={{color:'#666',marginTop:8}}>{loading ? 'Loading 5 products from Supabase...' : `${products.length} products visible • Machinery search-only hidden as per your rule`}</p>
+        <div className="grid3" style={{marginTop:28}}>
           {products.map(p => (
-            <div key={p.id} className="border rounded-xl p-5 hover:shadow-lg transition">
-              <div className="text-xs bg-green-100 text-green-800 inline-block px-2 py-1 rounded-full mb-2">{p.category}</div>
-              <h3 className="font-bold">{p.title}</h3>
-              <p className="text-sm text-gray-600 mt-2">{p.description}</p>
-              <div className="mt-4 text-xs text-gray-500">Verified CE Manufacturer | Homepage Visible ✓</div>
+            <div key={p.id} className="pcard">
+              <div className="icon">{icons[p.category] || icons.default}</div>
+              <span className="pill">{p.category.replace('_',' ')}</span>
+              <h3 style={{fontWeight:800,marginTop:12}}>{p.title}</h3>
+              <p style={{fontSize:13,color:'#666',marginTop:8,lineHeight:1.5}}>{p.description}</p>
+              <div style={{marginTop:14,fontSize:11,color:'#999'}}>Verified CE Manufacturer • Homepage Visible ✓</div>
             </div>
           ))}
+          {!loading && products.length===0 && <div style={{gridColumn:'span 3',padding:40,textAlign:'center',border:'1px dashed #ccc',borderRadius:16}}>No products - Run the RLS fix SQL I gave you in Supabase SQL Editor, then refresh Vercel</div>}
         </div>
-      </section>
+      </div>
 
-      <section className="bg-gray-50 border-t">
-        <div className="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-3 gap-8 text-sm">
-          <div><div className="font-bold">1. Search Machinery</div><div className="text-gray-600 mt-1">Search-only, never homepage visible - compliance rule</div></div>
-          <div><div className="font-bold">2. Get Dual Quotes</div><div className="text-gray-600 mt-1">factory_quotes + africanies_quotes + auto-charger detection</div></div>
-          <div><div className="font-bold">3. We Source & Clear</div><div className="text-gray-600 mt-1">Merged quote, tax invoice, receipts tracking</div></div>
+      <div style={{background:'#f8faf8',borderTop:'1px solid #eee',padding:'40px 0'}}>
+        <div className="wrap" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:24}}>
+          <div><div style={{width:32,height:32,borderRadius:100,background:'#f4b400',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800}}>1</div><div style={{fontWeight:700,marginTop:12}}>Search Machinery</div><div style={{fontSize:13,color:'#666',marginTop:4}}>Search-only, never homepage visible - compliance rule you defined</div></div>
+          <div><div style={{width:32,height:32,borderRadius:100,background:'#f4b400',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800}}>2</div><div style={{fontWeight:700,marginTop:12}}>Get Dual Quotes</div><div style={{fontSize:13,color:'#666',marginTop:4}}>factory_quotes + africanies_quotes + auto-charger detection for EVs</div></div>
+          <div><div style={{width:32,height:32,borderRadius:100,background:'#f4b400',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800}}>3</div><div style={{fontWeight:700,marginTop:12}}>We Source & Clear</div><div style={{fontSize:13,color:'#666',marginTop:4}}>Merged quote, tax invoice, receipts tracking - full compliance</div></div>
         </div>
-      </section>
+      </div>
 
-      <footer className="bg-[#0a3d1f] text-white/70 py-8">
-        <div className="max-w-6xl mx-auto px-6 text-sm flex justify-between">
-          <div>© 2025 NiChAm Trade - A GSPI Associates Ltd Platform</div>
-          <div>13 Tables: users, products, manufacturers, factory_quotes, africanies_quotes, merged_quotes, orders, receipts, tax_records...</div>
-        </div>
+      <footer style={{background:'#0a3d1f',color:'rgba(255,255,255,0.6)',padding:'24px 0',fontSize:12}}>
+        <div className="wrap" style={{display:'flex',justifyContent:'space-between'}}><span>© 2025 NiChAm Trade - GSPI Associates Ltd Platform</span><span>13 Tables Ready</span></div>
       </footer>
-    </main>
+    </>
   )
 }
