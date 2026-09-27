@@ -1,130 +1,114 @@
+
 "use client"
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { supabase } from '../lib/supabase'
 
-type Product = { id:string; name:string; category:string; manufacturer:string; status:string; source:string }
+type Quote = {
+  id: string, created_at: string, product_title: string,
+  customer_name: string, customer_phone: string, quantity: string,
+  location: string, self_clear: boolean, platform_fee_ngn: number,
+  delivery_type: string, status: string
+}
+type Scout = { id: string, request_code: string, title: string, status: string, waitlist_count: number, rejection_reason?: string }
 
-export default function Admin(){
-  const [products,setProducts]=useState<Product[]>([])
-  const [sourcedBy,setSourcedBy]=useState('Discovery Engine → Accepted by AfricanIES/QIMA (Platform earns 3%)')
-  const [sourcedByApp,setSourcedByApp]=useState(true)
-  const [buyerByApp,setBuyerByApp]=useState(true)
-  const [affiliateInvolved,setAffiliateInvolved]=useState(false)
-  const [affiliateCode,setAffiliateCode]=useState('')
-  const [fieldAgentInvolved,setFieldAgentInvolved]=useState(false)
-  const [fieldAgentCode,setFieldAgentCode]=useState('')
-  const [factoryVisitDone,setFactoryVisitDone]=useState(false)
-  // Placeholders for Post-MVP — 0% in MVP
-  const [escrowEnabled,setEscrowEnabled]=useState(false) // Placeholder: false MVP, true post-MVP with MTN MoMo license
-  const [insuranceEnabled,setInsuranceEnabled]=useState(false) // Placeholder: false MVP, true post-MVP with MTN
-  const [factoryPrice,setFactoryPrice]=useState('1000')
-  const [shipping,setShipping]=useState('300')
-  const [customs,setCustoms]=useState('200')
-  const [delivery,setDelivery]=useState('50')
-  const [qimaCost,setQimaCost]=useState('20')
-  const [qty,setQty]=useState('1')
-  const [localPrice,setLocalPrice]=useState('')
-  const [finalCalc,setFinalCalc]=useState<any>(null)
+export default function AdminPage() {
+  const [quotes, setQuotes] = useState<Quote[]>([])
+  const [scouts, setScouts] = useState<Scout[]>([])
+  const [active, setActive] = useState<'quotes'|'scouts'>('quotes')
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [password, setPassword] = useState('')
 
-  useEffect(()=>{
-    const saved=localStorage.getItem('nicham_v103_products'); if(saved) try{ setProducts(JSON.parse(saved)) }catch{}
-    // Read placeholders from env if set
-    if(typeof window!=='undefined'){
-      // @ts-ignore
-      const esc = (window as any).NEXT_PUBLIC_ENABLE_ESCROW; const ins = (window as any).NEXT_PUBLIC_ENABLE_INSURANCE;
-      // For MVP, env false — placeholders 0%
-    }
-  },[])
-
-  const calculateFinal=()=>{
-    const f=parseFloat(factoryPrice)||0; const s=parseFloat(shipping)||0; const c=parseFloat(customs)||0; const d=parseFloat(delivery)||0; const q=parseFloat(qimaCost)||0; const qTy=parseFloat(qty)||1
-    const productCost=f*qTy; const transport=s+c+d; const ratio=transport/productCost
-    let economyAdvice=''; let makesSense=true; let minQty=1
-    if(productCost>0 && transport>productCost){ makesSense=false; minQty=Math.ceil(50000/f); economyAdvice=`⚠️ Too small: Product $${productCost} < Transport $${transport}. Advise MOQ ${minQty} units.` }
-    else if(ratio>0.3){ makesSense=false; economyAdvice=`⚠️ Transport ${Math.round(ratio*100)}% of product — advise MOQ.` }
-    else { economyAdvice=`✅ Economical: Transport ${Math.round(ratio*100)}%` }
-
-    const visitFee = factoryVisitDone?0:10000/1500
-    const africanIESNet = s+c+d+visitFee
-    const base = f*qTy + q
-    const landed = base + africanIESNet
-    let sourcingFee=0; let sourcingTo='';
-    if(sourcedBy.includes('Discovery')){ sourcingFee=landed*0.03; sourcingTo='Platform (Discovery Engine)'; }
-    else if(sourcedBy.includes('External')){ sourcingFee=landed*0.03; sourcingTo=sourcedBy; }
-    else { sourcingFee=0; sourcingTo='All-in (no extra 3%)' }
-    const platform5=landed*0.05; const affiliate1=affiliateInvolved?landed*0.01:0; const field2=fieldAgentInvolved?landed*0.02:0; const platformNet=platform5-affiliate1-field2
-    // PLACEHOLDERS — 0% MVP, 1% post-MVP with MTN MoMo license
-    const escrow = escrowEnabled? landed*0.01 : 0 // Placeholder: Escrow 1% post-MVP
-    const insurance = insuranceEnabled? landed*0.01 : 0 // Placeholder: Insurance 1% post-MVP MTN
-    const appPrice=landed+platform5+sourcingFee+escrow+insurance
-
-    const local=parseFloat(localPrice)||0; let competitiveness=''; if(local>0){ const diff=((appPrice-local)/local)*100; competitiveness=appPrice<local?`✅ ${Math.abs(diff).toFixed(1)}% CHEAPER than local`:`⚠️ ${diff.toFixed(1)}% MORE than local` }
-
-    setFinalCalc({
-      productCost, transport, ratio:(ratio*100).toFixed(1)+'%', economyAdvice, makesSense, minQty,
-      base, landed, appPrice, visitFee, escrowEnabled, insuranceEnabled,
-      breakdown:{ factory:f*qTy, africanIESNet, qima:q, platformNet, affiliate1, field2, sourcingFee, sourcingTo, escrow, insurance, platform5 },
-      competitiveness, sourcedBy
-    })
+  const checkAdmin = () => {
+    if(password === 'GSPI2026') { setIsAdmin(true); loadData() }
+    else alert('Wrong password - Ask Godwin for admin password')
   }
 
-  return <div className="min-h-screen bg-black p-4"><div className="max-w-6xl mx-auto">
-    <div className="bg-white rounded- p-6 flex justify-between items-center">
-      <div><h1 className="font-black">Admin Vault — MVP with Placeholders (Escrow + Insurance for Post-MVP)</h1><p className="text-xs text-gray-500 mt-1">MVP: No escrow holding (0%), No insurance (0%) — No license risk — Post-MVP: Flip flags to 1%+1% with MTN MoMo</p></div>
-      <a href="/" className="bg-black text-white text-xs px-5 py-2.5 rounded-full font-bold">Marketplace (No Admin Link)</a>
-    </div>
+  const loadData = async () => {
+    const { data: q } = await supabase.from('africanies_quotes').select('*').order('created_at',{ascending:false}).limit(100)
+    if(q) setQuotes(q)
+    const { data: s } = await supabase.from('scout_requests').select('*').order('created_at',{ascending:false}).limit(50)
+    if(s) setScouts(s)
+  }
 
-    <div className="bg-yellow-50 border-2 border-yellow-400 rounded- p-5 mt-4">
-      <h2 className="font-black text-sm">🔧 Placeholders for Post-MVP — Escrow + Insurance (0% Now, 1%+1% Later)</h2>
-      <p className="text-xs mt-2"><b>Escrow 1% Placeholder:</b> In MVP, platform never holds fund — Buyer pays AfricanIES directly via Paystack split (Factory+Shipping+Customs+Delivery → AfricanIES wallet → AfricanIES pays manufacturer before pickup). No escrow license needed. Post-MVP with MTN MoMo license: Escrow 1% activates — Platform holds in MTN MoMo escrow wallet until delivery confirmed.</p>
-      <p className="text-xs mt-2"><b>Insurance 1% Placeholder:</b> In MVP, 0% — MTN not yet part of platform. Post-MVP: Insurance 1% activates via MTN MoMo insurance product.</p>
-      <p className="text-xs mt-2"><b>.env.local MVP:</b> NEXT_PUBLIC_ENABLE_ESCROW=false, NEXT_PUBLIC_ENABLE_INSURANCE=false → 0%+0% = 8% total (5% platform + 3% sourcing)</p>
-      <p className="text-xs mt-2"><b>.env.local Post-MVP:</b> NEXT_PUBLIC_ENABLE_ESCROW=true, NEXT_PUBLIC_ENABLE_INSURANCE=true → 1%+1% = 10% total (5% + 3% + 1% + 1%) — No code rewrite, just flip flags.</p>
-    </div>
+  useEffect(()=>{ if(isAdmin) loadData() },[isAdmin])
 
-    <div className="bg-white rounded- p-6 mt-4">
-      <h2 className="font-black">Admin Checkboxes — Guide App Before Calculating Final Price + Placeholders</h2>
-      <div className="grid md:grid-cols-2 gap-4 mt-4">
-        <div>
-          <label className="text-xs font-bold">Who Sourced?</label>
-          {['Discovery Engine → Accepted by AfricanIES/QIMA (Platform earns 3%)','AfricanIES all-in (charges all-in, no extra 3%)','Betterluck all-in (charges all-in, no extra 3%)','External China Agent (3% to external)','External America Agent (3% to external)'].map(opt=><label key={opt} className="flex gap-2 text-xs mt-2"><input type="radio" name="sourcedBy" checked={sourcedBy===opt} onChange={()=>setSourcedBy(opt)} />{opt}</label>)}
+  if(!isAdmin) {
+    return (
+      <div style={{maxWidth:400,margin:'100px auto',padding:24,border:'1px solid #eee',borderRadius:16}}>
+        <h2 style={{fontWeight:900}}>Admin Login - NiChAm Trade</h2>
+        <p style={{fontSize:13,color:'#666',marginTop:8}}>Admin must be in the know of all quote requests. Enter password to view all quotes, platform fees, self-clearing requests, and scout waitlists.</p>
+        <input type="password" placeholder="Admin password" value={password} onChange={e=>setPassword(e.target.value)} style={{width:'100%',padding:12,marginTop:14,border:'1px solid #ddd',borderRadius:10}} />
+        <button onClick={checkAdmin} style={{width:'100%',marginTop:12,padding:12,background:'#0a3d1f',color:'white',border:0,borderRadius:10,fontWeight:700}}>View All Quotes →</button>
+        <p style={{fontSize:11,color:'#888',marginTop:12}}>Master Build Doc: Admin sees all requests, platform fees hidden from buyers, WhatsApp logs.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{maxWidth:1200,margin:'0 auto',padding:'20px 24px',fontFamily:'system-ui'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <h1 style={{fontWeight:900,color:'#0a3d1f'}}>Admin Dashboard - All Quote Requests (In The Know)</h1>
+        <button onClick={()=>setIsAdmin(false)} style={{padding:'8px 14px',border:'1px solid #eee',borderRadius:8}}>Logout</button>
+      </div>
+      
+      <div style={{display:'flex',gap:10,marginTop:20}}>
+        <button onClick={()=>setActive('quotes')} style={{padding:'10px 18px',borderRadius:10,fontWeight:700,border:0,background:active==='quotes'?'#0a3d1f':'#eee',color:active==='quotes'?'white':'#333'}}>All Quotes ({quotes.length}) - Platform Fee Visible</button>
+        <button onClick={()=>setActive('scouts')} style={{padding:'10px 18px',borderRadius:10,fontWeight:700,border:0,background:active==='scouts'?'#f4b400':'#eee',color:active==='scouts'?'#0a3d1f':'#333'}}>Scout Requests ({scouts.length})</button>
+        <button onClick={loadData} style={{padding:'10px 18px',borderRadius:10,border:'1px solid #eee',background:'white'}}>🔄 Refresh</button>
+      </div>
+
+      {active==='quotes' ? (
+        <div style={{marginTop:20,overflowX:'auto'}}>
+          <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
+            <thead>
+              <tr style={{background:'#f8faf8',textAlign:'left'}}>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Date</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Product</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Customer</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Phone</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Qty/Loc</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Delivery Type</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee',background:'#fffbe6'}}>Platform Fee (Admin Only)</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Status</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {quotes.map(q=>(
+                <tr key={q.id} style={{borderBottom:'1px solid #f0f0f0'}}>
+                  <td style={{padding:10}}>{new Date(q.created_at).toLocaleString()}</td>
+                  <td style={{padding:10,fontWeight:700}}>{q.product_title}</td>
+                  <td style={{padding:10}}>{q.customer_name}</td>
+                  <td style={{padding:10}}><a href={`https://wa.me/${q.customer_phone.replace(/\D/g,'')}`} target="_blank" style={{color:'#0a3d1f',fontWeight:700}}>{q.customer_phone}</a></td>
+                  <td style={{padding:10}}>{q.quantity} / {q.location}</td>
+                  <td style={{padding:10}}><span style={{padding:'4px 8px',borderRadius:20,fontSize:11,fontWeight:700,background:q.self_clear?'#e6f4ea':'#fffbe6',color:q.self_clear?'#137333':'#a37a00'}}>{q.self_clear?'SELF-CLEAR ₦35k':'FULL DOOR ₦85k'}</span><br/><span style={{fontSize:11}}>{q.delivery_type}</span></td>
+                  <td style={{padding:10,background:'#fffbe6',fontWeight:900}}>₦{Number(q.platform_fee_ngn||0).toLocaleString()}<br/><span style={{fontSize:10,color:'#666',fontWeight:400}}>Hidden from buyer</span></td>
+                  <td style={{padding:10}}><span style={{padding:'4px 8px',borderRadius:20,background:'#eee',fontSize:11}}>{q.status}</span></td>
+                  <td style={{padding:10}}><a href={`https://wa.me/${q.customer_phone.replace(/\D/g,'')}?text=Hello ${encodeURIComponent(q.customer_name)}, your landed price for ${encodeURIComponent(q.product_title)} valid for 3 days only is...`} target="_blank" style={{padding:'6px 10px',background:'#0a3d1f',color:'white',borderRadius:8,textDecoration:'none',fontSize:11}}>Reply WhatsApp</a></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p style={{fontSize:12,color:'#666',marginTop:12}}>💡 Admin is in the know of ALL requests: Customer never sees platform fee column. You see full breakdown: FOB+Freight+Customs+Fee = Landed. Self-clearing requests show lower fee.</p>
         </div>
-        <div className="space-y-3">
-          <label className="flex gap-2 text-xs"><input type="checkbox" checked={sourcedByApp} onChange={e=>setSourcedByApp(e.target.checked)} /> Sourcing done by app? (Discovery?)</label>
-          <label className="flex gap-2 text-xs"><input type="checkbox" checked={buyerByApp} onChange={e=>setBuyerByApp(e.target.checked)} /> Buyer discovered by app?</label>
-          <label className="flex gap-2 text-xs"><input type="checkbox" checked={affiliateInvolved} onChange={e=>setAffiliateInvolved(e.target.checked)} /> Affiliate involved? 1% → <input value={affiliateCode} onChange={e=>setAffiliateCode(e.target.value)} placeholder="AFF123" className="border rounded px-2 py-1 text-xs w-20" /></label>
-          <label className="flex gap-2 text-xs"><input type="checkbox" checked={fieldAgentInvolved} onChange={e=>setFieldAgentInvolved(e.target.checked)} /> Field agent involved? 2% → <input value={fieldAgentCode} onChange={e=>setFieldAgentCode(e.target.value)} placeholder="FIELD123" className="border rounded px-2 py-1 text-xs w-20" /></label>
-          <label className="flex gap-2 text-xs"><input type="checkbox" checked={factoryVisitDone} onChange={e=>setFactoryVisitDone(e.target.checked)} /> Factory visit previously done? → Skip N10k if checked</label>
-          <label className="flex gap-2 text-xs font-bold text-green-700"><input type="checkbox" checked={true} readOnly /> AfricanIES pays manufacturer before pickup (Always)</label>
-          <div className="border-2 border-dashed border-yellow-400 rounded-xl p-3 mt-3 bg-yellow-50">
-            <div className="font-bold text-xs">Placeholders for Post-MVP (0% Now, 1% Later — Flip Flags, No Rewrite)</div>
-            <label className="flex gap-2 text-xs mt-2"><input type="checkbox" checked={escrowEnabled} onChange={e=>setEscrowEnabled(e.target.checked)} /> Escrow 1% Placeholder — MVP: OFF (0%, no holding, no license) — Post-MVP with MTN MoMo license: ON (1% — platform holds in escrow)</label>
-            <label className="flex gap-2 text-xs mt-2"><input type="checkbox" checked={insuranceEnabled} onChange={e=>setInsuranceEnabled(e.target.checked)} /> Insurance 1% Placeholder — MVP: OFF (0%, MTN not yet) — Post-MVP: ON (1% — MTN MoMo insurance)</label>
-            <p className="text- mt-2 text-gray-600">When MTN MoMo joins: Set NEXT_PUBLIC_ENABLE_ESCROW=true, NEXT_PUBLIC_ENABLE_INSURANCE=true in.env.local — Calculation auto adds 1%+1% — No code change.</p>
+      ) : (
+        <div style={{marginTop:20}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16}}>
+            {scouts.map(s=>(
+              <div key={s.id} style={{border:'1px solid #eee',borderRadius:16,padding:16,background:s.status==='rejected'?'#ffeaea':'white'}}>
+                <div style={{fontSize:11,fontWeight:800}}>{s.request_code} • {s.status.toUpperCase()}</div>
+                <h4 style={{marginTop:8}}>{s.title}</h4>
+                <div style={{marginTop:8,fontSize:12}}>👥 {s.waitlist_count} waiting (public sees count only)</div>
+                {s.rejection_reason && <div style={{marginTop:8,fontSize:11,color:'#a00',background:'#ffeaea',padding:8,borderRadius:8}}>Rejected: {s.rejection_reason}</div>}
+                <div style={{marginTop:10,display:'flex',gap:6}}>
+                  <button style={{padding:'6px 10px',fontSize:11,borderRadius:8,border:'1px solid #eee'}}>View Waitlist Phones (Admin Only)</button>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-4 gap-3 mt-6">
-        <input value={factoryPrice} onChange={e=>setFactoryPrice(e.target.value)} placeholder="Factory $1000" className="border rounded-xl px-3 py-2 text-sm" />
-        <input value={shipping} onChange={e=>setShipping(e.target.value)} placeholder="Shipping $300" className="border rounded-xl px-3 py-2 text-sm" />
-        <input value={customs} onChange={e=>setCustoms(e.target.value)} placeholder="Customs $200" className="border rounded-xl px-3 py-2 text-sm" />
-        <input value={delivery} onChange={e=>setDelivery(e.target.value)} placeholder="Delivery $50" className="border rounded-xl px-3 py-2 text-sm" />
-        <input value={qimaCost} onChange={e=>setQimaCost(e.target.value)} placeholder="QIMA PSI $20" className="border rounded-xl px-3 py-2 text-sm" />
-        <input value={qty} onChange={e=>setQty(e.target.value)} placeholder="Qty 1" className="border rounded-xl px-3 py-2 text-sm" />
-        <input value={localPrice} onChange={e=>setLocalPrice(e.target.value)} placeholder="Local verifiable ₦18000" className="border rounded-xl px-3 py-2 text-sm col-span-2" />
-      </div>
-
-      <button onClick={calculateFinal} className="w-full bg-black text-white rounded-full py-3 text-sm font-bold mt-4">Calculate Final Price (MVP 8% with Placeholders 0%, Post-MVP 10%) + Economy Check</button>
-
-      {finalCalc && (
-        <div className="mt-4 p-4 bg-gray-50 rounded-xl text-xs">
-          <div className={`font-bold ${finalCalc.makesSense?'text-green-700':'text-red-600'}`}>{finalCalc.economyAdvice}</div>
-          <div className="mt-3">Landed: ${finalCalc.landed.toFixed(2)} = Base (${finalCalc.base.toFixed(2)}) + AfricanIES Net</div>
-          <div className="mt-2">App Price: ${finalCalc.landed.toFixed(2)} + Platform 5% (${finalCalc.breakdown.platform5.toFixed(2)}) + Sourcing 3% (${finalCalc.breakdown.sourcingFee.toFixed(2)} to {finalCalc.breakdown.sourcingTo}) + Escrow {finalCalc.escrowEnabled?'1%':'0% (Placeholder MVP OFF, Post-MVP ON)'} ${finalCalc.breakdown.escrow.toFixed(2)} + Insurance {finalCalc.insuranceEnabled?'1%':'0% (Placeholder MVP OFF, Post-MVP ON)'} ${finalCalc.breakdown.insurance.toFixed(2)} = <b>${finalCalc.appPrice.toFixed(2)}</b></div>
-          <div className="mt-2 font-bold">{finalCalc.competitiveness}</div>
-          <div className="mt-2 text- text-gray-500">MVP: {finalCalc.escrowEnabled?'Escrow 1% ON':'Escrow 0% OFF (no holding, no license)'} • {finalCalc.insuranceEnabled?'Insurance 1% ON':'Insurance 0% OFF (MTN not yet)'} • Post-MVP flip flags in.env.local to enable — no rewrite.</div>
         </div>
       )}
     </div>
-  </div></div>
+  )
 }
+
