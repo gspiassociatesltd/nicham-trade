@@ -1,18 +1,10 @@
 
-GITHUB UPLOAD METHOD - NO TERMINAL NEEDED
+UPLOAD INSTRUCTIONS - GITHUB METHOD
 
-1. Go to github.com/gspiassociatesltd/nicham-trade
-2. Click: Add file -> Upload files
-3. Drag these from this folder:
-   - app/admin/page.tsx
-   - lib/supabase.ts
-4. Keep folder structure! GitHub will show app/admin/page.tsx
+1. Unzip this file
+2. Go to github.com/gspiassociatesltd/nicham-trade
+3. Add file -> Upload files
+4. Drag app/page.tsx and lib/supabase.ts - keep folder structure
 5. Commit to main
-6. Vercel will deploy automatically in 30s -> Ready
-
-After deploy:
-Go to https://nicham-trade.vercel.app/admin
-Enter: gspiassociatesltd@gmail.com
-Click Login Instantly -> Dashboard!
-
-No email validation needed!
+6. Vercel deploys in 30s -> Ready
+7. Open nicham-trade.vercel.app -> See beautiful products!
