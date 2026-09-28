@@ -1,0 +1,4 @@
+# SECURITY ENV - ADD TO VERCEL
+CRON_SECRET=your-random-32-char-secret-here-nicham-trade-2026
+DELIVERY_SECRET=nicham-delivery-secret-2026-secure
+INSURANCE_ENABLED=true
