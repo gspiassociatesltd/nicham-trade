@@ -19,8 +19,6 @@ export default function Home(){
         <div style={{maxWidth:1200, margin:'0 auto', padding:'14px 20px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
           <div style={{fontWeight:900, fontSize:22}}>NiChAm Trade<span style={{color:'#16a34a'}}>.</span></div>
           <div style={{display:'flex', gap:12, fontSize:13}}>
-            <a href="/admin" style={{color:'#16a34a', fontWeight:700, textDecoration:'none'}}>Admin</a>
-            <a href="/admin/escrow" style={{color:'#111', fontWeight:700, textDecoration:'none'}}>Escrow</a>
             <a href="https://wa.me/2347050477950" target="_blank" style={{background:'#16a34a', color:'#fff', padding:'8px 14px', borderRadius:100, textDecoration:'none', fontWeight:700}}>WhatsApp</a>
           </div>
         </div>
@@ -28,14 +26,12 @@ export default function Home(){
       <section style={{maxWidth:1200, margin:'0 auto', padding:'30px 20px', display:'grid', gridTemplateColumns:'1.2fr 0.8fr', gap:20}}>
         <div style={{background:'#111', color:'#fff', borderRadius:24, padding:28}}>
           <div style={{background:'#16a34a', display:'inline-block', padding:'4px 10px', borderRadius:100, fontSize:11, fontWeight:700}}>NIGERIA SOLAR MARKETPLACE - INSURED ESCROW</div>
-          <h1 style={{fontSize:34, fontWeight:900, marginTop:12}}>Pay 100% Secure<br/><span style={{color:'#86efac'}}>Auto Escrow</span> - No Manual Pay</h1>
-          <p style={{color:'#aaa', fontSize:14, marginTop:10}}>Client pays 100% upfront via Paystack (insured). 20% auto to AfricanIES on payment, 40% auto on Bill of Lading upload, 40% auto on customer QR scan + platform fee auto to you. License safe - no manual instruction.</p>
-          {/* REMOVED FAKE CLAIM LINE - No 500+ homes, no phone/location fake trust */}
+          <h1 style={{fontSize:34, fontWeight:900, marginTop:12}}>Pay 100% Secure<br/><span style={{color:'#86efac'}}>Auto Escrow</span></h1>
+          <p style={{color:'#aaa', fontSize:14, marginTop:10}}>Pay 100% upfront via Paystack (insured). Auto releases to logistics on milestones. License safe - no manual payment instruction from you.</p>
         </div>
         <div style={{background:'#fff', border:'1px solid #eee', borderRadius:24, padding:18, fontSize:13}}>
-          <b>How Escrow Works (Auto - Insured)</b><br/>
-          <div style={{marginTop:10}}>✓ 20% auto → Payment confirmed<br/>✓ 40% auto → AfricanIES uploads BOL<br/>✓ 40% auto → Customer scans QR delivery code<br/>✓ 10% platform fee auto to NiChAm Trade<br/>✓ Funds insured</div>
-          <div style={{marginTop:12, fontSize:11, color:'#666'}}>Contact: WhatsApp button above for genuine inquiries. No fake testimonials until real sales.</div>
+          <b>How It Works - Simple & Safe</b><br/>
+          <div style={{marginTop:10, fontSize:12, lineHeight:1.6}}>✓ Pay 100% securely via Paystack<br/>✓ Funds held insured until delivery<br/>✓ Track shipment via AfricanIES<br/>✓ Scan QR to confirm delivery</div>
         </div>
       </section>
       <div style={{maxWidth:1200, margin:'0 auto', padding:'0 20px', display:'flex', gap:8, flexWrap:'wrap'}}>
@@ -51,12 +47,12 @@ export default function Home(){
               <div style={{fontSize:11, color:'#888'}}>{p.category} {p.badge ? `• ${p.badge}` : ''}</div>
               <div style={{fontWeight:700, fontSize:13, marginTop:4}}>{p.name}</div>
               <div style={{marginTop:6}}><b>₦{p.price.toLocaleString()}</b> <span style={{fontSize:11, color:'#999', textDecoration:'line-through'}}>₦{p.oldPrice.toLocaleString()}</span></div>
-              <button onClick={()=>window.open('https://wa.me/2347050477950?text=I want '+encodeURIComponent(p.name), '_blank')} style={{marginTop:10, width:'100%', background:'#111', color:'#fff', border:0, padding:'10px', borderRadius:10, fontSize:12, fontWeight:700}}>Order via WhatsApp - Pay 100% Secure</button>
+              <button onClick={()=>window.open('https://wa.me/2347050477950?text=I want '+encodeURIComponent(p.name), '_blank')} style={{marginTop:10, width:'100%', background:'#111', color:'#fff', border:0, padding:'10px', borderRadius:10, fontSize:12, fontWeight:700}}>Order via WhatsApp</button>
             </div>
           </div>
         ))}
       </section>
-      <footer style={{background:'#111', color:'#fff', padding:'20px', textAlign:'center', fontSize:11, color:'#666'}}>
+      <footer style={{background:'#111', padding:'20px', textAlign:'center', fontSize:11, color:'#888'}}>
         NiChAm Trade © 2026 • GSPI Associates Ltd • Honest business - no fake claims. Real escrow, insured payments.
       </footer>
     </div>
