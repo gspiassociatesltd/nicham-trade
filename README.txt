@@ -1,1 +1,1 @@
-FIX: Removed fake claims - No 500+ homes, no phone/location trust line. Upload app/page.tsx via GitHub.
+BEAUTIFUL DESIGN - Glassmorphism, gradients, Apple-like cards, hover lift, no fake claims, no admin link. Upload app/page.tsx
