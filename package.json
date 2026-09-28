@@ -2,28 +2,7 @@
   "name": "nicham-trade",
   "version": "1.0.0-mvp",
   "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "audit:fix": "npm audit fix && npm audit",
-    "security:check": "npm audit --audit-level=moderate"
-  },
-  "dependencies": {
-    "next": "14.2.32",
-    "@supabase/supabase-js": "2.45.4",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
-  },
-  "devDependencies": {
-    "@types/node": "20.11.30",
-    "@types/react": "18.3.3",
-    "typescript": "5.4.5",
-    "eslint": "8.57.0",
-    "eslint-config-next": "14.2.32"
-  },
-  "overrides": {
-    "next": "14.2.32"
-  }
+  "scripts": { "dev": "next dev", "build": "next build", "start": "next start" },
+  "dependencies": { "next": "14.2.32", "@supabase/supabase-js": "2.45.4", "react": "18.3.1", "react-dom": "18.3.1" },
+  "devDependencies": { "@types/node": "20.11.30", "@types/react": "18.3.3", "typescript": "5.4.5" }
 }
