@@ -1,1 +1,1 @@
-FINAL COMPLETE - Delete vercel.json on GitHub first if still exists, then upload this ZIP. Vercel will be Ready. Framework: Next.js. Includes homepage products + auto insured escrow license safe + security hardening.
+FIX: Removed fake claims - No 500+ homes, no phone/location trust line. Upload app/page.tsx via GitHub.
