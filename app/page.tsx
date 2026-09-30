@@ -1,3 +1,4 @@
+
 "use client"
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
@@ -29,6 +30,8 @@ export default function HomeMasterAligned(){
   const [scoutLoading, setScoutLoading] = useState(false)
   const [scoutMsg, setScoutMsg] = useState('')
   const [loading, setLoading] = useState(true)
+  const [openSolar, setOpenSolar] = useState<string|null>(null)
+  const [openChem, setOpenChem] = useState<string|null>(null)
 
   useEffect(()=>{ loadSolarAgri() },[])
 
@@ -97,52 +100,69 @@ export default function HomeMasterAligned(){
       <div style={{ maxWidth:1280, margin:'0 auto', padding:'20px' }}>
         <div style={{ background:'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)', borderRadius:20, padding:'20px', color:'#fff' }}>
           <h1 style={{ fontSize:24, fontWeight:900, margin:'0 0 6px' }}>Solar & Agri Displayed. Chemicals via Search Engine.</h1>
-          <p style={{ fontSize:12, color:'#cbd5e1', margin:'0 0 18px' }}>Homepage shows Solar & Agri Equipment grouped by use. Industrial Chemicals grouped by use via Search Engine - We scout 1688.com + USA factories in 24h. Valid 3 Days.</p>
+          <p style={{ fontSize:12, color:'#cbd5e1', margin:'0 0 18px' }}>Click a dropdown to filter Solar & Agri or search Chemicals. We scout 1688.com + USA factories in 24h. Valid 3 Days.</p>
           
+          {/* SOLAR DROPDOWN - CLEAN */}
           <div style={{ background:'rgba(255,255,255,0.08)', borderRadius:16, padding:16, border:'1px solid rgba(255,255,255,0.12)', marginBottom:14 }}>
-            <div style={{ fontSize:12, fontWeight:900, marginBottom:10, color:'#38bdf8', letterSpacing:'0.5px', display:'flex', justifyContent:'space-between' }}>
-              <span>SOLAR & AGRI DISPLAY - Grouped by Use</span>
-              <button onClick={()=>setSelectedClass('All')} style={{ fontSize:10, padding:'3px 8px', borderRadius:100, border:0, background: selectedClass==='All' ? '#fff' : 'rgba(255,255,255,0.15)', color: selectedClass==='All' ? '#0f172a' : '#fff', cursor:'pointer', fontWeight:800 }}>Show All ({products.length})</button>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12 }}>
+              <div style={{ fontSize:12, fontWeight:900, color:'#38bdf8', letterSpacing:'0.5px' }}>☀ SOLAR & AGRI DISPLAY - Select Category</div>
+              <button onClick={()=>setSelectedClass('All')} style={{ fontSize:10, padding:'5px 12px', borderRadius:100, border:0, background: selectedClass==='All' ? '#fff' : 'rgba(255,255,255,0.15)', color: selectedClass==='All' ? '#0f172a' : '#fff', cursor:'pointer', fontWeight:800 }}>Show All ({products.length})</button>
             </div>
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:12 }}>
-              {Object.entries(SOLAR_GROUPS).map(([group, items])=>(
-                <div key={group} style={{ background:'rgba(0,0,0,0.25)', borderRadius:12, padding:10, border:'1px solid rgba(255,255,255,0.08)' }}>
-                  <div style={{ fontSize:10, fontWeight:900, color:'#38bdf8', marginBottom:6, textTransform:'uppercase', letterSpacing:'0.8px' }}>{group}</div>
-                  <div style={{ display:'flex', flexWrap:'wrap', gap:5 }}>
-                    {items.map((item)=>{
-                      const isActive = selectedClass === item
-                      return (
-                        <button key={item} onClick={()=>{ setSelectedClass(item); setSearchMode(false); setScoutMsg('') }} style={{ fontSize:10, padding:'4px 8px', borderRadius:100, border:'1px solid rgba(255,255,255,0.12)', background: isActive ? '#fff' : 'rgba(255,255,255,0.07)', color: isActive ? '#0f172a' : '#e2e8f0', cursor:'pointer', fontWeight: isActive ? 800 : 400 }}>{item}</button>
-                      )
-                    })}
+            <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+              {Object.entries(SOLAR_GROUPS).map(([group, items])=>{
+                const isOpen = openSolar === group
+                return (
+                  <div key={group} style={{ position:'relative' }}>
+                    <button onClick={()=>setOpenSolar(isOpen ? null : group)} style={{ fontSize:11, padding:'8px 14px', borderRadius:100, border:'1px solid rgba(255,255,255,0.15)', background: isOpen ? '#38bdf8' : 'rgba(0,0,0,0.3)', color: isOpen ? '#0f172a' : '#fff', cursor:'pointer', fontWeight:700, display:'flex', alignItems:'center', gap:6 }}>
+                      {group} <span style={{ fontSize:10 }}>{isOpen ? '▲' : '▼'}</span>
+                    </button>
+                    {isOpen && (
+                      <div style={{ position:'absolute', top:'38px', left:0, background:'#fff', borderRadius:12, padding:8, minWidth:200, boxShadow:'0 10px 30px rgba(0,0,0,0.3)', zIndex:10, border:'1px solid #e2e8f0' }}>
+                        {items.map(item=>{
+                          const active = selectedClass === item
+                          return (
+                            <button key={item} onClick={()=>{ setSelectedClass(item); setSearchMode(false); setOpenSolar(null); setScoutMsg('') }} style={{ display:'block', width:'100%', textAlign:'left', fontSize:11, padding:'7px 10px', borderRadius:8, border:0, background: active ? '#0f172a' : 'transparent', color: active ? '#fff' : '#0f172a', cursor:'pointer', marginBottom:2, fontWeight: active ? 800 : 400 }}>{item}</button>
+                          )
+                        })}
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
+            {selectedClass !== 'All' && <div style={{ marginTop:10, fontSize:11, color:'#38bdf8' }}>Filtering: <b>{selectedClass}</b></div>}
           </div>
 
+          {/* CHEMICAL DROPDOWN - CLEAN */}
           <div style={{ background:'rgba(255,255,255,0.08)', borderRadius:16, padding:16, border:'1px dashed rgba(255,255,255,0.15)' }}>
-            <div style={{ fontSize:12, fontWeight:900, marginBottom:10, color:'#facc15', letterSpacing:'0.5px' }}>INDUSTRIAL CHEMICAL SEARCH ENGINE - Grouped by Use</div>
+            <div style={{ fontSize:12, fontWeight:900, marginBottom:10, color:'#facc15', letterSpacing:'0.5px' }}>🧪 INDUSTRIAL CHEMICAL SEARCH ENGINE - Grouped by Use</div>
             
-            <div style={{ display:'flex', gap:8, maxWidth:700, marginBottom:14 }}>
-              <input value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleChemicalSearch()} placeholder="Search chemical: e.g. Caustic Soda, Paracetamol, Soda Ash..." style={{ flex:1, padding:'12px 16px', borderRadius:100, border:0, fontSize:13, outline:'none' }} />
-              <button onClick={handleChemicalSearch} disabled={scoutLoading} style={{ padding:'12px 20px', borderRadius:100, border:0, background:'#facc15', color:'#0f172a', fontWeight:900, cursor:'pointer', fontSize:13 }}>{scoutLoading?'Scouting...':'Search Chemical'}</button>
+            <div style={{ display:'flex', gap:8, maxWidth:700, marginBottom:12 }}>
+              <input value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleChemicalSearch()} placeholder="Search chemical: e.g. Caustic Soda, Paracetamol..." style={{ flex:1, padding:'12px 16px', borderRadius:100, border:0, fontSize:13, outline:'none' }} />
+              <button onClick={handleChemicalSearch} disabled={scoutLoading} style={{ padding:'12px 20px', borderRadius:100, border:0, background:'#facc15', color:'#0f172a', fontWeight:900, cursor:'pointer', fontSize:13 }}>{scoutLoading?'Scouting...':'Search'}</button>
               {searchMode && <button onClick={()=>{ setSearchMode(false); setSearch(''); setSearchResults([]); setScoutMsg('') }} style={{ padding:'12px 16px', borderRadius:100, border:'1px solid rgba(255,255,255,0.2)', background:'transparent', color:'#fff', cursor:'pointer', fontSize:12 }}>Show Solar & Agri</button>}
             </div>
 
-            {scoutMsg && <div style={{ marginBottom:14, background:'rgba(255,255,255,0.1)', padding:'10px 14px', borderRadius:12, fontSize:12 }}>{scoutMsg}</div>}
+            {scoutMsg && <div style={{ marginBottom:12, background:'rgba(255,255,255,0.1)', padding:'10px 14px', borderRadius:12, fontSize:12 }}>{scoutMsg}</div>}
 
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:12 }}>
-              {Object.entries(CHEMICAL_GROUPS).map(([group, chemicals])=>(
-                <div key={group} style={{ background:'rgba(0,0,0,0.2)', borderRadius:12, padding:10, border:'1px solid rgba(255,255,255,0.08)' }}>
-                  <div style={{ fontSize:10, fontWeight:900, color:'#facc15', marginBottom:6, textTransform:'uppercase', letterSpacing:'0.8px' }}>{group}</div>
-                  <div style={{ display:'flex', flexWrap:'wrap', gap:5 }}>
-                    {chemicals.map((chem)=>(
-                      <button key={chem} onClick={()=>{ setSearch(chem); setTimeout(()=>handleChemicalSearch(),100) }} style={{ fontSize:10, padding:'4px 8px', borderRadius:100, border:'1px solid rgba(255,255,255,0.12)', background:'rgba(255,255,255,0.07)', color:'#e2e8f0', cursor:'pointer' }}>{chem}</button>
-                    ))}
+            <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+              {Object.entries(CHEMICAL_GROUPS).map(([group, chemicals])=>{
+                const isOpen = openChem === group
+                return (
+                  <div key={group} style={{ position:'relative' }}>
+                    <button onClick={()=>setOpenChem(isOpen ? null : group)} style={{ fontSize:11, padding:'8px 14px', borderRadius:100, border:'1px solid rgba(255,255,255,0.15)', background: isOpen ? '#facc15' : 'rgba(0,0,0,0.3)', color: isOpen ? '#0f172a' : '#fff', cursor:'pointer', fontWeight:700, display:'flex', alignItems:'center', gap:6 }}>
+                      {group} <span style={{ fontSize:10 }}>{isOpen ? '▲' : '▼'}</span>
+                    </button>
+                    {isOpen && (
+                      <div style={{ position:'absolute', top:'38px', left:0, background:'#fff', borderRadius:12, padding:8, minWidth:220, boxShadow:'0 10px 30px rgba(0,0,0,0.3)', zIndex:10, border:'1px solid #e2e8f0' }}>
+                        {chemicals.map(chem=>(
+                          <button key={chem} onClick={()=>{ setSearch(chem); setOpenChem(null); setTimeout(()=>handleChemicalSearch(),100) }} style={{ display:'block', width:'100%', textAlign:'left', fontSize:11, padding:'7px 10px', borderRadius:8, border:0, background:'transparent', color:'#0f172a', cursor:'pointer', marginBottom:2 }}>{chem}</button>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         </div>
@@ -181,3 +201,4 @@ export default function HomeMasterAligned(){
     </div>
   )
 }
+
