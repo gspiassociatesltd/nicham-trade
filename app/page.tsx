@@ -14,10 +14,12 @@ const CLASS_BUTTONS = [
   'Rice Thresher','Solar Water Pump','Solar Panel','Inverter','Battery'
 ]
 
-const CHEMICAL_EXAMPLES = [
-  'Caustic Soda Flakes','Soda Ash Light','Hydrogen Peroxide 50%',
-  'Sulphuric Acid','Chlorine Powder'
-]
+const CHEMICAL_GROUPS = {
+  "Pharmaceuticals": ["Paracetamol Powder", "Crystallized Sorbitol"],
+  "Commodity Chemicals": ["Caustic Soda", "Hydrochloric Acid", "Nitric Acid", "Stearic Acid", "Acetic Acid", "Hydrogen Peroxide"],
+  "Paint Chemicals": ["Natrosol", "Calcium Carbonate"],
+  "Water Treatment": ["Soda Ash", "Calcium Hypochlorite", "Poly Aluminum Chloride", "Aluminum Sulphate", "Ferric Chloride"]
+}
 
 export default function HomeMasterAligned(){
   const [products, setProducts] = useState<any[]>([])
@@ -45,8 +47,7 @@ export default function HomeMasterAligned(){
       (p.title||'').toLowerCase().includes('palm oil') ||
       p.is_new_invention
     )
-    if(filtered.length>0) setProducts(filtered)
-    else setProducts(list.slice(0,16))
+    setProducts(filtered.length>0 ? filtered : list.slice(0,16))
     setLoading(false)
   }
 
@@ -66,7 +67,7 @@ export default function HomeMasterAligned(){
         body: JSON.stringify({ keyword: `industrial chemical ${search}`, weightKg: 25, source: 'chemical_search_engine' })
       })
       const j = await r.json()
-      setScoutMsg(j.sr_id ? `✅ Chemical Scout: Draft ${j.sr_id} for "${search}" - Admin verifies factory & WhatsApp quote in 24h` : `Chemical Scout triggered for "${search}"`)
+      setScoutMsg(j.sr_id ? `✅ Chemical Scout: Draft ${j.sr_id} for "${search}" - Admin verifies factory & WhatsApp quote in 24h (Valid 3 Days)` : `Chemical Scout triggered for "${search}" - Sourcing from 1688.com & USA chemical factories`)
       setSearchResults([])
     }catch(e:any){
       setScoutMsg(`Chemical Search: Request logged for "${search}" - Admin will source in 24h`)
@@ -75,9 +76,8 @@ export default function HomeMasterAligned(){
   }
 
   function feeInfo(base:number, isNew?:boolean){
-    let rate = 0.10
+    let rate = base>2000000 ? 0.08 : 0.10
     if(isNew) rate=0.12
-    else if(base>2000000) rate=0.08
     return { rate, landed: Math.round(base*(1+rate)) }
   }
 
@@ -100,25 +100,35 @@ export default function HomeMasterAligned(){
       <div style={{ maxWidth:1280, margin:'0 auto', padding:'20px' }}>
         <div style={{ background:'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)', borderRadius:20, padding:'20px', color:'#fff' }}>
           <h1 style={{ fontSize:24, fontWeight:900, margin:'0 0 6px' }}>Solar & Agri Displayed. Chemicals via Search Engine.</h1>
-          <p style={{ fontSize:12, color:'#cbd5e1', margin:'0 0 14px' }}>Homepage shows <b>Solar & Agri Equipment</b>. For Industrial Chemicals, use Search Engine below - We scout 1688.com + USA factories in 24h. Valid 3 Days.</p>
+          <p style={{ fontSize:12, color:'#cbd5e1', margin:'0 0 14px' }}>Homepage shows <b>Solar & Agri Equipment</b>. For Industrial Chemicals grouped by use, use Search Engine below - We scout 1688.com + USA factories in 24h. Valid 3 Days.</p>
           
-          <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:14 }}>
+          <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:18 }}>
             {CLASS_BUTTONS.map(k=>(
               <button key={k} onClick={()=>{ setSelectedClass(k); setSearchMode(false); setSearch(''); setScoutMsg('') }} style={{ fontSize:11, padding:'6px 12px', borderRadius:100, border:'1px solid rgba(255,255,255,0.2)', background: selectedClass===k ? '#fff' : 'rgba(255,255,255,0.1)', color: selectedClass===k ? '#0f172a' : '#e2e8f0', cursor:'pointer', fontWeight: selectedClass===k ? 900 : 400 }}>{k}</button>
             ))}
           </div>
 
-          <div style={{ background:'rgba(255,255,255,0.08)', borderRadius:16, padding:12, border:'1px dashed rgba(255,255,255,0.15)' }}>
-            <div style={{ fontSize:11, fontWeight:800, marginBottom:6, color:'#facc15' }}>🧪 INDUSTRIAL CHEMICAL SEARCH ENGINE ONLY</div>
-            <div style={{ display:'flex', gap:8, maxWidth:700 }}>
-              <input value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleChemicalSearch()} placeholder="Search industrial chemical: e.g. Caustic Soda Flakes, Soda Ash Light, Hydrogen Peroxide..." style={{ flex:1, padding:'12px 16px', borderRadius:100, border:0, fontSize:13, outline:'none' }} />
+          <div style={{ background:'rgba(255,255,255,0.08)', borderRadius:16, padding:16, border:'1px dashed rgba(255,255,255,0.15)' }}>
+            <div style={{ fontSize:12, fontWeight:900, marginBottom:10, color:'#facc15', letterSpacing:'0.5px' }}>🧪 INDUSTRIAL CHEMICAL SEARCH ENGINE - Grouped by Use</div>
+            
+            <div style={{ display:'flex', gap:8, maxWidth:700, marginBottom:14 }}>
+              <input value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleChemicalSearch()} placeholder="Search chemical: e.g. Caustic Soda, Paracetamol, Soda Ash..." style={{ flex:1, padding:'12px 16px', borderRadius:100, border:0, fontSize:13, outline:'none' }} />
               <button onClick={handleChemicalSearch} disabled={scoutLoading} style={{ padding:'12px 20px', borderRadius:100, border:0, background:'#facc15', color:'#0f172a', fontWeight:900, cursor:'pointer', fontSize:13 }}>{scoutLoading?'Scouting...':'🔍 Search Chemical'}</button>
               {searchMode && <button onClick={()=>{ setSearchMode(false); setSearch(''); setSearchResults([]); setScoutMsg('') }} style={{ padding:'12px 16px', borderRadius:100, border:'1px solid rgba(255,255,255,0.2)', background:'transparent', color:'#fff', cursor:'pointer', fontSize:12 }}>Show Solar & Agri</button>}
             </div>
-            {scoutMsg && <div style={{ marginTop:12, background:'rgba(255,255,255,0.1)', padding:'10px 14px', borderRadius:12, fontSize:12 }}>{scoutMsg}</div>}
-            <div style={{ marginTop:10, display:'flex', gap:6, flexWrap:'wrap' }}>
-              {CHEMICAL_EXAMPLES.map(k=>(
-                <button key={k} onClick={()=>{ setSearch(k); setTimeout(()=>handleChemicalSearch(),100) }} style={{ fontSize:10, padding:'5px 10px', borderRadius:100, border:'1px solid rgba(255,255,255,0.15)', background:'rgba(255,255,255,0.08)', color:'#e2e8f0', cursor:'pointer' }}>{k}</button>
+
+            {scoutMsg && <div style={{ marginBottom:14, background:'rgba(255,255,255,0.1)', padding:'10px 14px', borderRadius:12, fontSize:12 }}>{scoutMsg}</div>}
+
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:12 }}>
+              {Object.entries(CHEMICAL_GROUPS).map(([group, chemicals])=>(
+                <div key={group} style={{ background:'rgba(0,0,0,0.2)', borderRadius:12, padding:10, border:'1px solid rgba(255,255,255,0.08)' }}>
+                  <div style={{ fontSize:10, fontWeight:900, color:'#facc15', marginBottom:6, textTransform:'uppercase', letterSpacing:'0.8px' }}>{group}</div>
+                  <div style={{ display:'flex', flexWrap:'wrap', gap:5 }}>
+                    {chemicals.map((chem:any)=>(
+                      <button key={chem} onClick={()=>{ setSearch(chem); setTimeout(()=>handleChemicalSearch(),100) }} style={{ fontSize:10, padding:'4px 8px', borderRadius:100, border:'1px solid rgba(255,255,255,0.12)', background:'rgba(255,255,255,0.07)', color:'#e2e8f0', cursor:'pointer' }}>{chem}</button>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           </div>
@@ -139,7 +149,6 @@ export default function HomeMasterAligned(){
                 <div style={{ height:220, background:'#fff', position:'relative', display:'flex', alignItems:'center', justifyContent:'center', borderBottom:'1px solid #f1f5f9' }}>
                   <img src={p.image_url} alt={p.title} style={{ maxWidth:'90%', maxHeight:'90%', objectFit:'contain' }} />
                   <div style={{ position:'absolute', top:8, left:8 }}>{p.is_verified && <span style={{ background:'#0f172a', color:'#fff', fontSize:9, padding:'3px 7px', borderRadius:100, fontWeight:800 }}>✓ VERIFIED 1688</span>}</div>
-                  <div style={{ position:'absolute', top:8, right:8, background:'rgba(255,255,255,0.95)', border:'1px solid #e2e8f0', fontSize:9, padding:'3px 7px', borderRadius:100 }}>{(p.origin||'china').toUpperCase()}</div>
                 </div>
                 <div style={{ padding:12, flex:1, display:'flex', flexDirection:'column' }}>
                   <div style={{ fontWeight:800, fontSize:13, minHeight:34 }}>{p.title}</div>
