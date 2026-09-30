@@ -1,151 +1,112 @@
-'use client'
-import { useState, useEffect } from 'react'
+"use client"
+import { useEffect, useState } from 'react'
+import { supabase } from '../../lib/supabase'
 
-export default function AdminPage(){
-  const [loggedIn, setLoggedIn] = useState(false)
-  const [pwd, setPwd] = useState('')
-  const [tab, setTab] = useState<'quotes'|'scout'|'products'>('scout')
-  const [scouts, setScouts] = useState<any[]>([])
-  const [quotes, setQuotes] = useState<any[]>([])
-  const [keyword, setKeyword] = useState('3kva hybrid inverter')
-  const [loading, setLoading] = useState(false)
-  const [msg, setMsg] = useState('')
+type Quote = {
+  id: string, created_at: string, product_title: string,
+  customer_name: string, customer_phone: string, quantity: string,
+  location: string, self_clear: boolean, platform_fee_ngn: number,
+  delivery_type: string, status: string
+}
+type Scout = { id: string, request_code: string, title: string, status: string, waitlist_count: number, rejection_reason?: string }
 
-  useEffect(()=>{
-    if(loggedIn){
-      loadScouts()
-      loadQuotes()
-    }
-  },[loggedIn])
+export default function AdminPage() {
+  const [quotes, setQuotes] = useState<Quote[]>([])
+  const [scouts, setScouts] = useState<Scout[]>([])
+  const [active, setActive] = useState<'quotes'|'scouts'>('quotes')
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [password, setPassword] = useState('')
 
-  async function loadScouts(){
-    try{
-      const r = await fetch('/api/scout1688/list')
-      const j = await r.json()
-      if(j.data) setScouts(j.data)
-    }catch{}
-  }
-  async function loadQuotes(){
-    try{
-      const r = await fetch('/api/quotes/list')
-      const j = await r.json()
-      if(j.data) setQuotes(j.data)
-    }catch{}
+  const checkAdmin = () => {
+    if(password === 'GSPI2026') { setIsAdmin(true); loadData() }
+    else alert('Wrong password - Ask Godwin for admin password')
   }
 
-  async function handleScout(){
-    setLoading(true)
-    setMsg('Scouting 1688 for: '+keyword)
-    try{
-      const r = await fetch('/api/scout1688', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ keyword, weightKg: 15 })
-      })
-      const j = await r.json()
-      setMsg('✅ Scout done: '+ (j.sr_id||j.message||'Created draft - check Scouting tab'))
-      loadScouts()
-    }catch(e:any){
-      setMsg('❌ Error: '+e.message)
-    }
-    setLoading(false)
+  const loadData = async () => {
+    const { data: q } = await supabase.from('africanies_quotes').select('*').order('created_at',{ascending:false}).limit(100)
+    if(q) setQuotes(q)
+    const { data: s } = await supabase.from('scout_requests').select('*').order('created_at',{ascending:false}).limit(50)
+    if(s) setScouts(s)
   }
 
-  if(!loggedIn){
+  useEffect(()=>{ if(isAdmin) loadData() },[isAdmin])
+
+  if(!isAdmin) {
     return (
-      <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#f8fafc', fontFamily:'Inter, sans-serif' }}>
-        <div style={{ background:'#fff', padding:24, borderRadius:16, border:'1px solid #e2e8f0', width:320 }}>
-          <h2 style={{ fontWeight:900, margin:'0 0 12px' }}>NiChAm Admin - GSPI 10% Fee</h2>
-          <input type="password" placeholder="Password GSPI2026" value={pwd} onChange={e=>setPwd(e.target.value)} style={{ width:'100%', padding:'10px 12px', borderRadius:8, border:'1px solid #e2e8f0' }} />
-          <button onClick={()=>{ if(pwd==='GSPI2026') setLoggedIn(true); else alert('Wrong - GSPI2026') }} style={{ width:'100%', marginTop:10, padding:'10px', background:'#0f172a', color:'#fff', borderRadius:8, border:0, fontWeight:800, cursor:'pointer' }}>Login</button>
-          <div style={{ fontSize:11, color:'#64748b', marginTop:10 }}>Master Doc v2.2 - AI Price Check vs Jumia/Kara before forward. Tiered 10%/8%/12%</div>
-        </div>
+      <div style={{maxWidth:400,margin:'100px auto',padding:24,border:'1px solid #eee',borderRadius:16}}>
+        <h2 style={{fontWeight:900}}>Admin Login - NiChAm Trade</h2>
+        <p style={{fontSize:13,color:'#666',marginTop:8}}>Admin must be in the know of all quote requests. Enter password to view all quotes, platform fees, self-clearing requests, and scout waitlists.</p>
+        <input type="password" placeholder="Admin password" value={password} onChange={e=>setPassword(e.target.value)} style={{width:'100%',padding:12,marginTop:14,border:'1px solid #ddd',borderRadius:10}} />
+        <button onClick={checkAdmin} style={{width:'100%',marginTop:12,padding:12,background:'#0a3d1f',color:'white',border:0,borderRadius:10,fontWeight:700}}>View All Quotes →</button>
+        <p style={{fontSize:11,color:'#888',marginTop:12}}>Master Build Doc: Admin sees all requests, platform fees hidden from buyers, WhatsApp logs.</p>
       </div>
     )
   }
 
   return (
-    <div style={{ fontFamily:'Inter, sans-serif', background:'#f8fafc', minHeight:'100vh' }}>
-      <header style={{ padding:'12px 20px', background:'#fff', borderBottom:'1px solid #e2e8f0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-        <div style={{ fontWeight:900 }}>NiChAm Admin • 10% Fee • AI Compare</div>
-        <div style={{ display:'flex', gap:8 }}>
-          <a href="/" style={{ fontSize:12, padding:'6px 12px', border:'1px solid #e2e8f0', borderRadius:100, textDecoration:'none', color:'#0f172a' }}>Home World-Class</a>
-          <button onClick={()=>setLoggedIn(false)} style={{ fontSize:12, padding:'6px 12px', borderRadius:100, border:'1px solid #e2e8f0', background:'#fff', cursor:'pointer' }}>Logout</button>
-        </div>
-      </header>
+    <div style={{maxWidth:1200,margin:'0 auto',padding:'20px 24px',fontFamily:'system-ui'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <h1 style={{fontWeight:900,color:'#0a3d1f'}}>Admin Dashboard - All Quote Requests (In The Know)</h1>
+        <button onClick={()=>setIsAdmin(false)} style={{padding:'8px 14px',border:'1px solid #eee',borderRadius:8}}>Logout</button>
+      </div>
+      
+      <div style={{display:'flex',gap:10,marginTop:20}}>
+        <button onClick={()=>setActive('quotes')} style={{padding:'10px 18px',borderRadius:10,fontWeight:700,border:0,background:active==='quotes'?'#0a3d1f':'#eee',color:active==='quotes'?'white':'#333'}}>All Quotes ({quotes.length}) - Platform Fee Visible</button>
+        <button onClick={()=>setActive('scouts')} style={{padding:'10px 18px',borderRadius:10,fontWeight:700,border:0,background:active==='scouts'?'#f4b400':'#eee',color:active==='scouts'?'#0a3d1f':'#333'}}>Scout Requests ({scouts.length})</button>
+        <button onClick={loadData} style={{padding:'10px 18px',borderRadius:10,border:'1px solid #eee',background:'white'}}>🔄 Refresh</button>
+      </div>
 
-      <div style={{ maxWidth:1200, margin:'0 auto', padding:20 }}>
-        <div style={{ display:'flex', gap:8, marginBottom:16 }}>
-          <button onClick={()=>setTab('scout')} style={{ padding:'8px 16px', borderRadius:100, border:'1px solid #e2e8f0', background: tab==='scout'?'#0f172a':'#fff', color: tab==='scout'?'#fff':'#0f172a', fontWeight:700, cursor:'pointer' }}>Import 1688 🤖 ({scouts.length})</button>
-          <button onClick={()=>setTab('quotes')} style={{ padding:'8px 16px', borderRadius:100, border:'1px solid #e2e8f0', background: tab==='quotes'?'#0f172a':'#fff', color: tab==='quotes'?'#fff':'#0f172a', fontWeight:700, cursor:'pointer' }}>Quotes AI Compare ({quotes.length})</button>
-          <button onClick={()=>setTab('products')} style={{ padding:'8px 16px', borderRadius:100, border:'1px solid #e2e8f0', background: tab==='products'?'#0f172a':'#fff', color: tab==='products'?'#fff':'#0f172a', fontWeight:700, cursor:'pointer' }}>Products Live</button>
-        </div>
-
-        {tab==='scout' && (
-          <div>
-            <div style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:16, padding:16, marginBottom:16 }}>
-              <h3 style={{ margin:'0 0 8px', fontWeight:800 }}>🤖 Scout 1688 - List Companies Products for Now</h3>
-              <p style={{ fontSize:12, color:'#64748b', margin:'0 0 12px' }}>Enter keyword → Scrapes m-search.1688.com (no API key) → Creates draft SR-xxx with real factory image (white bg) → You approve → Shows homepage world-class</p>
-              <div style={{ display:'flex', gap:8 }}>
-                <input value={keyword} onChange={e=>setKeyword(e.target.value)} placeholder="e.g. 3kva hybrid inverter, 200ah lithium battery" style={{ flex:1, padding:'10px 12px', borderRadius:8, border:'1px solid #e2e8f0' }} />
-                <button onClick={handleScout} disabled={loading} style={{ padding:'10px 18px', background:'#0f172a', color:'#fff', borderRadius:8, border:0, fontWeight:800, cursor:'pointer' }}>{loading?'Scouting...':'Scout 1688 Live'}</button>
-              </div>
-              {msg && <div style={{ marginTop:10, fontSize:12, background:'#f0fdf4', border:'1px solid #bbf7d0', padding:'8px 12px', borderRadius:8 }}>{msg}</div>}
-              <div style={{ marginTop:12, display:'flex', gap:8, flexWrap:'wrap' }}>
-                {['3kva hybrid inverter','200ah lithium battery 48v','550w solar panel bifacial','solar water pump 2hp','canoe solar outboard'].map(k=>(
-                  <button key={k} onClick={()=>setKeyword(k)} style={{ fontSize:11, padding:'6px 10px', borderRadius:100, border:'1px solid #e2e8f0', background:'#f8fafc', cursor:'pointer' }}>{k}</button>
-                ))}
-              </div>
-            </div>
-
-            <div style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:16, padding:16 }}>
-              <h4 style={{ margin:'0 0 12px' }}>Scouting Drafts Awaiting Approval - {scouts.length}</h4>
-              {scouts.length===0 ? <div style={{ fontSize:12, color:'#94a3b8' }}>No drafts yet - Scout above or check Supabase scout_requests table</div> : scouts.map((s:any)=>(
-                <div key={s.id} style={{ border:'1px solid #e2e8f0', borderRadius:12, padding:12, marginBottom:8, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                  <div>
-                    <div style={{ fontWeight:800, fontSize:13 }}>{s.id} - {s.keyword || s.product_name}</div>
-                    <div style={{ fontSize:11, color:'#64748b' }}>{s.status} • {s.supplier_name || '1688 Supplier'} • FOB ¥{s.fob_price_yuan || s.price_cny}</div>
-                  </div>
-                  <button onClick={async()=>{
-                    const r = await fetch('/api/scout1688/approve', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id: s.id }) })
-                    const j = await r.json()
-                    setMsg('Approved: '+(j.message||'Product now live homepage!'))
-                    loadScouts()
-                  }} style={{ padding:'8px 14px', background:'#16a34a', color:'#fff', borderRadius:100, border:0, fontWeight:700, cursor:'pointer', fontSize:12 }}>Approve → Live</button>
-                </div>
+      {active==='quotes' ? (
+        <div style={{marginTop:20,overflowX:'auto'}}>
+          <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
+            <thead>
+              <tr style={{background:'#f8faf8',textAlign:'left'}}>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Date</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Product</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Customer</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Phone</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Qty/Loc</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Delivery Type</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee',background:'#fffbe6'}}>Platform Fee (Admin Only)</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Status</th>
+                <th style={{padding:'10px',borderBottom:'1px solid #eee'}}>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {quotes.map(q=>(
+                <tr key={q.id} style={{borderBottom:'1px solid #f0f0f0'}}>
+                  <td style={{padding:10}}>{new Date(q.created_at).toLocaleString()}</td>
+                  <td style={{padding:10,fontWeight:700}}>{q.product_title}</td>
+                  <td style={{padding:10}}>{q.customer_name}</td>
+                  <td style={{padding:10}}><a href={`https://wa.me/${q.customer_phone.replace(/\D/g,'')}`} target="_blank" style={{color:'#0a3d1f',fontWeight:700}}>{q.customer_phone}</a></td>
+                  <td style={{padding:10}}>{q.quantity} / {q.location}</td>
+                  <td style={{padding:10}}><span style={{padding:'4px 8px',borderRadius:20,fontSize:11,fontWeight:700,background:q.self_clear?'#e6f4ea':'#fffbe6',color:q.self_clear?'#137333':'#a37a00'}}>{q.self_clear?'SELF-CLEAR ₦35k':'FULL DOOR ₦85k'}</span><br/><span style={{fontSize:11}}>{q.delivery_type}</span></td>
+                  <td style={{padding:10,background:'#fffbe6',fontWeight:900}}>₦{Number(q.platform_fee_ngn||0).toLocaleString()}<br/><span style={{fontSize:10,color:'#666',fontWeight:400}}>Hidden from buyer</span></td>
+                  <td style={{padding:10}}><span style={{padding:'4px 8px',borderRadius:20,background:'#eee',fontSize:11}}>{q.status}</span></td>
+                  <td style={{padding:10}}><a href={`https://wa.me/${q.customer_phone.replace(/\D/g,'')}?text=Hello ${encodeURIComponent(q.customer_name)}, your landed price for ${encodeURIComponent(q.product_title)} valid for 3 days only is...`} target="_blank" style={{padding:'6px 10px',background:'#0a3d1f',color:'white',borderRadius:8,textDecoration:'none',fontSize:11}}>Reply WhatsApp</a></td>
+                </tr>
               ))}
-            </div>
-          </div>
-        )}
-
-        {tab==='quotes' && (
-          <div style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:16, padding:16 }}>
-            <h3 style={{ margin:'0 0 12px' }}>Quotes - AI Price Compare vs Jumia/Kara per Master Doc 13F</h3>
-            {quotes.length===0 ? <div style={{ fontSize:12, color:'#94a3b8' }}>No quotes yet - Get Quote from homepage</div> : quotes.map((q:any)=>(
-              <div key={q.id} style={{ border:'1px solid #e2e8f0', borderRadius:12, padding:12, marginBottom:8 }}>
-                <div style={{ fontWeight:700, fontSize:13 }}>{q.product_title || q.product_id} - ₦{Number(q.landed_price||0).toLocaleString()} • {q.customer_name}</div>
-                <div style={{ display:'flex', gap:8, marginTop:8 }}>
-                  <button onClick={async()=>{
-                    const r = await fetch(`/api/compare-price?title=${encodeURIComponent(q.product_title||'')}&base=${q.landed_price||0}`)
-                    const j = await r.json()
-                    setMsg(`AI Compare: Market ₦${j.market_low?.toLocaleString()} vs Your ₦${Number(q.landed_price).toLocaleString()} - ${j.verdict} (${j.overpricing_pct}% over) - ${j.flag_15pct?'⚠️ FLAG 15%':'✅ Competitive'}`)
-                  }} style={{ padding:'6px 12px', background:'#0f172a', color:'#fff', borderRadius:100, border:0, fontSize:11, cursor:'pointer' }}>🤖 AI Compare Price</button>
-                  <a href={`https://wa.me/234${String(q.customer_phone||'').replace(/\D/g,'').slice(-10)}?text=${encodeURIComponent(`Quote ${q.id}: ${q.product_title} Landed ₦${q.landed_price} Valid 3 Days - GSPI`)}`} target="_blank" style={{ padding:'6px 12px', background:'#16a34a', color:'#fff', borderRadius:100, textDecoration:'none', fontSize:11 }}>WhatsApp Forward</a>
+            </tbody>
+          </table>
+          <p style={{fontSize:12,color:'#666',marginTop:12}}>💡 Admin is in the know of ALL requests: Customer never sees platform fee column. You see full breakdown: FOB+Freight+Customs+Fee = Landed. Self-clearing requests show lower fee.</p>
+        </div>
+      ) : (
+        <div style={{marginTop:20}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16}}>
+            {scouts.map(s=>(
+              <div key={s.id} style={{border:'1px solid #eee',borderRadius:16,padding:16,background:s.status==='rejected'?'#ffeaea':'white'}}>
+                <div style={{fontSize:11,fontWeight:800}}>{s.request_code} • {s.status.toUpperCase()}</div>
+                <h4 style={{marginTop:8}}>{s.title}</h4>
+                <div style={{marginTop:8,fontSize:12}}>👥 {s.waitlist_count} waiting (public sees count only)</div>
+                {s.rejection_reason && <div style={{marginTop:8,fontSize:11,color:'#a00',background:'#ffeaea',padding:8,borderRadius:8}}>Rejected: {s.rejection_reason}</div>}
+                <div style={{marginTop:10,display:'flex',gap:6}}>
+                  <button style={{padding:'6px 10px',fontSize:11,borderRadius:8,border:'1px solid #eee'}}>View Waitlist Phones (Admin Only)</button>
                 </div>
               </div>
             ))}
-            {msg && <div style={{ marginTop:12, fontSize:12, background:'#fffbeb', border:'1px solid #fde68a', padding:'10px', borderRadius:8 }}>{msg}</div>}
           </div>
-        )}
-
-        {tab==='products' && (
-          <div style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:16, padding:16 }}>
-            <h3 style={{ margin:'0 0 12px' }}>Live Products - Homepage World-Class</h3>
-            <div style={{ fontSize:11, color:'#64748b' }}>Products come from Supabase products table or fallback 1688 demo. Approve scouts to make real 1688 images live.</div>
-            <a href="/" style={{ display:'inline-block', marginTop:10, padding:'8px 16px', background:'#0f172a', color:'#fff', borderRadius:100, textDecoration:'none', fontSize:12 }}>View World-Class Homepage →</a>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }
