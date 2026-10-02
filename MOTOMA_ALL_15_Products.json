@@ -1,0 +1,152 @@
+[
+  {
+    "model": "M68PW PRO",
+    "title": "MOTOMA M68PW PRO Lithium Iron Phosphate Battery 200Ah 25.6V \u2013 5.12kWh",
+    "specs": "200Ah 25.6V 5.12kWh, Grade A+ Cells, 8000 cycles, Smart BMS, Wi-Fi",
+    "capacity": "5.12kWh",
+    "voltage": "25.6V",
+    "ah": "200Ah",
+    "page": 1,
+    "source": "M68PW_PRO_Motoma.pdf"
+  },
+  {
+    "model": "M69PW PRO",
+    "title": "MOTOMA M69PW PRO Lithium Iron Phosphate Battery 280Ah 25.6V \u2013 7.16kWh",
+    "specs": "280Ah 25.6V 7.16kWh, 15+ years life, Advanced Touch Screen",
+    "capacity": "7.16kWh",
+    "voltage": "25.6V",
+    "ah": "280Ah",
+    "page": 1,
+    "source": "M69PW_PRO_Motoma.pdf"
+  },
+  {
+    "model": "M87PW PRO",
+    "title": "MOTOMA M87PW PRO Lithium Iron Phosphate Battery 100Ah 51.2V \u2013 5.12kWh",
+    "specs": "100Ah 51.2V 5.12kWh, Grade A+ Cells, 8000 cycles @80% DoD, Touch Screen, Wi-Fi",
+    "capacity": "5.12kWh",
+    "voltage": "51.2V",
+    "ah": "100Ah",
+    "page": 1,
+    "source": "M87PW_PRO_Motoma.pdf"
+  },
+  {
+    "model": "M88PW PRO",
+    "title": "MOTOMA M88PW PRO Lithium Iron Phosphate Battery 200Ah 51.2V \u2013 10.24kWh",
+    "specs": "200Ah 51.2V 10.24kWh, High Cycle Efficiency, Extended Durability",
+    "capacity": "10.24kWh",
+    "voltage": "51.2V",
+    "ah": "200Ah",
+    "page": 1,
+    "source": "M88PW_PRO_Motoma.pdf"
+  },
+  {
+    "model": "M90 PRO",
+    "title": "MOTOMA M90 PRO Lithium Iron Phosphate Battery 320Ah 51.2V \u2013 16.38kWh",
+    "specs": "320Ah 51.2V 16.38kWh, Smart BMS compatible Deye Growatt Solis",
+    "capacity": "16.38kWh",
+    "voltage": "51.2V",
+    "ah": "320Ah",
+    "page": 1,
+    "source": "M90_PRO_Motoma.pdf"
+  },
+  {
+    "model": "M91 PRO",
+    "title": "MOTOMA M91 PRO Lithium Iron Phosphate Battery 400Ah 51.2V \u2013 20.48kWh",
+    "specs": "400Ah 51.2V 20.48kWh, Largest Residential, 15 pcs parallel",
+    "capacity": "20.48kWh",
+    "voltage": "51.2V",
+    "ah": "400Ah",
+    "page": 1,
+    "source": "M91_PRO_Motoma.pdf"
+  },
+  {
+    "model": "HV-M 40~61",
+    "title": "MOTOMA High Voltage Battery HV-M 40-61",
+    "specs": "40-61kWh High Voltage LiFePO4",
+    "capacity": "40-61kWh",
+    "voltage": "High Voltage",
+    "ah": "",
+    "page": 20,
+    "source": "BROCHURE_2026"
+  },
+  {
+    "model": "HV-M 92-193",
+    "title": "MOTOMA High Voltage Battery HV-M 92-193 \u2013 92.16kWh",
+    "specs": "92-193kWh 150Ah 51.2V module",
+    "capacity": "92-193kWh",
+    "voltage": "HV",
+    "ah": "150Ah",
+    "page": 21,
+    "source": "BROCHURE_2026"
+  },
+  {
+    "model": "ESS-MHV PRO 161",
+    "title": "MOTOMA ESS-MHV PRO 161kWh C&I ESS",
+    "specs": "161kWh Compact Outdoor C&I",
+    "capacity": "161kWh",
+    "voltage": "C&I",
+    "ah": "",
+    "page": 22,
+    "source": "BROCHURE_2026"
+  },
+  {
+    "model": "ESS-MHV PRO 209",
+    "title": "MOTOMA ESS-MHV PRO 209kWh C&I ESS",
+    "specs": "209kWh Scalable",
+    "capacity": "209kWh",
+    "voltage": "C&I",
+    "ah": "",
+    "page": 23,
+    "source": "BROCHURE_2026"
+  },
+  {
+    "model": "M50-100",
+    "title": "MOTOMA Smart ESS Unit M50-100 All-in-One 50kW/100kWh",
+    "specs": "Hybrid inverter 50kW/100kWh",
+    "capacity": "100kWh",
+    "voltage": "All-in-One",
+    "ah": "",
+    "page": 24,
+    "source": "BROCHURE_2026"
+  },
+  {
+    "model": "BESS-500kW/1045kWh",
+    "title": "MOTOMA BESS-500kW/1045kWh Battery System",
+    "specs": "500kW/1045kWh Centralized",
+    "capacity": "1045kWh",
+    "voltage": "BESS",
+    "ah": "",
+    "page": 25,
+    "source": "BROCHURE_2026"
+  },
+  {
+    "model": "M2500-5015",
+    "title": "MOTOMA M2500-5015 Liquid-cooling Container ESS 2.5MW/5MWh",
+    "specs": "2.5MW/5.015MWh Liquid cooling",
+    "capacity": "5MWh",
+    "voltage": "2.5MW",
+    "ah": "",
+    "page": 26,
+    "source": "BROCHURE_2026"
+  },
+  {
+    "model": "FT25-690V3450KW",
+    "title": "MOTOMA FT25-690V3450KW Medium-Voltage Converter 3450KW",
+    "specs": "3450KW 690V Medium Voltage",
+    "capacity": "3450KW",
+    "voltage": "690V",
+    "ah": "",
+    "page": 27,
+    "source": "BROCHURE_2026"
+  },
+  {
+    "model": "M77U/M72U/M78U",
+    "title": "MOTOMA Telecom Battery M77U 48V 100AH/150AH/200AH",
+    "specs": "48V Telecom 100/150/200Ah LiFePO4",
+    "capacity": "10kWh",
+    "voltage": "48V",
+    "ah": "200Ah",
+    "page": 28,
+    "source": "BROCHURE_2026"
+  }
+]
