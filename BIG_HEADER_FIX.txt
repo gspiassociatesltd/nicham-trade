@@ -1,0 +1,1 @@
+Fixed: NiChAm Trade x MOTOMA header now BIG - 28px font (was 17px), 56px M logo (was 40px), bold 900, green MOTOMA accent, shadow, more prominent than subheading Powering Nigeria... - MOQ display kept - World class
