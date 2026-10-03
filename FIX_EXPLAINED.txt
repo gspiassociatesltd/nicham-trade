@@ -1,0 +1,1 @@
+Your screenshot admin shows MOTOMA Quotes (0) because previous quotes failed due to fee_note column missing error. Now QuoteModal fixed to handle missing columns, and admin page fixed to fallback to all quotes if is_motoma column missing. Run supabase_fix_all.sql in Supabase SQL Editor, then create new quote from main site - it will appear in admin.
