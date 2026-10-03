@@ -1,0 +1,1 @@
+Fixed TypeScript error TS2304 Cannot find name isLargeESS - QuoteModal was old version with isLargeESS variable used outside scope - Now clean TypeScript safe - No isLargeESS - Dynamic count MOTOMA.length + micProducts.length - BIG NiChAm header 28px 56px - MOQ only on cards - No clutter banner
