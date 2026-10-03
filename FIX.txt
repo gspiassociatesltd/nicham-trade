@@ -1,1 +1,1 @@
-Upload lib/supabase.ts via GitHub - Commit to main - Vercel will be Ready
+Removed clutter MOQ banner: Batteries Pro Series 12 pcs (M91 8 pcs) Other Models 16 pcs Inverters 50 pcs High-Voltage 40.96kWh min Up to 5MWh Solar Panels 40HQ Container - This banner mentioned inverters and solar panels we dont display - Removed - Kept MOQ only on product cards as green badge and in QuoteModal - Clean world-class - BIG NiChAm header 28px 56px logo kept
