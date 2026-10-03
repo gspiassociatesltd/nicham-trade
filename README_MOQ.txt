@@ -1,0 +1,1 @@
+MOQ added per MOTOMA official: Batteries Pro Series 12 pcs (M91 Pro 8 pcs), Other models 16 pcs, Inverters 50 pcs, High-Voltage Projects 40.96kWh min up to 5MWh, Solar panels 40HQ container (high watt 20GP min). Page now shows MOQ badges on cards, filter buttons show MOQ, QuoteModal validates MOQ, clean buyer view no sensitive text no auth banner no No Breakdown.
