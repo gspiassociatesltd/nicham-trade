@@ -6,40 +6,15 @@ export default function QuoteModal({ product, onClose }: { product: any, onClose
   const [form, setForm] = useState({ customer_name: '', phone: '', quantity: 1, location: '', self_clear: false })
   const [loading, setLoading] = useState(false)
 
-  // Detect MOTOMA product
+  // Detect MOTOMA product – buyer sees clean DDP only
   const isMotoma = product?.is_motoma || (product?.title||'').toUpperCase().includes('MOTOMA') || (product?.supplier_name||'').includes('MOTOMA') || product?.model?.includes('PW') || product?.model?.includes('HV-M') || product?.model?.includes('ESS') || product?.model?.includes('M50') || product?.model?.includes('BESS')
-  const isLargeESS = (product?.kwh && parseInt(product.kwh) > 50) || (product?.model||'').includes('BESS') || (product?.model||'').includes('M2500') || (product?.model||'').includes('FT25') || (product?.capacity && product.capacity.includes('MWh'))
-
-  // Dynamic fee logic
-  const getFee = () => {
-    if (isMotoma) {
-      // MOTOMA DDP: 5% affiliate commission built into DDP price, platform fee hidden = 5-8%
-      // For display to admin only, buyer sees total DDP only
-      if (isLargeESS) return 0 // For BESS/Container, fee is % of millions, not fixed – admin calculates later
-      return 0 // DDP quote pending – fee calculated after MOTOMA DDP quote
-    }
-    // Non-MOTOMA: old logic
-    return form.self_clear ? 35000 : 85000
-  }
 
   async function submit() {
     if (!form.customer_name || !form.phone) { alert('Name and phone required'); return }
     setLoading(true)
     try {
-      const platform_fee = getFee()
-      const product_price = Number(product.price_ngn || product.landed_price_ngn || 0)
-      
-      // For MOTOMA, price is 0 pending – admin will quote DDP
-      let feeNote = ''
-      if (isMotoma) {
-        if (isLargeESS) {
-          feeNote = 'MOTOMA BESS/Container – DDP Lagos – 5% affiliate + 3% platform – Admin to quote DDP total – Valid 3 Days'
-        } else {
-          feeNote = `MOTOMA ${product.model} – DDP Lagos – 5% affiliate included in DDP – Admin to quote DDP total – Valid 3 Days`
-        }
-      } else {
-        feeNote = form.self_clear ? 'YES (Fee 35k)' : 'NO (Fee 85k)'
-      }
+      // Internal: fee hidden, not shown to buyer. MOTOMA DDP includes all costs – buyer sees total only.
+      const internalFeeNote = isMotoma ? `MOTOMA ${product.model} – DDP Lagos – Admin to quote DDP total – Valid 3 Days` : (form.self_clear ? 'Self-clear YES' : 'Standard')
 
       const { data, error } = await supabase.from('africanies_quotes').insert({
         product_id: product.id || `motoma-${product.model}`,
@@ -48,28 +23,34 @@ export default function QuoteModal({ product, onClose }: { product: any, onClose
         phone: form.phone,
         quantity: form.quantity,
         location: form.location,
-        self_clear: isMotoma ? false : form.self_clear, // MOTOMA never self-clear – DDP only
-        platform_fee_ngn: platform_fee,
+        self_clear: false, // MOTOMA DDP only, no self-clear. Non-MOTOMA also defaults false – fee logic internal
+        platform_fee_ngn: 0, // Dynamic % calculated by admin – hidden from buyer
         status: 'new',
         is_motoma: isMotoma,
-        fee_note: feeNote
+        fee_note: internalFeeNote
       }).select().single()
 
       if (error) throw error
 
-      const totalNote = isMotoma ? `DDP Lagos Quote Pending – Admin will provide total DDP (includes duty+shipping+5% affiliate)` : `Hidden Platform Fee: ₦${platform_fee.toLocaleString()}`
-      
-      const message = `NiChAm MOTOMA Quote Request
+      // Buyer-facing WhatsApp message – CLEAN – NO affiliate, NO fee, NO breakdown
+      const message = isMotoma
+        ? `NiChAm Trade – MOTOMA DDP Lagos Quote
 Product: ${product.title}
 Model: ${product.model || product.supplier_model}
 Customer: ${form.customer_name}
 Phone: ${form.phone}
 Qty: ${form.quantity}
 Location: ${form.location}
-Type: ${isMotoma ? 'MOTOMA DDP Lagos – ' + feeNote : 'Standard – Self-Clear: ' + feeNote}
-${totalNote}
-Quote ID: ${data.id.slice(0,8)}
-Valid 3 Days`
+DDP Lagos – All Inclusive – Valid 3 Days
+Quote ID: ${data.id.slice(0,8)}`
+        : `NiChAm Trade Quote
+Product: ${product.title}
+Customer: ${form.customer_name}
+Phone: ${form.phone}
+Qty: ${form.quantity}
+Location: ${form.location}
+Valid 3 Days
+Quote ID: ${data.id.slice(0,8)}`
 
       await supabase.from('whatsapp_logs').insert({
         quote_id: data.id,

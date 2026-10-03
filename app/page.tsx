@@ -1,5 +1,6 @@
+
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import QuoteModal from './components/QuoteModal'
 
 const MOTOMA = [
@@ -9,11 +10,11 @@ const MOTOMA = [
     "name": "M68PW PRO \u2013 200Ah 25.6V",
     "kwh": "5.12kWh",
     "v": "25.6V",
-    "desc": "Lithium Iron Phosphate \u2022 Grade A+ Cells \u2022 8000 Cycles \u2022 Smart BMS \u2022 Wi-Fi \u2022 15+ Years",
+    "ah": "200Ah",
+    "desc": "Lithium Iron Phosphate \u2022 Grade A+ Cells \u2022 8000 Cycles @80% DoD \u2022 Smart BMS \u2022 Wi-Fi \u2022 Touch Screen \u2022 15+ Years",
     "tag": "25.6V Residential",
     "color": "#f0fdf4",
-    "img": "/motoma/M68PW_PRO.png",
-    "moq": "12 pcs"
+    "img": "/motoma/M68PW_PRO.png"
   },
   {
     "id": "M69PW",
@@ -21,11 +22,11 @@ const MOTOMA = [
     "name": "M69PW PRO \u2013 280Ah 25.6V",
     "kwh": "7.16kWh",
     "v": "25.6V",
-    "desc": "280Ah High Capacity \u2022 Grade A+ Cells \u2022 15+ Years Life",
+    "ah": "280Ah",
+    "desc": "280Ah High Capacity \u2022 Grade A+ Cells \u2022 Touch Screen \u2022 15+ Years Life \u2022 Advanced BMS",
     "tag": "25.6V High Cap",
     "color": "#fefce8",
-    "img": "/motoma/M69PW_PRO.png",
-    "moq": "12 pcs"
+    "img": "/motoma/M69PW_PRO.png"
   },
   {
     "id": "M87PW",
@@ -33,11 +34,11 @@ const MOTOMA = [
     "name": "M87PW PRO \u2013 100Ah 51.2V",
     "kwh": "5.12kWh",
     "v": "51.2V",
-    "desc": "100Ah 51.2V \u2022 8000 cycles \u2022 Smart BMS \u2022 Wi-Fi \u2022 Deye Growatt Solis",
+    "ah": "100Ah",
+    "desc": "100Ah 51.2V \u2022 8000 cycles @80% DoD \u2022 Smart BMS \u2022 Wi-Fi Monitoring \u2022 Compatible Deye Growatt Solis",
     "tag": "51.2V Compact",
     "color": "#eff6ff",
-    "img": "/motoma/M87PW_PRO.png",
-    "moq": "12 pcs"
+    "img": "/motoma/M87PW_PRO.png"
   },
   {
     "id": "M88PW",
@@ -45,11 +46,11 @@ const MOTOMA = [
     "name": "M88PW PRO \u2013 200Ah 51.2V",
     "kwh": "10.24kWh",
     "v": "51.2V",
-    "desc": "200Ah 51.2V \u2022 High Cycle Efficiency \u2022 Durability",
+    "ah": "200Ah",
+    "desc": "200Ah 51.2V \u2022 High Cycle Efficiency \u2022 Extended Durability \u2022 Integrated Safety BMS",
     "tag": "51.2V Popular",
     "color": "#f0fdf4",
-    "img": "/motoma/M88PW_PRO.png",
-    "moq": "12 pcs"
+    "img": "/motoma/M88PW_PRO.png"
   },
   {
     "id": "M90",
@@ -57,11 +58,11 @@ const MOTOMA = [
     "name": "M90 PRO \u2013 320Ah 51.2V",
     "kwh": "16.38kWh",
     "v": "51.2V",
-    "desc": "320Ah 51.2V \u2022 Smart BMS \u2022 15 pcs Parallel",
+    "ah": "320Ah",
+    "desc": "320Ah 51.2V \u2022 Smart BMS Compatible \u2022 15 pcs Parallel \u2022 Wi-Fi Monitoring",
     "tag": "51.2V Large",
     "color": "#f5f3ff",
-    "img": "/motoma/M90_PRO.png",
-    "moq": "12 pcs"
+    "img": "/motoma/M90_PRO.png"
   },
   {
     "id": "M91",
@@ -69,11 +70,11 @@ const MOTOMA = [
     "name": "M91 PRO \u2013 400Ah 51.2V",
     "kwh": "20.48kWh",
     "v": "51.2V",
-    "desc": "400Ah 51.2V \u2022 Largest Residential \u2022 20.48kWh \u2022 Grade A+",
+    "ah": "400Ah",
+    "desc": "400Ah 51.2V \u2022 Largest Residential \u2022 20.48kWh \u2022 Grade A+ Cells \u2022 8000 Cycles",
     "tag": "51.2V Flagship",
     "color": "#fff7ed",
-    "img": "/motoma/M91_PRO.png",
-    "moq": "8 pcs"
+    "img": "/motoma/M91_PRO.png"
   },
   {
     "id": "HV40",
@@ -81,11 +82,11 @@ const MOTOMA = [
     "name": "HV-M 40~61 \u2013 High Voltage Battery",
     "kwh": "40-61kWh",
     "v": "High Voltage",
-    "desc": "High Voltage \u2022 Stackable \u2022 LiFePO4 \u2022 C&I Ready",
+    "ah": "",
+    "desc": "High Voltage Battery \u2022 Stackable \u2022 LiFePO4 \u2022 C&I Ready \u2022 Scalable \u2022 Outdoor",
     "tag": "High Voltage",
     "color": "#f8fafc",
-    "img": "/motoma/HV-M.png",
-    "moq": "40.96kWh min"
+    "img": "/motoma/HV-M.png"
   },
   {
     "id": "HV92",
@@ -93,11 +94,11 @@ const MOTOMA = [
     "name": "HV-M 92-193 \u2013 92.16kWh",
     "kwh": "92-193kWh",
     "v": "HV",
-    "desc": "150Ah Module \u2022 92-193kWh High Voltage \u2022 Scalable",
+    "ah": "150Ah",
+    "desc": "150Ah 51.2V Module \u2022 92-193kWh High Voltage \u2022 Scalable \u2022 BESS Ready",
     "tag": "HV 92-193",
     "color": "#f8fafc",
-    "img": "/motoma/HV-M.png",
-    "moq": "40.96kWh min"
+    "img": "/motoma/HV-M.png"
   },
   {
     "id": "MHV161",
@@ -105,11 +106,11 @@ const MOTOMA = [
     "name": "ESS-MHV PRO 161kWh C&I ESS",
     "kwh": "161kWh",
     "v": "C&I",
-    "desc": "C&I Energy Storage System \u2022 Compact \u2022 Outdoor-Ready",
+    "ah": "",
+    "desc": "C&I Energy Storage System \u2022 Compact \u2022 Outdoor-Ready \u2022 161kWh",
     "tag": "C&I 161kWh",
     "color": "#f0fdf4",
-    "img": "/motoma/ESS-MHV.png",
-    "moq": "40.96kWh min"
+    "img": "/motoma/ESS-MHV.png"
   },
   {
     "id": "MHV209",
@@ -117,11 +118,11 @@ const MOTOMA = [
     "name": "ESS-MHV PRO 209kWh C&I ESS",
     "kwh": "209kWh",
     "v": "C&I",
-    "desc": "C&I ESS \u2022 209kWh \u2022 Scalable \u2022 Outdoor",
+    "ah": "",
+    "desc": "C&I ESS \u2022 209kWh \u2022 Scalable \u2022 Outdoor \u2022 High Efficiency",
     "tag": "C&I 209kWh",
     "color": "#f0fdf4",
-    "img": "/motoma/ESS-MHV.png",
-    "moq": "40.96kWh min"
+    "img": "/motoma/ESS-MHV.png"
   },
   {
     "id": "M50",
@@ -129,11 +130,11 @@ const MOTOMA = [
     "name": "M50-100 \u2013 All-in-One 50kW/100kWh",
     "kwh": "100kWh",
     "v": "50kW",
+    "ah": "",
     "desc": "Smart ESS Unit \u2022 All-in-One Cabinet \u2022 Hybrid Inverter \u2022 Battery Cluster",
     "tag": "All-in-One",
     "color": "#eff6ff",
-    "img": "/motoma/M50-100.png",
-    "moq": "40.96kWh min"
+    "img": "/motoma/M50-100.png"
   },
   {
     "id": "BESS",
@@ -141,11 +142,11 @@ const MOTOMA = [
     "name": "BESS-500kW/1045kWh",
     "kwh": "1045kWh",
     "v": "500kW",
-    "desc": "Battery Energy Storage System \u2022 500kW/1045kWh",
+    "ah": "",
+    "desc": "Battery Energy Storage System \u2022 500kW/1045kWh \u2022 Centralized",
     "tag": "BESS",
     "color": "#f5f3ff",
-    "img": "/motoma/BESS.png",
-    "moq": "Up to 5MWh"
+    "img": "/motoma/BESS.png"
   },
   {
     "id": "M2500",
@@ -153,11 +154,11 @@ const MOTOMA = [
     "name": "M2500-5015 \u2013 Container 2.5MW/5MWh",
     "kwh": "5MWh",
     "v": "2.5MW",
-    "desc": "Liquid-Cooling Container ESS \u2022 2.5MW/5.015MWh",
+    "ah": "",
+    "desc": "Liquid-Cooling Container ESS \u2022 2.5MW/5.015MWh \u2022 Utility Scale",
     "tag": "Container 5MWh",
     "color": "#fff7ed",
-    "img": "/motoma/M2500.png",
-    "moq": "Up to 5MWh"
+    "img": "/motoma/M2500.png"
   },
   {
     "id": "FT25",
@@ -165,11 +166,11 @@ const MOTOMA = [
     "name": "FT25-690V3450KW Converter",
     "kwh": "3450KW",
     "v": "690V",
-    "desc": "Centralized Converter \u2022 3450KW \u2022 690V",
+    "ah": "",
+    "desc": "Centralized Medium-Voltage Converter \u2022 3450KW \u2022 690V \u2022 C&I BESS Compatible",
     "tag": "Converter",
     "color": "#f8fafc",
-    "img": "/motoma/FT25.png",
-    "moq": "40.96kWh min"
+    "img": "/motoma/FT25.png"
   },
   {
     "id": "M77U",
@@ -177,17 +178,34 @@ const MOTOMA = [
     "name": "Telecom Battery M77U 48V",
     "kwh": "9.6kWh",
     "v": "48V",
-    "desc": "Telecom Battery \u2022 100AH/150AH/200AH \u2022 48V",
+    "ah": "200Ah",
+    "desc": "Telecom Station Battery \u2022 100AH/150AH/200AH \u2022 48V \u2022 M77U/M72U/M78U",
     "tag": "Telecom 48V",
     "color": "#f0fdf4",
-    "img": "/motoma/M77U.png",
-    "moq": "16 pcs"
+    "img": "/motoma/M77U.png"
   }
 ]
 
 export default function Home() {
   const [selected, setSelected] = useState<any>(null)
   const [filter, setFilter] = useState('all')
+  const [micProducts, setMicProducts] = useState<any[]>([]) // Made-in-China products will load here
+
+  // Dynamic counts
+  const motomaCount = MOTOMA.length
+  const micCount = micProducts.length
+  const totalCount = motomaCount + micCount
+  const displayCount = micCount > 0 ? `${motomaCount} MOTOMA + ${micCount} MIC = ${totalCount} PRODUCTS` : `${motomaCount} PRODUCTS`
+
+  // Load Made-in-China products when ready (from Supabase or MIC API)
+  useEffect(() => {
+    // TODO: When Made-in-China affiliate Bind-z2tiU1 is active, load MIC products here
+    // Example: const { data } = await supabase.from('mic_products').select('*')
+    // setMicProducts(data || [])
+    
+    // For now, check if there are any MIC products in localStorage or Supabase
+    // This keeps 15 for now, but auto-updates to 15 + MIC count when you add MIC products
+  }, [])
 
   const filtered = MOTOMA.filter((p:any) => {
     if (filter === 'all') return true
@@ -205,7 +223,7 @@ export default function Home() {
           <div style={{ width: 56, height: 56, borderRadius: 16, background: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 900, fontSize: 26, boxShadow: '0 4px 12px rgba(15,23,42,0.2)' }}>M</div>
           <div>
             <div style={{ fontWeight: 900, fontSize: 28, color: '#0f172a', letterSpacing: '-0.8px', lineHeight: 1 }}>NiChAm Trade <span style={{ color: '#64748b', fontWeight: 300, fontSize: 26 }}>×</span> <span style={{ color: '#16a34a' }}>MOTOMA</span></div>
-            <div style={{ fontSize: 12, color: '#16a34a', fontWeight: 800, letterSpacing: '0.8px', marginTop: 4 }}>15 PRODUCTS • GRADE A+ • DDP LAGOS • VALID 3 DAYS</div>
+            <div style={{ fontSize: 12, color: '#16a34a', fontWeight: 800, letterSpacing: '0.8px', marginTop: 4 }}>{displayCount} • GRADE A+ • DDP LAGOS • VALID 3 DAYS</div>
           </div>
         </div>
         <a href="https://wa.me/2347050477950" target="_blank" style={{ background: '#0f172a', color: '#fff', padding: '14px 28px', borderRadius: 100, textDecoration: 'none', fontSize: 14, fontWeight: 800 }}>Get Quote →</a>
@@ -213,15 +231,16 @@ export default function Home() {
 
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '24px 28px' }}>
         <div style={{ marginBottom: 24 }}>
-          <div style={{ display: 'inline-flex', background: '#0f172a', color: '#fff', padding: '8px 16px', borderRadius: 100, fontSize: 11, fontWeight: 800, letterSpacing: '0.8px' }}>15 MOTOMA MODELS • DDP LAGOS • VALID 3 DAYS</div>
+          <div style={{ display: 'inline-flex', background: '#0f172a', color: '#fff', padding: '8px 16px', borderRadius: 100, fontSize: 11, fontWeight: 800, letterSpacing: '0.8px' }}>{totalCount} MODELS • DDP LAGOS • VALID 3 DAYS {micCount > 0 ? `• ${motomaCount} MOTOMA + ${micCount} MIC` : ''}</div>
           <h1 style={{ fontSize: 40, fontWeight: 900, letterSpacing: '-1.2px', lineHeight: 0.95, margin: '16px 0 12px', color: '#0f172a' }}>Powering Nigeria with <span style={{ color: '#16a34a' }}>MOTOMA</span> Energy Storage</h1>
-          <p style={{ fontSize: 14, color: '#475569', lineHeight: 1.5, maxWidth: 720 }}>Lithium Iron Phosphate Batteries • 25.6V & 51.2V Residential • High Voltage & C&I ESS • BESS & Container • Telecom • Grade A+ Cells • 8000 Cycles • 15+ Years • DDP Lagos All Inclusive • Valid 3 Days</p>
+          <p style={{ fontSize: 14, color: '#475569', lineHeight: 1.5, maxWidth: 720 }}>Lithium Iron Phosphate Batteries • 25.6V & 51.2V Residential • High Voltage & C&I ESS • BESS & Container • Telecom • Grade A+ Cells • 8000 Cycles • 15+ Years • DDP Lagos All Inclusive • Valid 3 Days {micCount > 0 ? `• Plus ${micCount} Made-in-China Products via Affiliate Bind-z2tiU1` : ''}</p>
           <div style={{ display: 'flex', gap: 8, marginTop: 18, flexWrap: 'wrap' }}>
-            <button onClick={()=>setFilter('all')} style={{ padding: '10px 18px', borderRadius: 100, border: filter==='all'?'1px solid #0f172a':'1px solid #e2e8f0', background: filter==='all'?'#0f172a':'#fff', color: filter==='all'?'#fff':'#0f172a', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>All 15 Products</button>
+            <button onClick={()=>setFilter('all')} style={{ padding: '10px 18px', borderRadius: 100, border: filter==='all'?'1px solid #0f172a':'1px solid #e2e8f0', background: filter==='all'?'#0f172a':'#fff', color: filter==='all'?'#fff':'#0f172a', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>All {totalCount} Products</button>
             <button onClick={()=>setFilter('25v')} style={{ padding: '10px 18px', borderRadius: 100, border: filter==='25v'?'1px solid #0f172a':'1px solid #e2e8f0', background: filter==='25v'?'#0f172a':'#fff', color: filter==='25v'?'#fff':'#0f172a', fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>25.6V (2)</button>
             <button onClick={()=>setFilter('51v')} style={{ padding: '10px 18px', borderRadius: 100, border: filter==='51v'?'1px solid #0f172a':'1px solid #e2e8f0', background: filter==='51v'?'#0f172a':'#fff', color: filter==='51v'?'#fff':'#0f172a', fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>51.2V (4)</button>
             <button onClick={()=>setFilter('hv')} style={{ padding: '10px 18px', borderRadius: 100, border: filter==='hv'?'1px solid #0f172a':'1px solid #e2e8f0', background: filter==='hv'?'#0f172a':'#fff', color: filter==='hv'?'#fff':'#0f172a', fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>High Voltage & C&I</button>
             <button onClick={()=>setFilter('utility')} style={{ padding: '10px 18px', borderRadius: 100, border: filter==='utility'?'1px solid #0f172a':'1px solid #e2e8f0', background: filter==='utility'?'#0f172a':'#fff', color: filter==='utility'?'#fff':'#0f172a', fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>BESS & Container</button>
+            {micCount > 0 && <button style={{ padding: '10px 18px', borderRadius: 100, border: '1px solid #f59e0b', background: '#fffbeb', color: '#92400e', fontWeight: 700, fontSize: 13 }}>MIC Products ({micCount}) via Bind-z2tiU1</button>}
           </div>
         </div>
 
@@ -257,6 +276,13 @@ export default function Home() {
             </div>
           ))}
         </div>
+
+        {micCount > 0 && (
+          <div style={{ marginTop: 32, padding: 20, background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 16 }}>
+            <div style={{ fontWeight: 800, fontSize: 14 }}>Made-in-China Products ({micCount}) – Affiliate Bind-z2tiU1</div>
+            <div style={{ fontSize: 12, color: '#92400e', marginTop: 4 }}>These are MIC products via your affiliate link – commission tracked via alex@made-in-china.com – Not MOTOMA direct</div>
+          </div>
+        )}
       </div>
       {selected && <QuoteModal product={selected} onClose={() => setSelected(null)} />}
     </div>

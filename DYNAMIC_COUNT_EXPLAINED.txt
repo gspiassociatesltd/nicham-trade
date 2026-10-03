@@ -1,0 +1,29 @@
+
+What happens when we list products from Made in China?
+
+Current hardcoded: 15 PRODUCTS
+Problem: When you add MIC products (e.g., 50 products from Made-in-China via affiliate Bind-z2tiU1 alex@made-in-china.com), header still says 15 PRODUCTS but you have 65 products (15 MOTOMA + 50 MIC) - WRONG!
+
+Solution in this build: Dynamic count
+
+- motomaCount = MOTOMA.length (15)
+- micCount = micProducts.length (0 now, but will be 50 when MIC added)
+- totalCount = motomaCount + micCount (15 now, 65 when MIC added)
+- displayCount = micCount > 0 ? `${motomaCount} MOTOMA + ${micCount} MIC = ${totalCount} PRODUCTS` : `${motomaCount} PRODUCTS`
+
+Now:
+- Header shows: 15 PRODUCTS (currently) -> auto becomes 15 MOTOMA + 50 MIC = 65 PRODUCTS when MIC loaded
+- Black pill shows: 15 MODELS -> auto becomes 65 MODELS (15 MOTOMA + 50 MIC)
+- Filter All shows: All 15 Products -> auto becomes All 65 Products
+- When MIC added, extra yellow button appears: MIC Products (50) via Bind-z2tiU1
+- Footer note: Plus 50 Made-in-China Products via Affiliate Bind-z2tiU1
+
+How to add MIC products:
+1. In Supabase, create table mic_products with fields: id, title, model, price, image, moq, supplier
+2. Or fetch from Made-in-China API using affiliate Bind-z2tiU1
+3. In page.tsx useEffect: const { data } = await supabase.from('mic_products').select('*'); setMicProducts(data)
+4. Then totalCount auto-updates, no need to edit hardcoded 15!
+
+For now, MIC count is 0, so site shows 15 PRODUCTS as before, but ready for MIC listing.
+
+Clean: No sensitive MOQ banner, BIG NiChAm header 28px 56px logo, MOQ only on cards.
