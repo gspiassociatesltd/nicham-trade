@@ -3,21 +3,186 @@ import { useState } from 'react'
 import QuoteModal from './components/QuoteModal'
 
 const MOTOMA = [
-  { id: "M68PW", model: "M68PW PRO", name: "M68PW PRO – 200Ah 25.6V", kwh: "5.12kWh", v: "25.6V", ah: "200Ah", desc: "Lithium Iron Phosphate • Grade A+ Cells • 8000 Cycles @80% DoD • Smart BMS • Wi-Fi • Touch Screen • 15+ Years", tag: "25.6V Residential", color: "#f0fdf4", img: "/motoma/M68PW_PRO.png" },
-  { id: "M69PW", model: "M69PW PRO", name: "M69PW PRO – 280Ah 25.6V", kwh: "7.16kWh", v: "25.6V", ah: "280Ah", desc: "280Ah High Capacity • Grade A+ Cells • Touch Screen • 15+ Years Life • Advanced BMS", tag: "25.6V High Cap", color: "#fefce8", img: "/motoma/M69PW_PRO.png" },
-  { id: "M87PW", model: "M87PW PRO", name: "M87PW PRO – 100Ah 51.2V", kwh: "5.12kWh", v: "51.2V", ah: "100Ah", desc: "100Ah 51.2V • 8000 cycles @80% DoD • Smart BMS • Wi-Fi Monitoring • Compatible Deye Growatt Solis", tag: "51.2V Compact", color: "#eff6ff", img: "/motoma/M87PW_PRO.png" },
-  { id: "M88PW", model: "M88PW PRO", name: "M88PW PRO – 200Ah 51.2V", kwh: "10.24kWh", v: "51.2V", ah: "200Ah", desc: "200Ah 51.2V • High Cycle Efficiency • Extended Durability • Integrated Safety BMS", tag: "51.2V Popular", color: "#f0fdf4", img: "/motoma/M88PW_PRO.png" },
-  { id: "M90", model: "M90 PRO", name: "M90 PRO – 320Ah 51.2V", kwh: "16.38kWh", v: "51.2V", ah: "320Ah", desc: "320Ah 51.2V • Smart BMS Compatible • 15 pcs Parallel • Wi-Fi Monitoring • Easy Report", tag: "51.2V Large", color: "#f5f3ff", img: "/motoma/M90_PRO.png" },
-  { id: "M91", model: "M91 PRO", name: "M91 PRO – 400Ah 51.2V", kwh: "20.48kWh", v: "51.2V", ah: "400Ah", desc: "400Ah 51.2V • Largest Residential • 20.48kWh • Grade A+ Cells • 8000 Cycles • 15+ Years", tag: "51.2V Flagship", color: "#fff7ed", img: "/motoma/M91_PRO.png" },
-  { id: "HV40", model: "HV-M 40-61", name: "HV-M 40~61 – High Voltage Battery", kwh: "40-61kWh", v: "High Voltage", ah: "", desc: "High Voltage Battery • Stackable • LiFePO4 • C&I Ready • Scalable • Outdoor", tag: "High Voltage", color: "#f8fafc", img: "/motoma/HV-M.png" },
-  { id: "HV92", model: "HV-M 92-193", name: "HV-M 92-193 – 92.16kWh", kwh: "92-193kWh", v: "HV", ah: "150Ah", desc: "150Ah 51.2V Module • 92-193kWh High Voltage • Scalable • BESS Ready", tag: "HV 92-193", color: "#f8fafc", img: "/motoma/HV-M.png" },
-  { id: "MHV161", model: "ESS-MHV PRO 161", name: "ESS-MHV PRO 161kWh C&I ESS", kwh: "161kWh", v: "C&I", ah: "", desc: "C&I Energy Storage System • Compact • Outdoor-Ready • 161kWh • Liquid-Cooling Optional", tag: "C&I 161kWh", color: "#f0fdf4", img: "/motoma/ESS-MHV.png" },
-  { id: "MHV209", model: "ESS-MHV PRO 209", name: "ESS-MHV PRO 209kWh C&I ESS", kwh: "209kWh", v: "C&I", ah: "", desc: "C&I ESS • 209kWh • Scalable • Outdoor • High Efficiency", tag: "C&I 209kWh", color: "#f0fdf4", img: "/motoma/ESS-MHV.png" },
-  { id: "M50", model: "M50-100", name: "M50-100 – All-in-One 50kW/100kWh", kwh: "100kWh", v: "50kW", ah: "", desc: "Smart ESS Unit • All-in-One Cabinet • Hybrid Inverter • Battery Cluster", tag: "All-in-One", color: "#eff6ff", img: "/motoma/M50-100.png" },
-  { id: "BESS", model: "BESS-500kW/1045kWh", name: "BESS-500kW/1045kWh", kwh: "1045kWh", v: "500kW", ah: "", desc: "Battery Energy Storage System • 500kW/1045kWh • Centralized • Medium-Voltage", tag: "BESS", color: "#f5f3ff", img: "/motoma/BESS.png" },
-  { id: "M2500", model: "M2500-5015", name: "M2500-5015 – Container 2.5MW/5MWh", kwh: "5MWh", v: "2.5MW", ah: "", desc: "Liquid-Cooling Container ESS • 2.5MW/5.015MWh • Utility Scale • Outdoor Container", tag: "Container 5MWh", color: "#fff7ed", img: "/motoma/M2500.png" },
-  { id: "FT25", model: "FT25-690V3450KW", name: "FT25-690V3450KW Converter", kwh: "3450KW", v: "690V", ah: "", desc: "Centralized Medium-Voltage Converter System • 3450KW • 690V • C&I BESS Compatible", tag: "Converter", color: "#f8fafc", img: "/motoma/FT25.png" },
-  { id: "M77U", model: "M77U Series", name: "Telecom Battery M77U 48V", kwh: "9.6kWh", v: "48V", ah: "200Ah", desc: "Telecom Station Battery • 100AH/150AH/200AH • 48V • M77U/M72U/M78U • LiFePO4", tag: "Telecom 48V", color: "#f0fdf4", img: "/motoma/M77U.png" },
+  {
+    "id": "M68PW",
+    "model": "M68PW PRO",
+    "name": "M68PW PRO \u2013 200Ah 25.6V",
+    "kwh": "5.12kWh",
+    "v": "25.6V",
+    "ah": "200Ah",
+    "desc": "Lithium Iron Phosphate \u2022 Grade A+ Cells \u2022 8000 Cycles @80% DoD \u2022 Smart BMS \u2022 Wi-Fi \u2022 Touch Screen \u2022 15+ Years",
+    "tag": "25.6V Residential",
+    "color": "#f0fdf4",
+    "img": "/motoma/M68PW_PRO.png"
+  },
+  {
+    "id": "M69PW",
+    "model": "M69PW PRO",
+    "name": "M69PW PRO \u2013 280Ah 25.6V",
+    "kwh": "7.16kWh",
+    "v": "25.6V",
+    "ah": "280Ah",
+    "desc": "280Ah High Capacity \u2022 Grade A+ Cells \u2022 Touch Screen \u2022 15+ Years Life \u2022 Advanced BMS",
+    "tag": "25.6V High Cap",
+    "color": "#fefce8",
+    "img": "/motoma/M69PW_PRO.png"
+  },
+  {
+    "id": "M87PW",
+    "model": "M87PW PRO",
+    "name": "M87PW PRO \u2013 100Ah 51.2V",
+    "kwh": "5.12kWh",
+    "v": "51.2V",
+    "ah": "100Ah",
+    "desc": "100Ah 51.2V \u2022 8000 cycles @80% DoD \u2022 Smart BMS \u2022 Wi-Fi Monitoring \u2022 Compatible Deye Growatt Solis",
+    "tag": "51.2V Compact",
+    "color": "#eff6ff",
+    "img": "/motoma/M87PW_PRO.png"
+  },
+  {
+    "id": "M88PW",
+    "model": "M88PW PRO",
+    "name": "M88PW PRO \u2013 200Ah 51.2V",
+    "kwh": "10.24kWh",
+    "v": "51.2V",
+    "ah": "200Ah",
+    "desc": "200Ah 51.2V \u2022 High Cycle Efficiency \u2022 Extended Durability \u2022 Integrated Safety BMS",
+    "tag": "51.2V Popular",
+    "color": "#f0fdf4",
+    "img": "/motoma/M88PW_PRO.png"
+  },
+  {
+    "id": "M90",
+    "model": "M90 PRO",
+    "name": "M90 PRO \u2013 320Ah 51.2V",
+    "kwh": "16.38kWh",
+    "v": "51.2V",
+    "ah": "320Ah",
+    "desc": "320Ah 51.2V \u2022 Smart BMS Compatible \u2022 15 pcs Parallel \u2022 Wi-Fi Monitoring",
+    "tag": "51.2V Large",
+    "color": "#f5f3ff",
+    "img": "/motoma/M90_PRO.png"
+  },
+  {
+    "id": "M91",
+    "model": "M91 PRO",
+    "name": "M91 PRO \u2013 400Ah 51.2V",
+    "kwh": "20.48kWh",
+    "v": "51.2V",
+    "ah": "400Ah",
+    "desc": "400Ah 51.2V \u2022 Largest Residential \u2022 20.48kWh \u2022 Grade A+ Cells \u2022 8000 Cycles",
+    "tag": "51.2V Flagship",
+    "color": "#fff7ed",
+    "img": "/motoma/M91_PRO.png"
+  },
+  {
+    "id": "HV40",
+    "model": "HV-M 40-61",
+    "name": "HV-M 40~61 \u2013 High Voltage Battery",
+    "kwh": "40-61kWh",
+    "v": "High Voltage",
+    "ah": "",
+    "desc": "High Voltage Battery \u2022 Stackable \u2022 LiFePO4 \u2022 C&I Ready \u2022 Scalable \u2022 Outdoor",
+    "tag": "High Voltage",
+    "color": "#f8fafc",
+    "img": "/motoma/HV-M.png"
+  },
+  {
+    "id": "HV92",
+    "model": "HV-M 92-193",
+    "name": "HV-M 92-193 \u2013 92.16kWh",
+    "kwh": "92-193kWh",
+    "v": "HV",
+    "ah": "150Ah",
+    "desc": "150Ah 51.2V Module \u2022 92-193kWh High Voltage \u2022 Scalable \u2022 BESS Ready",
+    "tag": "HV 92-193",
+    "color": "#f8fafc",
+    "img": "/motoma/HV-M.png"
+  },
+  {
+    "id": "MHV161",
+    "model": "ESS-MHV PRO 161",
+    "name": "ESS-MHV PRO 161kWh C&I ESS",
+    "kwh": "161kWh",
+    "v": "C&I",
+    "ah": "",
+    "desc": "C&I Energy Storage System \u2022 Compact \u2022 Outdoor-Ready \u2022 161kWh",
+    "tag": "C&I 161kWh",
+    "color": "#f0fdf4",
+    "img": "/motoma/ESS-MHV.png"
+  },
+  {
+    "id": "MHV209",
+    "model": "ESS-MHV PRO 209",
+    "name": "ESS-MHV PRO 209kWh C&I ESS",
+    "kwh": "209kWh",
+    "v": "C&I",
+    "ah": "",
+    "desc": "C&I ESS \u2022 209kWh \u2022 Scalable \u2022 Outdoor \u2022 High Efficiency",
+    "tag": "C&I 209kWh",
+    "color": "#f0fdf4",
+    "img": "/motoma/ESS-MHV.png"
+  },
+  {
+    "id": "M50",
+    "model": "M50-100",
+    "name": "M50-100 \u2013 All-in-One 50kW/100kWh",
+    "kwh": "100kWh",
+    "v": "50kW",
+    "ah": "",
+    "desc": "Smart ESS Unit \u2022 All-in-One Cabinet \u2022 Hybrid Inverter \u2022 Battery Cluster",
+    "tag": "All-in-One",
+    "color": "#eff6ff",
+    "img": "/motoma/M50-100.png"
+  },
+  {
+    "id": "BESS",
+    "model": "BESS-500kW/1045kWh",
+    "name": "BESS-500kW/1045kWh",
+    "kwh": "1045kWh",
+    "v": "500kW",
+    "ah": "",
+    "desc": "Battery Energy Storage System \u2022 500kW/1045kWh \u2022 Centralized",
+    "tag": "BESS",
+    "color": "#f5f3ff",
+    "img": "/motoma/BESS.png"
+  },
+  {
+    "id": "M2500",
+    "model": "M2500-5015",
+    "name": "M2500-5015 \u2013 Container 2.5MW/5MWh",
+    "kwh": "5MWh",
+    "v": "2.5MW",
+    "ah": "",
+    "desc": "Liquid-Cooling Container ESS \u2022 2.5MW/5.015MWh \u2022 Utility Scale",
+    "tag": "Container 5MWh",
+    "color": "#fff7ed",
+    "img": "/motoma/M2500.png"
+  },
+  {
+    "id": "FT25",
+    "model": "FT25-690V3450KW",
+    "name": "FT25-690V3450KW Converter",
+    "kwh": "3450KW",
+    "v": "690V",
+    "ah": "",
+    "desc": "Centralized Medium-Voltage Converter \u2022 3450KW \u2022 690V \u2022 C&I BESS Compatible",
+    "tag": "Converter",
+    "color": "#f8fafc",
+    "img": "/motoma/FT25.png"
+  },
+  {
+    "id": "M77U",
+    "model": "M77U Series",
+    "name": "Telecom Battery M77U 48V",
+    "kwh": "9.6kWh",
+    "v": "48V",
+    "ah": "200Ah",
+    "desc": "Telecom Station Battery \u2022 100AH/150AH/200AH \u2022 48V \u2022 M77U/M72U/M78U",
+    "tag": "Telecom 48V",
+    "color": "#f0fdf4",
+    "img": "/motoma/M77U.png"
+  }
 ]
 
 export default function Home() {
@@ -53,7 +218,7 @@ export default function Home() {
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '32px 28px' }}>
         {authOpen && (
           <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 16, padding: 16, marginBottom: 20, fontSize: 12, lineHeight: 1.6 }}>
-            <b>MOTOMA AUTHORIZATION – Public Display Safe</b><br/>Date: 02/10/2026 • Ref: MOTOMA/NiChAm/PUBLIC/2026 • MOTOMA Power Technology Co., Ltd authorizes NiChAm Trade to list 15 MOTOMA products on https://nicham-trade.vercel.app – Nigeria non-exclusive – 12 months renewable – Original images from official datasheets.
+            <b>MOTOMA AUTHORIZATION – Public Display Safe</b><br/>Date: 02/10/2026 • Ref: MOTOMA/NiChAm/PUBLIC/2026 • MOTOMA Power Technology Co., Ltd authorizes NiChAm Trade to list 15 MOTOMA products – Nigeria non-exclusive – 12 months – Original images from official datasheets.
           </div>
         )}
 
@@ -61,7 +226,7 @@ export default function Home() {
           <div>
             <div style={{ display: 'inline-flex', background: '#0f172a', color: '#fff', padding: '6px 12px', borderRadius: 100, fontSize: 11, fontWeight: 800, letterSpacing: '0.6px' }}>15 MOTOMA MODELS • OFFICIAL DATASHEETS • DDP LAGOS</div>
             <h1 style={{ fontSize: 44, fontWeight: 900, letterSpacing: '-1.6px', lineHeight: 0.92, margin: '14px 0 14px', color: '#0f172a' }}>Powering Nigeria with <span style={{ color: '#16a34a' }}>MOTOMA</span> Energy Storage</h1>
-            <p style={{ fontSize: 15, color: '#475569', lineHeight: 1.5, maxWidth: 560 }}>Lithium Iron Phosphate Batteries • 25.6V & 51.2V Residential • High Voltage & C&I ESS • BESS & Container • Telecom • Grade A+ Cells • 8000 Cycles • 15+ Years • DDP Lagos • Valid 3 Days</p>
+            <p style={{ fontSize: 15, color: '#475569', lineHeight: 1.5, maxWidth: 560 }}>Lithium Iron Phosphate • 25.6V & 51.2V Residential • High Voltage & C&I ESS • BESS & Container • Telecom • Grade A+ Cells • 8000 Cycles • 15+ Years • DDP Lagos • Valid 3 Days</p>
             <div style={{ display: 'flex', gap: 8, marginTop: 18, flexWrap: 'wrap' }}>
               <button onClick={()=>setFilter('all')} style={{ padding: '10px 18px', borderRadius: 100, border: filter==='all'?'1px solid #0f172a':'1px solid #e2e8f0', background: filter==='all'?'#0f172a':'#fff', color: filter==='all'?'#fff':'#0f172a', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>All 15</button>
               <button onClick={()=>setFilter('25v')} style={{ padding: '10px 18px', borderRadius: 100, border: filter==='25v'?'1px solid #0f172a':'1px solid #e2e8f0', background: filter==='25v'?'#0f172a':'#fff', color: filter==='25v'?'#fff':'#0f172a', fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>25.6V (2)</button>
@@ -73,7 +238,7 @@ export default function Home() {
           <div style={{ background: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: 20, padding: 20 }}>
             <div style={{ fontSize: 11, color: '#64748b', fontWeight: 800, letterSpacing: '0.8px' }}>DDP LAGOS • VALID 3 DAYS • AUTHORIZED</div>
             <div style={{ fontSize: 18, fontWeight: 900, marginTop: 8, lineHeight: 1.25, color: '#0f172a' }}>Factory Verified • PSI by SGS / BV • 110% Insurance • 36 States Delivery</div>
-            <div style={{ fontSize: 12, color: '#64748b', marginTop: 8, lineHeight: 1.5 }}>Original MOTOMA datasheets • Grade A+ Cells • 8000 cycles @80% DoD • Smart BMS compatible Deye, Growatt, Solis, Sofar • Wi-Fi & Bluetooth • Touch Screen • 15+ Years</div>
+            <div style={{ fontSize: 12, color: '#64748b', marginTop: 8, lineHeight: 1.5 }}>Original MOTOMA datasheets • Grade A+ Cells • 8000 cycles @80% DoD • Smart BMS compatible Deye, Growatt, Solis, Sofar • Wi-Fi & Bluetooth • Touch Screen • 15+ Years • Dynamic platform fee hidden (5% affiliate included)</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 16 }}>
               <div style={{ background: '#fff', border: '1px solid #f1f5f9', borderRadius: 12, padding: '10px 12px' }}><div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 700 }}>PRODUCTS</div><div style={{ fontWeight: 900, fontSize: 13, marginTop: 2 }}>15 Models</div></div>
               <div style={{ background: '#fff', border: '1px solid #f1f5f9', borderRadius: 12, padding: '10px 12px' }}><div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 700 }}>CELLS</div><div style={{ fontWeight: 900, fontSize: 13, marginTop: 2 }}>Grade A+</div></div>
@@ -86,13 +251,7 @@ export default function Home() {
           {filtered.map((p:any)=>(
             <div key={p.id} style={{ background: '#fff', border: '1px solid #f1f5f9', borderRadius: 20, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
               <div style={{ height: 260, background: p.color, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: 16 }}>
-                <img src={p.img} alt={p.name} style={{ maxWidth: '85%', maxHeight: '85%', objectFit: 'contain' }} onError={(e:any)=>{e.currentTarget.style.display='none'; const fallback=e.currentTarget.nextElementSibling as HTMLElement; if(fallback) fallback.style.display='flex'}} />
-                <div style={{ display: 'none', position: 'absolute', inset: 0, alignItems: 'center', justifyContent: 'center' }}>
-                  <div style={{ width: 120, height: 120, background: '#fff', borderRadius: 16, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
-                    <div style={{ fontSize: 20, fontWeight: 900, color: '#0f172a' }}>{p.kwh}</div>
-                    <div style={{ fontSize: 11, color: '#64748b', fontWeight: 700, marginTop: 2 }}>{p.v} • {p.ah}</div>
-                  </div>
-                </div>
+                <img src={p.img} alt={p.name} style={{ maxWidth: '85%', maxHeight: '85%', objectFit: 'contain' }} onError={(e:any)=>{e.currentTarget.style.display='none'}} />
                 <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 6 }}>
                   <span style={{ background: '#fff', border: '1px solid #e2e8f0', fontSize: 10, padding: '5px 11px', borderRadius: 100, fontWeight: 800 }}>{p.tag}</span>
                   <span style={{ background: '#0f172a', color: '#fff', fontSize: 10, padding: '5px 11px', borderRadius: 100, fontWeight: 800 }}>{p.kwh}</span>
@@ -111,9 +270,9 @@ export default function Home() {
                   <div>
                     <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>DDP Lagos</div>
                     <div style={{ fontWeight: 900, fontSize: 15, color: '#0f172a', marginTop: 2 }}>Quote Pending</div>
-                    <div style={{ fontSize: 10, color: '#16a34a', fontWeight: 700, marginTop: 2 }}>Valid 3 Days</div>
+                    <div style={{ fontSize: 10, color: '#16a34a', fontWeight: 700, marginTop: 2 }}>Valid 3 Days • Dynamic Fee Hidden</div>
                   </div>
-                  <button onClick={()=>setSelected({ title: p.name, supplier_model: p.model, category: p.tag, ...p })} style={{ background: '#0f172a', color: '#fff', padding: '12px 20px', borderRadius: 100, border: 0, cursor: 'pointer', fontWeight: 800, fontSize: 12 }}>Get DDP Quote →</button>
+                  <button onClick={()=>setSelected({ title: p.name, supplier_model: p.model, category: p.tag, is_motoma: true, ...p })} style={{ background: '#0f172a', color: '#fff', padding: '12px 20px', borderRadius: 100, border: 0, cursor: 'pointer', fontWeight: 800, fontSize: 12 }}>Get DDP Quote →</button>
                 </div>
               </div>
             </div>
