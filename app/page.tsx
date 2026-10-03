@@ -188,7 +188,6 @@ const MOTOMA = [
 export default function Home() {
   const [selected, setSelected] = useState<any>(null)
   const [filter, setFilter] = useState('all')
-  const [authOpen, setAuthOpen] = useState(false)
 
   const filtered = MOTOMA.filter((p:any) => {
     if (filter === 'all') return true
@@ -206,27 +205,20 @@ export default function Home() {
           <div style={{ width: 40, height: 40, borderRadius: 12, background: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 900 }}>M</div>
           <div>
             <div style={{ fontWeight: 900, fontSize: 17, color: '#0f172a' }}>NiChAm Trade <span style={{ color: '#64748b', fontWeight: 400 }}>×</span> MOTOMA</div>
-            <div style={{ fontSize: 10, color: '#16a34a', fontWeight: 800, letterSpacing: '0.6px' }}>AUTHORIZED • 15 PRODUCTS • GRADE A+ CELLS • WORLD CLASS</div>
+            <div style={{ fontSize: 10, color: '#16a34a', fontWeight: 800, letterSpacing: '0.6px' }}>15 PRODUCTS • GRADE A+ CELLS • DDP LAGOS • VALID 3 DAYS</div>
           </div>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
-          <button onClick={()=>setAuthOpen(!authOpen)} style={{ fontSize: 12, padding: '8px 16px', borderRadius: 100, border: '1px solid #e2e8f0', background: '#fff', fontWeight: 600, cursor: 'pointer' }}>{authOpen ? 'Hide' : 'Authorization'}</button>
-          <a href="https://wa.me/2347050477950" target="_blank" style={{ background: '#0f172a', color: '#fff', padding: '10px 20px', borderRadius: 100, textDecoration: 'none', fontSize: 13, fontWeight: 800 }}>Get Quote →</a>
+          <a href="https://wa.me/2347050477950" target="_blank" style={{ background: '#0f172a', color: '#fff', padding: '10px 22px', borderRadius: 100, textDecoration: 'none', fontSize: 13, fontWeight: 800 }}>Get Quote →</a>
         </div>
       </header>
 
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '32px 28px' }}>
-        {authOpen && (
-          <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 16, padding: 16, marginBottom: 20, fontSize: 12, lineHeight: 1.6 }}>
-            <b>MOTOMA AUTHORIZATION – Public Display Safe – No Sensitive Business Model</b><br/>Date: 02/10/2026 • Ref: MOTOMA/NiChAm/PUBLIC/2026 • MOTOMA Power Technology Co., Ltd authorizes NiChAm Trade to list 15 MOTOMA products on https://nicham-trade.vercel.app – Nigeria non-exclusive – 12 months renewable – Original images from official datasheets. No affiliate %, no fee breakdown disclosed to buyer.
-          </div>
-        )}
-
         <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 0.85fr', gap: 20, marginBottom: 28 }}>
           <div>
             <div style={{ display: 'inline-flex', background: '#0f172a', color: '#fff', padding: '6px 12px', borderRadius: 100, fontSize: 11, fontWeight: 800, letterSpacing: '0.6px' }}>15 MOTOMA MODELS • OFFICIAL DATASHEETS • DDP LAGOS • VALID 3 DAYS</div>
             <h1 style={{ fontSize: 44, fontWeight: 900, letterSpacing: '-1.6px', lineHeight: 0.92, margin: '14px 0 14px', color: '#0f172a' }}>Powering Nigeria with <span style={{ color: '#16a34a' }}>MOTOMA</span> Energy Storage</h1>
-            <p style={{ fontSize: 15, color: '#475569', lineHeight: 1.5, maxWidth: 580 }}>Lithium Iron Phosphate Batteries • 25.6V & 51.2V Residential • High Voltage & C&I ESS • BESS & Container • Telecom • Grade A+ Cells • 8000 Cycles @80% DoD • 15+ Years • DDP Lagos All Inclusive • Valid 3 Days – No Breakdown Shown to Buyer</p>
+            <p style={{ fontSize: 15, color: '#475569', lineHeight: 1.5, maxWidth: 580 }}>Lithium Iron Phosphate Batteries • 25.6V & 51.2V Residential • High Voltage & C&I ESS • BESS & Container • Telecom • Grade A+ Cells • 8000 Cycles @80% DoD • 15+ Years • DDP Lagos All Inclusive • Valid 3 Days</p>
             <div style={{ display: 'flex', gap: 8, marginTop: 18, flexWrap: 'wrap' }}>
               <button onClick={()=>setFilter('all')} style={{ padding: '10px 18px', borderRadius: 100, border: filter==='all'?'1px solid #0f172a':'1px solid #e2e8f0', background: filter==='all'?'#0f172a':'#fff', color: filter==='all'?'#fff':'#0f172a', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>All 15 Products</button>
               <button onClick={()=>setFilter('25v')} style={{ padding: '10px 18px', borderRadius: 100, border: filter==='25v'?'1px solid #0f172a':'1px solid #e2e8f0', background: filter==='25v'?'#0f172a':'#fff', color: filter==='25v'?'#fff':'#0f172a', fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>25.6V (2)</button>
@@ -236,9 +228,9 @@ export default function Home() {
             </div>
           </div>
           <div style={{ background: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: 20, padding: 20 }}>
-            <div style={{ fontSize: 11, color: '#64748b', fontWeight: 800, letterSpacing: '0.8px' }}>DDP LAGOS • VALID 3 DAYS • AUTHORIZED • CLEAN BUYER VIEW</div>
+            <div style={{ fontSize: 11, color: '#64748b', fontWeight: 800, letterSpacing: '0.8px' }}>DDP LAGOS • VALID 3 DAYS • ORIGINAL IMAGES</div>
             <div style={{ fontSize: 18, fontWeight: 900, marginTop: 8, lineHeight: 1.25, color: '#0f172a' }}>Factory Verified • Original Images • 36 States Delivery</div>
-            <div style={{ fontSize: 12, color: '#64748b', marginTop: 8, lineHeight: 1.5 }}>Original MOTOMA datasheets – Grade A+ Cells – 8000 cycles @80% DoD – Smart BMS compatible Deye, Growatt, Solis – Wi-Fi & Bluetooth – Touch Screen – 15+ Years – Total DDP Only – No Breakdown – No Affiliate % Shown to Buyer</div>
+            <div style={{ fontSize: 12, color: '#64748b', marginTop: 8, lineHeight: 1.5 }}>Original MOTOMA datasheets • Grade A+ Cells • 8000 cycles @80% DoD • Smart BMS compatible Deye, Growatt, Solis • Wi-Fi & Bluetooth • Touch Screen • 15+ Years • Total DDP Only – No Breakdown</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 16 }}>
               <div style={{ background: '#fff', border: '1px solid #f1f5f9', borderRadius: 12, padding: '10px 12px' }}><div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 700 }}>PRODUCTS</div><div style={{ fontWeight: 900, fontSize: 13, marginTop: 2 }}>15 Models</div></div>
               <div style={{ background: '#fff', border: '1px solid #f1f5f9', borderRadius: 12, padding: '10px 12px' }}><div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 700 }}>CELLS</div><div style={{ fontWeight: 900, fontSize: 13, marginTop: 2 }}>Grade A+</div></div>

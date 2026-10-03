@@ -1,0 +1,1 @@
+FINAL - No MOTOMA Authorization banner - as requested: share authorization only with prospective logistics partners privately, not on buyer site. Clean world-class - 15 MOTOMA only - No sensitive business model - No affiliate % - No fee breakdown - DDP Lagos All Inclusive Valid 3 Days only
