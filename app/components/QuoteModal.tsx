@@ -6,40 +6,15 @@ export default function QuoteModal({ product, onClose }: { product: any, onClose
   const [form, setForm] = useState({ customer_name: '', phone: '', quantity: 1, location: '', self_clear: false })
   const [loading, setLoading] = useState(false)
 
-  // Detect MOTOMA product
+  // Detect MOTOMA product – buyer sees clean DDP only
   const isMotoma = product?.is_motoma || (product?.title||'').toUpperCase().includes('MOTOMA') || (product?.supplier_name||'').includes('MOTOMA') || product?.model?.includes('PW') || product?.model?.includes('HV-M') || product?.model?.includes('ESS') || product?.model?.includes('M50') || product?.model?.includes('BESS')
-  const isLargeESS = (product?.kwh && parseInt(product.kwh) > 50) || (product?.model||'').includes('BESS') || (product?.model||'').includes('M2500') || (product?.model||'').includes('FT25') || (product?.capacity && product.capacity.includes('MWh'))
-
-  // Dynamic fee logic
-  const getFee = () => {
-    if (isMotoma) {
-      // MOTOMA DDP: 5% affiliate commission built into DDP price, platform fee hidden = 5-8%
-      // For display to admin only, buyer sees total DDP only
-      if (isLargeESS) return 0 // For BESS/Container, fee is % of millions, not fixed – admin calculates later
-      return 0 // DDP quote pending – fee calculated after MOTOMA DDP quote
-    }
-    // Non-MOTOMA: old logic
-    return form.self_clear ? 35000 : 85000
-  }
 
   async function submit() {
     if (!form.customer_name || !form.phone) { alert('Name and phone required'); return }
     setLoading(true)
     try {
-      const platform_fee = getFee()
-      const product_price = Number(product.price_ngn || product.landed_price_ngn || 0)
-      
-      // For MOTOMA, price is 0 pending – admin will quote DDP
-      let feeNote = ''
-      if (isMotoma) {
-        if (isLargeESS) {
-          feeNote = 'MOTOMA BESS/Container – DDP Lagos – 5% affiliate + 3% platform – Admin to quote DDP total – Valid 3 Days'
-        } else {
-          feeNote = `MOTOMA ${product.model} – DDP Lagos – 5% affiliate included in DDP – Admin to quote DDP total – Valid 3 Days`
-        }
-      } else {
-        feeNote = form.self_clear ? 'YES (Fee 35k)' : 'NO (Fee 85k)'
-      }
+      // Internal: fee hidden, not shown to buyer. MOTOMA DDP includes all costs – buyer sees total only.
+      const internalFeeNote = isMotoma ? `MOTOMA ${product.model} – DDP Lagos – Admin to quote DDP total – Valid 3 Days` : (form.self_clear ? 'Self-clear YES' : 'Standard')
 
       const { data, error } = await supabase.from('africanies_quotes').insert({
         product_id: product.id || `motoma-${product.model}`,
@@ -48,28 +23,34 @@ export default function QuoteModal({ product, onClose }: { product: any, onClose
         phone: form.phone,
         quantity: form.quantity,
         location: form.location,
-        self_clear: isMotoma ? false : form.self_clear, // MOTOMA never self-clear – DDP only
-        platform_fee_ngn: platform_fee,
+        self_clear: false, // MOTOMA DDP only, no self-clear. Non-MOTOMA also defaults false – fee logic internal
+        platform_fee_ngn: 0, // Dynamic % calculated by admin – hidden from buyer
         status: 'new',
         is_motoma: isMotoma,
-        fee_note: feeNote
+        fee_note: internalFeeNote
       }).select().single()
 
       if (error) throw error
 
-      const totalNote = isMotoma ? `DDP Lagos Quote Pending – Admin will provide total DDP (includes duty+shipping+5% affiliate)` : `Hidden Platform Fee: ₦${platform_fee.toLocaleString()}`
-      
-      const message = `NiChAm MOTOMA Quote Request
+      // Buyer-facing WhatsApp message – CLEAN – NO affiliate, NO fee, NO breakdown
+      const message = isMotoma
+        ? `NiChAm Trade – MOTOMA DDP Lagos Quote
 Product: ${product.title}
 Model: ${product.model || product.supplier_model}
 Customer: ${form.customer_name}
 Phone: ${form.phone}
 Qty: ${form.quantity}
 Location: ${form.location}
-Type: ${isMotoma ? 'MOTOMA DDP Lagos – ' + feeNote : 'Standard – Self-Clear: ' + feeNote}
-${totalNote}
-Quote ID: ${data.id.slice(0,8)}
-Valid 3 Days`
+DDP Lagos – All Inclusive – Valid 3 Days
+Quote ID: ${data.id.slice(0,8)}`
+        : `NiChAm Trade Quote
+Product: ${product.title}
+Customer: ${form.customer_name}
+Phone: ${form.phone}
+Qty: ${form.quantity}
+Location: ${form.location}
+Valid 3 Days
+Quote ID: ${data.id.slice(0,8)}`
 
       await supabase.from('whatsapp_logs').insert({
         quote_id: data.id,
@@ -98,7 +79,7 @@ Valid 3 Days`
           <button onClick={onClose} style={{ border: 0, background: '#f3f4f6', width: 28, height: 28, borderRadius: 100, cursor: 'pointer' }}>✕</button>
         </div>
         <div style={{ fontSize: 12, color: '#0f172a', marginTop: 8, fontWeight: 700, lineHeight: 1.3 }}>{product.title}</div>
-        <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>{product.model || product.supplier_model} • {isMotoma ? 'DDP Lagos – Quote Pending – Includes 5% affiliate' : `₦${Number(product.price_ngn || 0).toLocaleString()}`}</div>
+        <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>{product.model || product.supplier_model} • DDP Lagos – All Inclusive</div>
 
         <div style={{ marginTop: 16, display: 'grid', gap: 10 }}>
           <input placeholder="Your Name e.g. Godwin Abaniwo" value={form.customer_name} onChange={e => setForm({ ...form, customer_name: e.target.value })} style={{ padding: '12px', borderRadius: 12, border: '1px solid #e5e7eb', fontSize: 13 }} />
@@ -108,25 +89,15 @@ Valid 3 Days`
             <input placeholder="Location e.g. Abuja / Lagos" value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} style={{ padding: '12px', borderRadius: 12, border: '1px solid #e5e7eb', flex: 1.5, fontSize: 13 }} />
           </div>
 
-          {isMotoma ? (
-            <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 12, padding: '10px 12px', fontSize: 11, lineHeight: 1.4, color: '#166534' }}>
-              <b>MOTOMA DDP Lagos – All Inclusive</b><br/>
-              • DDP Lagos price includes: Factory + Shipping + Duty + PSI (SGS/BV) + Insurance 110% + 5% affiliate commission<br/>
-              • Buyer sees TOTAL DDP only – No breakdown – Valid 3 Days<br/>
-              • {isLargeESS ? 'BESS/Container – Custom DDP quote by admin – 5% affiliate + 3% platform' : 'Residential – Admin will send DDP total after MOTOMA factory quote'}<br/>
-              • No self-clear option – DDP only – We handle everything
-            </div>
-          ) : (
-            <label style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 12, background: '#fffbeb', padding: '8px 12px', borderRadius: 12, border: '1px solid #fde68a', cursor: 'pointer' }}>
-              <input type="checkbox" checked={form.self_clear} onChange={e => setForm({ ...form, self_clear: e.target.checked })} />
-              Self-clear? (Fee ₦35k instead of ₦85k) – Admin sees breakdown
-            </label>
-          )}
-
-          <div style={{ fontSize: 10, color: '#666', background: '#f9fafb', padding: '8px 12px', borderRadius: 12, lineHeight: 1.4 }}>
-            {isMotoma ? 'DDP Lagos valid 3 days. Total DDP includes all costs + 5% affiliate. Admin provides breakdown. Buyer sees total only. Platform fee hidden.' : 'Landed cost valid 3 days. Buyer sees total only. Platform fee hidden.'}
+          <div style={{ background: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: 12, padding: '10px 12px', fontSize: 11, lineHeight: 1.5, color: '#0f172a' }}>
+            <b>DDP Lagos – All Inclusive – Valid 3 Days</b><br/>
+            Includes Factory Price, Shipping, Duty, Clearance, and Delivery to Lagos. Total price only – No hidden breakdown.
           </div>
-          <button onClick={submit} disabled={loading} style={{ background: '#0f172a', color: '#fff', padding: '14px', borderRadius: 12, fontWeight: 800, border: 0, cursor: 'pointer', opacity: loading ? 0.6 : 1, fontSize: 13 }}>{loading ? 'Saving...' : isMotoma ? 'Submit DDP Quote & Open WhatsApp' : 'Submit Quote & Open WhatsApp'}</button>
+
+          <div style={{ fontSize: 10, color: '#64748b', background: '#f9fafb', padding: '8px 12px', borderRadius: 12, lineHeight: 1.4 }}>
+            Quote valid for 3 days. You will receive total DDP Lagos price on WhatsApp.
+          </div>
+          <button onClick={submit} disabled={loading} style={{ background: '#0f172a', color: '#fff', padding: '14px', borderRadius: 12, fontWeight: 800, border: 0, cursor: 'pointer', opacity: loading ? 0.6 : 1, fontSize: 13 }}>{loading ? 'Saving...' : 'Submit Quote & Open WhatsApp'}</button>
         </div>
       </div>
     </div>
