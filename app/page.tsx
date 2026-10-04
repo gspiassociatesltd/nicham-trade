@@ -1,8 +1,6 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import QuoteModal from './components/QuoteModal'
-import { supabase } from '@/lib/supabase'
-
 
 const MOTOMA_PRODUCTS = [
   { id: 'M68PW', model: 'M68PW PRO', name: 'M68PW PRO - 200Ah 25.6V', capacity: '5.12kWh', voltage: '25.6V Residential', moq: '12 pcs', image: '/motoma/M68PW.jpg', desc: '200Ah 25.6V • Grade A+ Cells • 8000 Cycles • Smart BMS • 5.12kWh' },
@@ -22,25 +20,21 @@ const MOTOMA_PRODUCTS = [
   { id: 'M77U', model: 'M77U Series', name: 'Telecom M77U 48V', capacity: '9.6kWh', voltage: 'Telecom 48V', moq: '16 pcs', image: '/motoma/M77U.jpg', desc: 'Telecom Battery • 48V • 9.6kWh • 19 inch Rack • MOQ 16 pcs' },
 ]
 
-
 export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
   const [totalCount] = useState(MOTOMA_PRODUCTS.length)
 
   return (
     <div style={{ fontFamily: 'Inter, -apple-system, sans-serif', background: '#f8fafc', minHeight: '100vh' }}>
-      {/* BIG NiChAm Trade Header - 56px M logo + 28px Title - Bigger than subhead */}
       <header style={{ background: '#ffffff', borderBottom: '2px solid #0f172a', position: 'sticky', top: 0, zIndex: 40, boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            {/* 56px M Logo - BIG - Not missing */}
             <div style={{ width: 56, height: 56, background: 'linear-gradient(135deg, #0f172a 0%, #22c55e 100%)', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(15,23,42,0.15)' }}>
               <span style={{ color: '#fff', fontWeight: 900, fontSize: 28, letterSpacing: -1 }}>M</span>
             </div>
             <div>
-              {/* 28px Title - BIGGER than subhead 20px */}
               <div style={{ fontWeight: 900, fontSize: 28, lineHeight: 1, letterSpacing: -0.5, color: '#0f172a' }}>
-                NiChAm Trade <span style={{ color: '#22c55e' }}>×</span> MOTOMA
+                NiChAm Trade
               </div>
               <div style={{ fontSize: 12, fontWeight: 700, color: '#64748b', marginTop: 2, letterSpacing: 0.5 }}>
                 GRADE A+ • 8000 CYCLES • 15+ YEARS • DDP LAGOS • VALID 3 DAYS
@@ -51,38 +45,36 @@ export default function Home() {
             <div style={{ background: '#0f172a', color: '#fff', padding: '8px 16px', borderRadius: 100, fontSize: 12, fontWeight: 800 }}>
               {totalCount} MODELS • DDP LAGOS
             </div>
-            <a href="/admin/motoma-ddp" style={{ background: '#f1f5f9', color: '#0f172a', padding: '8px 14px', borderRadius: 100, fontSize: 11, fontWeight: 700, textDecoration: 'none', border: '1px solid #e2e8f0' }}>Admin DDP</a>
           </div>
         </div>
       </header>
 
-      {/* Subhead - Smaller than BIG header 28px */}
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '32px 20px 16px' }}>
         <div style={{ textAlign: 'center' }}>
           <h1 style={{ fontSize: 20, fontWeight: 700, color: '#334155', margin: 0, letterSpacing: -0.3 }}>
             Powering Nigeria with MOTOMA Energy Storage
           </h1>
-          <p style={{ fontSize: 14, color: '#64748b', margin: '8px auto 0', maxWidth: 680, lineHeight: 1.5 }}>
-            Lithium Iron Phosphate Batteries • 25.6V & 51.2V Residential • High Voltage & C&I ESS • BESS & Container • Telecom • Grade A+ Cells • 8000 Cycles • 15+ Years • DDP Lagos All Inclusive • Valid 3 Days • MoMo → Flutterwave Escrow
+          <p style={{ fontSize: 14, color: '#64748b', margin: '8px auto 0', maxWidth: 720, lineHeight: 1.5 }}>
+            Lithium Iron Phosphate Batteries • 25.6V & 51.2V Residential • High Voltage & C&I ESS • BESS & Container • Telecom • Grade A+ Cells • 8000 Cycles • 15+ Years • DDP Lagos All Inclusive • Valid 3 Days
           </p>
           <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center', gap: 8, flexWrap: 'wrap' }}>
             <span style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#166534', padding: '6px 12px', borderRadius: 100, fontSize: 11, fontWeight: 700 }}>✓ Grade A+ Cells</span>
             <span style={{ background: '#eff6ff', border: '1px solid #bfdbfe', color: '#1e40af', padding: '6px 12px', borderRadius: 100, fontSize: 11, fontWeight: 700 }}>✓ 8000 Cycles</span>
-            <span style={{ background: '#fef3c7', border: '1px solid #fde68a', color: '#92400e', padding: '6px 12px', borderRadius: 100, fontSize: 11, fontWeight: 700 }}>✓ MoMo → Flutterwave Escrow</span>
-            <span style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', color: '#5b21b6', padding: '6px 12px', borderRadius: 100, fontSize: 11, fontWeight: 700 }}>✓ License Compliant</span>
+          </div>
+          <div style={{ marginTop: 12, fontSize: 11, color: '#64748b' }}>
+            Batteries: 12 pcs Pro Series (M91 Pro 8 pcs) • Other models 16 pcs • Inverters 50 pcs • HV Projects 40.96kWh min up to 5MWh
           </div>
         </div>
       </div>
 
-      {/* Products Grid */}
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '16px 20px 40px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
           {MOTOMA_PRODUCTS.map(p => (
             <div key={p.id} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ height: 160, background: '#f8fafc', position: 'relative', overflow: 'hidden' }}>
-                <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                <div style={{ position: 'absolute', top: 8, left: 8, background: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: 100, fontSize: 10, fontWeight: 800 }}>{p.voltage} • {p.capacity}</div>
-                <div style={{ position: 'absolute', top: 8, right: 8, background: '#22c55e', color: '#fff', padding: '4px 8px', borderRadius: 100, fontSize: 10, fontWeight: 800 }}>MOQ: {p.moq}</div>
+              <div style={{ height: 220, background: '#ffffff', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid #f1f5f9' }}>
+                <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 8 }} loading="lazy" />
+                <div style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(15,23,42,0.9)', color: '#fff', padding: '5px 10px', borderRadius: 100, fontSize: 10, fontWeight: 800 }}>{p.voltage} • {p.capacity}</div>
+                <div style={{ position: 'absolute', top: 10, right: 10, background: '#22c55e', color: '#fff', padding: '5px 10px', borderRadius: 100, fontSize: 10, fontWeight: 800 }}>MOQ: {p.moq}</div>
               </div>
               <div style={{ padding: 14, flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <div style={{ fontSize: 11, fontWeight: 800, color: '#64748b', letterSpacing: 0.5 }}>{p.voltage} {p.capacity} MOQ: {p.moq}</div>
@@ -93,20 +85,15 @@ export default function Home() {
                   <span style={{ fontSize: 10, background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '3px 8px', borderRadius: 100, fontWeight: 700 }}>Grade A+ Cells MOQ {p.moq}</span>
                 </div>
                 <div style={{ marginTop: 'auto', paddingTop: 12, display: 'flex', gap: 8 }}>
-                  <button onClick={() => setSelectedProduct(p)} style={{ flex: 1, background: '#0f172a', color: '#fff', border: 0, padding: '10px', borderRadius: 10, fontWeight: 800, fontSize: 12, cursor: 'pointer' }}>Get DDP Quote →</button>
+                  <button onClick={() => setSelectedProduct(p)} style={{ flex: 1, background: '#0f172a', color: '#fff', border: 0, padding: '11px', borderRadius: 10, fontWeight: 800, fontSize: 12, cursor: 'pointer' }}>Get DDP Quote →</button>
                   <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '8px 10px', borderRadius: 10, fontSize: 10, fontWeight: 700, color: '#64748b', display: 'flex', alignItems: 'center' }}>Valid 3 Days</div>
                 </div>
-                <div style={{ marginTop: 8, fontSize: 10, color: '#22c55e', fontWeight: 700, textAlign: 'center' }}>DDP Lagos • MOQ {p.moq} • MoMo → Flutterwave Escrow</div>
               </div>
             </div>
           ))}
         </div>
-
-        <div style={{ marginTop: 32, background: '#0f172a', borderRadius: 20, padding: 24, color: '#fff', textAlign: 'center' }}>
-          <div style={{ fontWeight: 900, fontSize: 18 }}>MoMo → Flutterwave Escrow – License Compliant Payment</div>
-          <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 8, maxWidth: 700, marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.5 }}>
-            All registered buyers must have MTN MoMo account. Payments made from MoMo to Flutterwave Escrow (licensed CBN). Flutterwave holds funds in escrow, pays Factory FOB+Shipping, Customs Duty, Clearance, Delivery, and NiChAm Platform Fee. Flutterwave charges (1.4%) charged to buyer account. Escrow protects buyer – funds released only after delivery confirmation. Delivery 25-30 days after escrow payment.
-          </div>
+        <div style={{ marginTop: 24, textAlign: 'center', padding: 16, color: '#94a3b8', fontSize: 11 }}>
+          NiChAm Trade • DDP Lagos All Inclusive • Valid 3 Days • {totalCount} MODELS • Grade A+ Cells • 8000 Cycles • MOTOMA Factory Verified • Local Images Persistent
         </div>
       </div>
 
