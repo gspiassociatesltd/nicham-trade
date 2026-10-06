@@ -27,14 +27,12 @@ export default function Home() {
       const data = await res.json()
       if (data.buttons) {
         const active = data.buttons.filter((b: any) => b.active)
-        // Group industrial chemicals into one tab
         const grouped = active.filter((b: any) => !b.name.toLowerCase().includes('industrial chemicals'))
         grouped.push({ id: 'btn_industrial', name: 'Industrial Chemicals', links: {}, active: true, subOptions: INDUSTRIAL_SUB_OPTIONS })
         setButtons(grouped)
         if (grouped.length > 0) selectButton(grouped[0])
       }
     } catch {
-      // Fallback 5 tabs
       const fallback = [
         { id: 'btn_batteries', name: 'Solar Batteries', links: {}, active: true },
         { id: 'btn_inverters', name: 'Solar Inverters', links: {}, active: true },
@@ -126,17 +124,19 @@ export default function Home() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
             {products.map(p => (
               <div key={p.id} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ background: '#f8fafc', padding: '8px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f1f5f9' }}>
-                  <span style={{ fontSize: 10, fontWeight: 800, background: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: 100 }}>MOQ: {p.moq}</span>
-                  <span style={{ fontSize: 9, fontWeight: 700, background: '#dcfce7', color: '#166534', padding: '3px 8px', borderRadius: 100 }}>{p.standards?.[0]} • {p.grade}</span>
+                <div style={{ height: 200, background: '#fff', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid #f1f5f9' }}>
+                  <img src={p.image || '/motoma/M68PW.jpg'} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 12 }} loading="lazy" onError={(e: any) => { e.target.src = '/motoma/M68PW.jpg' }} />
+                  <div style={{ position: 'absolute', top: 8, left: 8, background: 'rgba(15,23,42,0.9)', color: '#fff', padding: '4px 8px', borderRadius: 100, fontSize: 9, fontWeight: 800 }}>{p.voltage} • {p.capacity}</div>
+                  <div style={{ position: 'absolute', top: 8, right: 8, background: '#22c55e', color: '#fff', padding: '4px 8px', borderRadius: 100, fontSize: 9, fontWeight: 800 }}>MOQ: {p.moq}</div>
+                  <div style={{ position: 'absolute', bottom: 8, left: 8, background: '#fff', border: '1px solid #e2e8f0', color: '#166534', padding: '3px 6px', borderRadius: 100, fontSize: 8, fontWeight: 800 }}>{p.standards?.[0]} • {p.grade}</div>
                 </div>
                 <div style={{ padding: 14, flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <div style={{ fontWeight: 900, fontSize: 14 }}>{p.model}</div>
                   <div style={{ fontWeight: 700, fontSize: 13, marginTop: 2 }}>{p.name}</div>
-                  <div style={{ fontSize: 11, color: '#64748b', marginTop: 6 }}>{p.desc}</div>
+                  <div style={{ fontSize: 11, color: '#64748b', marginTop: 6, lineHeight: 1.4 }}>{p.desc}</div>
                   <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 8 }}>Capacity: {p.capacity} • Voltage: {p.voltage} • Est. DDP Lagos: ${p.ddpLagos} • Valid 3 Days</div>
-                  <div style={{ fontSize: 10, color: '#0f172a', marginTop: 4, background: '#f8fafc', padding: '6px 8px', borderRadius: 8, border: '1px dashed #cbd5e1' }}>
-                    <b>Quote needed:</b> Est. DDP Lagos ${p.ddpLagos} is scan estimate – Click Get Exact DDP Quote to lock DDP to your premises (Lagos/Abuja/Kano/PH/Enugu) – Valid 3 Days – Includes FOB + Freight + Customs + VAT + Delivery – 30% after verification / 60% after BL / 10% code scan
+                  <div style={{ fontSize: 10, color: '#0f172a', marginTop: 6, background: '#f8fafc', padding: '6px 8px', borderRadius: 8, border: '1px dashed #cbd5e1' }}>
+                    <b>Quote needed:</b> Est. DDP Lagos ${p.ddpLagos} is scan estimate – Click to lock DDP to your premises (Lagos/Abuja/Kano/PH/Enugu) – Valid 3 Days – 30% verification / 60% BL / 10% code scan
                   </div>
                   <button onClick={() => setSelectedProduct(p)} style={{ width: '100%', marginTop: 12, background: '#0f172a', color: '#fff', padding: '11px', borderRadius: 10, fontWeight: 800, fontSize: 12, cursor: 'pointer' }}>
                     Get Exact DDP to Premises Quote • MOQ {p.moq}
