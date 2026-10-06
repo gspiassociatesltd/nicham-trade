@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import QuoteModal from '../components/QuoteModal'
+import QuoteModal from './components/QuoteModal'
 
 interface ProductButton {
   id: string
