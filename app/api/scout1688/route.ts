@@ -32,8 +32,8 @@ export async function GET(req: Request) {
   // In production, this would fetch and parse the 3 links provided by admin
 
   let products: any[] = []
-  let sourcesScanned = []
-  let cheapestLog = []
+  let sourcesScanned: string[] = []
+  let cheapestLog: any[] = []
 
   if (!buttonId) {
     return NextResponse.json({ products: MOTOMA_PRODUCTS.slice(0,4), message: 'No button selected - showing default' })
