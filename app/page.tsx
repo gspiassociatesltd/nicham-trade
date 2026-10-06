@@ -2,14 +2,22 @@
 import { useState, useEffect } from 'react'
 import QuoteModal from './components/QuoteModal'
 
-interface ProductButton { id: string; name: string; links: any; active: boolean }
+interface ProductButton { id: string; name: string; links: any; active: boolean; subOptions?: string[] }
 
 export default function Home() {
   const [buttons, setButtons] = useState<ProductButton[]>([])
   const [selectedButton, setSelectedButton] = useState<ProductButton | null>(null)
+  const [selectedSubOption, setSelectedSubOption] = useState<string | null>(null)
   const [products, setProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
+
+  const INDUSTRIAL_SUB_OPTIONS = [
+    'Pharmaceuticals - Paracetamol, Sorbitol',
+    'Commodity Chemicals - Caustic Soda, HCl, Nitric, Stearic, Acetic, H2O2',
+    'Paint Chemicals - Natrosol, Calcium Carbonate',
+    'Water Treatment - Soda Ash, Calcium Hypochlorite, PAC, Aluminum Sulphate, Ferric Chloride'
+  ]
 
   useEffect(() => { loadButtons() }, [])
 
@@ -19,18 +27,47 @@ export default function Home() {
       const data = await res.json()
       if (data.buttons) {
         const active = data.buttons.filter((b: any) => b.active)
-        setButtons(active)
-        if (active.length > 0) selectButton(active[0])
+        // Group industrial chemicals into one tab
+        const grouped = active.filter((b: any) => !b.name.toLowerCase().includes('industrial chemicals'))
+        grouped.push({ id: 'btn_industrial', name: 'Industrial Chemicals', links: {}, active: true, subOptions: INDUSTRIAL_SUB_OPTIONS })
+        setButtons(grouped)
+        if (grouped.length > 0) selectButton(grouped[0])
       }
-    } catch {}
+    } catch {
+      // Fallback 5 tabs
+      const fallback = [
+        { id: 'btn_batteries', name: 'Solar Batteries', links: {}, active: true },
+        { id: 'btn_inverters', name: 'Solar Inverters', links: {}, active: true },
+        { id: 'btn_agri', name: 'Agri Solar Products', links: {}, active: true },
+        { id: 'btn_ebikes', name: 'Solar Bikes', links: {}, active: true },
+        { id: 'btn_industrial', name: 'Industrial Chemicals', links: {}, active: true, subOptions: INDUSTRIAL_SUB_OPTIONS }
+      ]
+      setButtons(fallback)
+      selectButton(fallback[0] as any)
+    }
   }
 
-  async function selectButton(btn: ProductButton) {
+  async function selectButton(btn: ProductButton, subOption?: string) {
     setSelectedButton(btn)
+    if (btn.id === 'btn_industrial' && subOption) {
+      setSelectedSubOption(subOption)
+    } else if (btn.id === 'btn_industrial' && !subOption) {
+      setSelectedSubOption(INDUSTRIAL_SUB_OPTIONS[0])
+      subOption = INDUSTRIAL_SUB_OPTIONS[0]
+    } else {
+      setSelectedSubOption(null)
+    }
     setLoading(true)
     setProducts([])
     try {
-      const res = await fetch('/api/scout1688?buttonId=' + btn.id + '&buttonName=' + encodeURIComponent(btn.name))
+      let queryName = btn.name
+      if (btn.id === 'btn_industrial' && subOption) {
+        if (subOption.includes('Pharmaceuticals')) queryName = 'Industrial Chemicals - Pharmaceuticals'
+        else if (subOption.includes('Commodity')) queryName = 'Industrial Chemicals - Commodity Chemicals'
+        else if (subOption.includes('Paint')) queryName = 'Industrial Chemicals - Paint Chemicals'
+        else if (subOption.includes('Water')) queryName = 'Industrial Chemicals - Water Treatment'
+      }
+      const res = await fetch('/api/scout1688?buttonId=' + btn.id + '&buttonName=' + encodeURIComponent(queryName))
       const data = await res.json()
       setProducts(data.products || [])
     } catch {
@@ -53,9 +90,7 @@ export default function Home() {
               <div style={{ fontSize: 11, color: '#64748b' }}>SOLAR & INDUSTRIAL CHEMICAL MARKETPLACE • EU/US STANDARDS ONLY • DDP TO PREMISES • VALID 3 DAYS</div>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 12 }}>
-            <div style={{ background: '#22c55e', color: '#fff', padding: '8px 16px', borderRadius: 100, fontSize: 11, fontWeight: 800 }}>{buttons.length} CATEGORIES • DDP LAGOS • VALID 3 DAYS</div>
-          </div>
+          <div style={{ background: '#22c55e', color: '#fff', padding: '8px 16px', borderRadius: 100, fontSize: 11, fontWeight: 800 }}>5 CATEGORIES • DDP LAGOS • VALID 3 DAYS</div>
         </div>
       </header>
 
@@ -71,11 +106,22 @@ export default function Home() {
             </button>
           ))}
         </div>
+
+        {selectedButton?.id === 'btn_industrial' && (
+          <div style={{ marginTop: 16, display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', background: '#f0fdf4', padding: 12, borderRadius: 12, border: '1px solid #bbf7d0' }}>
+            <div style={{ width: '100%', textAlign: 'center', fontSize: 11, fontWeight: 800, color: '#166534', marginBottom: 4 }}>Industrial Chemicals – Choose Category – EU/US Standards Only – REACH • ISO 9001 • ASTM:</div>
+            {INDUSTRIAL_SUB_OPTIONS.map(opt => (
+              <button key={opt} onClick={() => selectButton(selectedButton, opt)} style={{ background: selectedSubOption === opt ? '#166534' : '#fff', color: selectedSubOption === opt ? '#fff' : '#166534', border: '1px solid #bbf7d0', padding: '8px 12px', borderRadius: 100, fontWeight: 700, fontSize: 11 }}>
+                {opt}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '16px 20px 40px' }}>
         {loading ? (
-          <div style={{ textAlign: 'center', padding: 40 }}>Scanning...</div>
+          <div style={{ textAlign: 'center', padding: 40 }}>Loading {selectedButton?.name} {selectedSubOption ? ' - ' + selectedSubOption : ''}...</div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
             {products.map(p => (
@@ -88,9 +134,12 @@ export default function Home() {
                   <div style={{ fontWeight: 900, fontSize: 14 }}>{p.model}</div>
                   <div style={{ fontWeight: 700, fontSize: 13, marginTop: 2 }}>{p.name}</div>
                   <div style={{ fontSize: 11, color: '#64748b', marginTop: 6 }}>{p.desc}</div>
-                  <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 8 }}>Capacity: {p.capacity} • Voltage: {p.voltage} • DDP Lagos: ${p.ddpLagos} • Valid 3 Days</div>
+                  <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 8 }}>Capacity: {p.capacity} • Voltage: {p.voltage} • Est. DDP Lagos: ${p.ddpLagos} • Valid 3 Days</div>
+                  <div style={{ fontSize: 10, color: '#0f172a', marginTop: 4, background: '#f8fafc', padding: '6px 8px', borderRadius: 8, border: '1px dashed #cbd5e1' }}>
+                    <b>Quote needed:</b> Est. DDP Lagos ${p.ddpLagos} is scan estimate – Click Get Exact DDP Quote to lock DDP to your premises (Lagos/Abuja/Kano/PH/Enugu) – Valid 3 Days – Includes FOB + Freight + Customs + VAT + Delivery – 30% after verification / 60% after BL / 10% code scan
+                  </div>
                   <button onClick={() => setSelectedProduct(p)} style={{ width: '100%', marginTop: 12, background: '#0f172a', color: '#fff', padding: '11px', borderRadius: 10, fontWeight: 800, fontSize: 12, cursor: 'pointer' }}>
-                    Get DDP Quote 30/60/10 • MOQ {p.moq}
+                    Get Exact DDP to Premises Quote • MOQ {p.moq}
                   </button>
                 </div>
               </div>
