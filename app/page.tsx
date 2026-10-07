@@ -1,4 +1,3 @@
-
 'use client'
 import { useState, useEffect } from 'react'
 import QuoteModal from './components/QuoteModal'
@@ -108,4 +107,3 @@ export default function Home() {
     </div>
   )
 }
-
