@@ -13,4 +13,3 @@ export async function POST(req: Request) {
   } catch(e:any){ return NextResponse.json({ error: e.message }, { status: 500 }) }
 }
 export async function GET(){ const u=(global as any).nichamUsers||[]; return NextResponse.json({ users: u.map((x:any)=>{const {password,...r}=x;return r}), total: u.length }) }
-
