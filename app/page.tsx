@@ -68,7 +68,7 @@ export default function Home() {
         </div>
       </header>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '20px' }}>
-        <div style={{ textAlign: 'center' }}><h1 style={{ fontSize: 22, fontWeight: 800 }}>Powering Nigeria – Solar & Industrial Chemicals – DDP to Your Premises</h1><p style={{ fontSize: 13, color: '#475569', margin: '8px auto 0', maxWidth: 800 }}>Only EU/US standards – IEC 62619 • UL1973 • CE • UN38.3 • REACH • ISO 9001 – Grade A+ – DDP to Premises – Valid 3 Days – Buyer requests for quote – No price display</p></div>
+        <div style={{ textAlign: 'center' }}><h1 style={{ fontSize: 22, fontWeight: 800 }}>Powering Nigeria – Solar & Industrial Chemicals – DDP to Your Premises</h1><p style={{ fontSize: 13, color: '#475569', margin: '8px auto 0', maxWidth: 800 }}>Only EU/US standards – IEC 62619 • UL1973 • CE • UN38.3 • REACH • ISO 9001 – Grade A+ – DDP to Premises – Valid 3 Days</p></div>
         <div style={{ marginTop: 20, display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', background: '#fff', padding: 12, borderRadius: 16, border: '1px solid #e2e8f0' }}>
           {buttons.map(btn => (<button key={btn.id} onClick={() => selectButton(btn)} style={{ background: selectedButton?.id === btn.id ? '#0f172a' : '#f1f5f9', color: selectedButton?.id === btn.id ? '#fff' : '#334155', padding: '10px 16px', borderRadius: 100, fontWeight: 800, fontSize: 12, cursor: 'pointer', border: 'none' }}>{btn.name}</button>))}
         </div>
@@ -86,18 +86,17 @@ export default function Home() {
               <div key={p.id} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ height: 220, background: '#fff', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid #f1f5f9' }}>
                   <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 12 }} loading="lazy" />
-                  <div style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(15,23,42,0.9)', color: '#fff', padding: '5px 10px', borderRadius: 100, fontSize: 10, fontWeight: 800 }}>{isChem(p) ? p.voltage : p.voltage}</div>
+                  <div style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(15,23,42,0.9)', color: '#fff', padding: '5px 10px', borderRadius: 100, fontSize: 10, fontWeight: 800 }}>{p.voltage}</div>
                   <div style={{ position: 'absolute', top: 10, right: 10, background: '#22c55e', color: '#fff', padding: '5px 10px', borderRadius: 100, fontSize: 10, fontWeight: 800 }}>MOQ: {p.moq}</div>
                   <div style={{ position: 'absolute', bottom: 10, left: 10, background: '#fff', border: '1px solid #e2e8f0', color: '#166534', padding: '4px 8px', borderRadius: 100, fontSize: 9, fontWeight: 800 }}>{p.standards?.[0]} • {p.grade}</div>
                 </div>
                 <div style={{ padding: 16, flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ fontWeight: 900, fontSize: 15 }}>{p.model}</div>
-                  <div style={{ fontWeight: 700, fontSize: 14, marginTop: 4 }}>{p.name}</div>
-                  <div style={{ fontSize: 12, color: '#64748b', marginTop: 8 }}>{p.desc}</div>
+                  <div style={{ fontWeight: 900, fontSize: 15, lineHeight: 1.2 }}>{p.name}</div>
+                  <div style={{ fontSize: 12, color: '#64748b', marginTop: 8, lineHeight: 1.4 }}>{p.desc}</div>
                   {isChem(p) ? (
                     <div style={{ fontSize: 11, color: '#475569', marginTop: 10 }}>Packing: {p.capacity} • Grade: {p.voltage} • Standard: {p.standards?.join(', ')} • DDP to Premises • Valid 3 Days</div>
                   ) : (
-                    <div style={{ fontSize: 11, color: '#475569', marginTop: 10 }}>Capacity: {p.capacity} • {p.voltage} • Standard: {p.standards?.[0]} • DDP to Premises • Valid 3 Days</div>
+                    <div style={{ fontSize: 11, color: '#475569', marginTop: 10 }}>Capacity: {p.capacity} • {p.voltage} • {p.standards?.[0]} • DDP to Premises • Valid 3 Days</div>
                   )}
                   <button onClick={() => setSelectedProduct(p)} style={{ width: '100%', marginTop: 14, background: '#0f172a', color: '#fff', padding: '13px', borderRadius: 10, fontWeight: 800, fontSize: 13, cursor: 'pointer', border: 'none' }}>Get Exact DDP to Premises Quote • MOQ {p.moq}</button>
                 </div>
