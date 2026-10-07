@@ -1,67 +1,64 @@
 'use client'
-import { useState } from 'react'
-export default function QuoteModal({ product, onClose }: { product: any; onClose: () => void }) {
-  const [form, setForm] = useState({ name: '', company: '', phone: '', email: '', city: 'Lagos', quantity: '', premises: '' })
-  const [sending, setSending] = useState(false)
-  const [sent, setSent] = useState(false)
-  async function handleSubmit() {
-    setSending(true)
-    try {
-      const payload = {
-        productId: product.id, productModel: product.model, productName: product.name,
-        productImage: product.image, originalImageUrl: product.originalImageUrl,
-        sourceUrl: product.sourceUrl, sourceCompany: product.sourceCompany, sourcePlatform: product.sourcePlatform,
-        capacity: product.capacity, voltage: product.voltage, moq: product.moq, standards: product.standards, grade: product.grade,
-        priceUSD: product.priceUSD, ddpLagosEstimate: product.ddpLagos,
-        buyer: form,
-        ddpRequest: { to: 'DDP to Premises - ' + form.city + ' - ' + form.premises, paymentSplit: product.paymentSplit, psiRequired: true },
-        quoteDelivery: { deliverTo: product.sourceCompany, deliverToUrl: product.sourceUrl, deliverToPlatform: product.sourcePlatform, note: 'Quote must be delivered to company from whose page item and picture was pulled - Source URL saved' },
-        savedAt: new Date().toISOString()
-      }
-      const res = await fetch('/api/quotes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
-      if (res.ok) setSent(true)
-      else alert('Failed - Quote will be delivered to ' + product.sourceCompany)
-    } catch { alert('Error - Will be delivered to ' + product.sourceCompany) }
-    finally { setSending(false) }
+import { useState, useEffect } from 'react'
+export default function QuoteModal({ product, onClose }: { product: any, onClose: () => void }){
+  const [user, setUser] = useState<any>(null)
+  const [qty, setQty] = useState('')
+  const [loc, setLoc] = useState('Lagos')
+  const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [ok, setOk] = useState(false)
+  useEffect(()=>{ const s=localStorage.getItem('nicham_user'); if(s){ const u=JSON.parse(s); setUser(u); setEmail(u.email); setName(u.name); setPhone(u.phone||'') } },[])
+  async function submit(e:any){
+    e.preventDefault()
+    if(!qty||!loc){ alert('Quantity and location required'); return }
+    if(!user && (!email||!name||!phone)){ window.location.href='/signup'; return }
+    setLoading(true)
+    try{
+      const res=await fetch('/api/quotes',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ product, user, quantity: qty, location: loc, phone, email, name }) })
+      const data=await res.json()
+      if(data.success) setOk(true); else alert(data.error)
+    }catch{ alert('Failed') } finally{ setLoading(false) }
   }
-  if (sent) {
-    return (
-      <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: 20 }}>
-        <div style={{ background: '#fff', borderRadius: 16, padding: 24, maxWidth: 480, width: '100%' }}>
-          <div style={{ fontWeight: 900, fontSize: 18, color: '#166534' }}>Quote Sent to {product.sourceCompany}</div>
-          <div style={{ marginTop: 12, fontSize: 12 }}>Source URL saved: {product.sourceUrl} - Quote delivered to company from whose page item and picture was pulled</div>
-          <button onClick={onClose} style={{ marginTop: 16, width: '100%', background: '#0f172a', color: '#fff', padding: 12, borderRadius: 10, fontWeight: 800 }}>Close</button>
-        </div>
+  if(ok){
+    return (<div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.6)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:100, padding:20 }}>
+      <div style={{ background:'#fff', borderRadius:16, padding:32, maxWidth:480, width:'100%', textAlign:'center' }}>
+        <div style={{ width:64, height:64, background:'#22c55e', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 16px', color:'#fff', fontSize:32 }}>✓</div>
+        <div style={{ fontWeight:900, fontSize:20 }}>Quote Request Sent</div>
+        <div style={{ fontSize:13, color:'#475569', marginTop:12 }}>Your DDP quote for {product.model} sent to {product.sourceCompany}. Valid 3 Days. We will contact you at {email} / {phone} within 24h.</div>
+        <button onClick={onClose} style={{ marginTop:20, background:'#0f172a', color:'#fff', padding:'10px 20px', borderRadius:10, fontWeight:800, border:'none', cursor:'pointer' }}>Close</button>
       </div>
-    )
+    </div>)
   }
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: 20, overflowY: 'auto' }}>
-      <div style={{ background: '#fff', borderRadius: 16, padding: 20, maxWidth: 520, width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div>
-            <div style={{ fontWeight: 900 }}>{product.model} - {product.name}</div>
-            <div style={{ fontSize: 10, color: '#166534', marginTop: 6, background: '#f0fdf4', padding: '6px 8px', borderRadius: 8, border: '1px solid #bbf7d0' }}>
-              Source: {product.sourceCompany} - {product.sourcePlatform}<br/>Source URL saved: {product.sourceUrl}<br/>Quote delivery: Will be delivered to this company
-            </div>
+    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.6)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:100, padding:20 }}>
+      <div style={{ background:'#fff', borderRadius:16, maxWidth:520, width:'100%', maxHeight:'90vh', overflow:'auto' }}>
+        <div style={{ padding:20, borderBottom:'1px solid #e2e8f0', display:'flex', justifyContent:'space-between' }}>
+          <div><div style={{ fontWeight:900, fontSize:18 }}>Get Exact DDP to Premises Quote</div><div style={{ fontSize:11, color:'#64748b', marginTop:4 }}>{product.model} • MOQ: {product.moq} • Valid 3 Days</div></div>
+          <button onClick={onClose} style={{ background:'#f1f5f9', border:'none', width:36, height:36, borderRadius:'50%', cursor:'pointer' }}>×</button>
+        </div>
+        <div style={{ padding:20 }}>
+          <div style={{ display:'flex', gap:12, marginBottom:16 }}>
+            <img src={product.image} alt={product.name} style={{ width:80, height:80, objectFit:'contain', border:'1px solid #e2e8f0', borderRadius:12, padding:8 }} />
+            <div><div style={{ fontWeight:800, fontSize:14 }}>{product.name}</div><div style={{ fontSize:11, color:'#64748b', marginTop:4 }}>{product.desc}</div><div style={{ fontSize:10, color:'#166534', marginTop:6, background:'#f0fdf4', padding:'4px 8px', borderRadius:100, display:'inline-block' }}>{product.standards?.[0]} • {product.grade}</div></div>
           </div>
-          <button onClick={onClose} style={{ background: '#f1f5f9', borderRadius: 100, width: 32, height: 32, fontWeight: 800 }}>x</button>
+          {!user && <div style={{ background:'#fef3c7', border:'1px solid #fcd34d', padding:12, borderRadius:10, marginBottom:16, fontSize:12 }}><b>Please sign up</b> – <a href='/login' style={{ fontWeight:800 }}>login here</a> or fill below.</div>}
+          <form onSubmit={submit}>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+              <div><label style={{ fontSize:11, fontWeight:800 }}>Quantity *</label><input value={qty} onChange={e=>setQty(e.target.value)} placeholder={`Min ${product.moq}`} required style={{ width:'100%', marginTop:6, padding:'10px 12px', borderRadius:10, border:'1px solid #e2e8f0' }} /></div>
+              <div><label style={{ fontSize:11, fontWeight:800 }}>Location *</label><select value={loc} onChange={e=>setLoc(e.target.value)} style={{ width:'100%', marginTop:6, padding:'10px 12px', borderRadius:10, border:'1px solid #e2e8f0' }}><option>Lagos</option><option>Abuja</option><option>Kano</option><option>Port Harcourt</option><option>Enugu</option><option>Ibadan</option><option>Other</option></select></div>
+            </div>
+            <div style={{ marginTop:12 }}><label style={{ fontSize:11, fontWeight:800 }}>Full Name *</label><input value={name} onChange={e=>setName(e.target.value)} required style={{ width:'100%', marginTop:6, padding:'10px 12px', borderRadius:10, border:'1px solid #e2e8f0' }} placeholder='Your full name' /></div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginTop:12 }}>
+              <div><label style={{ fontSize:11, fontWeight:800 }}>Email *</label><input type='email' value={email} onChange={e=>setEmail(e.target.value)} required style={{ width:'100%', marginTop:6, padding:'10px 12px', borderRadius:10, border:'1px solid #e2e8f0' }} placeholder='your@email.com' /></div>
+              <div><label style={{ fontSize:11, fontWeight:800 }}>Phone *</label><input value={phone} onChange={e=>setPhone(e.target.value)} required style={{ width:'100%', marginTop:6, padding:'10px 12px', borderRadius:10, border:'1px solid #e2e8f0' }} placeholder='080...' /></div>
+            </div>
+            <div style={{ background:'#f8fafc', border:'1px solid #e2e8f0', padding:12, borderRadius:10, marginTop:16, fontSize:11, color:'#475569' }}><b>DDP to Premises – Valid 3 Days – Only DDP</b><br/>Quote for {product.model} sent to {product.sourceCompany}. Exact DDP to {loc} locked 3 Days. Source URL saved internally.</div>
+            <button disabled={loading} type='submit' style={{ width:'100%', marginTop:16, background:'#0f172a', color:'#fff', padding:'14px', borderRadius:10, fontWeight:800, border:'none', cursor:'pointer', opacity: loading?0.6:1 }}>{loading?'Sending...':`Request DDP Quote to ${loc} • MOQ ${product.moq}`}</button>
+            {!user && <div style={{ textAlign:'center', marginTop:12, fontSize:11 }}>Already have account? <a href='/login' style={{ fontWeight:800 }}>Login</a> • New? <a href='/signup' style={{ fontWeight:800 }}>Sign up</a></div>}
+          </form>
         </div>
-        <div style={{ marginTop: 16, display: 'grid', gap: 12 }}>
-          <input placeholder="Your Name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #e2e8f0' }} />
-          <input placeholder="Company Name" value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #e2e8f0' }} />
-          <input placeholder="Phone / WhatsApp" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #e2e8f0' }} />
-          <input placeholder="Email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #e2e8f0' }} />
-          <select value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #e2e8f0' }}>
-            <option>Lagos</option><option>Abuja</option><option>Kano</option><option>Port Harcourt</option><option>Enugu</option><option>Ibadan</option><option>Other</option>
-          </select>
-          <input placeholder="Exact Premises Address" value={form.premises} onChange={e => setForm({ ...form, premises: e.target.value })} style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #e2e8f0' }} />
-          <input placeholder={'Quantity - MOQ ' + product.moq} value={form.quantity} onChange={e => setForm({ ...form, quantity: e.target.value })} style={{ padding: '10px 12px', borderRadius: 10, border: '1px solid #e2e8f0' }} />
-        </div>
-        <button onClick={handleSubmit} disabled={sending || !form.name || !form.phone} style={{ marginTop: 14, width: '100%', background: sending ? '#94a3b8' : '#0f172a', color: '#fff', padding: 12, borderRadius: 10, fontWeight: 800 }}>
-          {sending ? 'Sending to ' + product.sourceCompany + '...' : 'Send DDP Quote to ' + product.sourceCompany + ' Via ' + product.sourcePlatform}
-        </button>
-        <div style={{ marginTop: 8, fontSize: 10, color: '#64748b', textAlign: 'center' }}>Quote will be delivered to company from whose page item and picture was pulled - Source URL: {product.sourceUrl} - Saved</div>
       </div>
     </div>
   )
