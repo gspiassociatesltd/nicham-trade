@@ -9,8 +9,9 @@ export default function Home() {
   const [products, setProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
+  const [user, setUser] = useState<any>(null)
   const SUB = ['Pharmaceuticals - Paracetamol, Sorbitol','Commodity Chemicals - Caustic Soda, HCl, Nitric, Stearic, Acetic, H2O2','Paint Chemicals - Natrosol, Calcium Carbonate','Water Treatment - Soda Ash, Calcium Hypochlorite, PAC, Aluminum Sulphate, Ferric Chloride']
-  useEffect(() => { loadButtons() }, [])
+  useEffect(() => { loadButtons(); const s=localStorage.getItem('nicham_user'); if(s) setUser(JSON.parse(s)) }, [])
   async function loadButtons() {
     try {
       const res = await fetch('/api/product-buttons')
@@ -56,6 +57,7 @@ export default function Home() {
     finally { setLoading(false) }
   }
   function isChem(p: any) { return p.id?.startsWith('PH-') || p.id?.startsWith('CC-') || p.id?.startsWith('PC-') || p.id?.startsWith('WT-') }
+  function logout(){ localStorage.removeItem('nicham_user'); setUser(null); window.location.href='/' }
   return (
     <div style={{ fontFamily: 'Inter, sans-serif', background: '#f8fafc', minHeight: '100vh' }}>
       <header style={{ background: '#fff', borderBottom: '2px solid #0f172a', position: 'sticky', top: 0, zIndex: 40 }}>
@@ -64,7 +66,21 @@ export default function Home() {
             <div style={{ width: 56, height: 56, background: '#0f172a', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ color: '#fff', fontWeight: 900, fontSize: 28 }}>N</span></div>
             <div><div style={{ fontWeight: 900, fontSize: 26 }}>NiChAm Trade</div><div style={{ fontSize: 11, color: '#64748b' }}>SOLAR & INDUSTRIAL CHEMICAL MARKETPLACE • EU/US STANDARDS ONLY • DDP TO PREMISES • VALID 3 DAYS</div></div>
           </div>
-          <div style={{ background: '#22c55e', color: '#fff', padding: '8px 16px', borderRadius: 100, fontSize: 11, fontWeight: 800 }}>5 CATEGORIES • DDP TO PREMISES • VALID 3 DAYS</div>
+          <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+            <div style={{ background: '#22c55e', color: '#fff', padding: '8px 16px', borderRadius: 100, fontSize: 11, fontWeight: 800 }}>5 CATEGORIES • DDP TO PREMISES • VALID 3 DAYS</div>
+            {user ? (
+              <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+                <span style={{ fontSize:11, fontWeight:800 }}>{user.name} ({user.role})</span>
+                {user.role==='admin' && <a href='/admin' style={{ background:'#0f172a', color:'#fff', padding:'6px 12px', borderRadius:100, fontSize:11, fontWeight:800, textDecoration:'none' }}>Admin</a>}
+                <button onClick={logout} style={{ background:'#f1f5f9', padding:'6px 12px', borderRadius:100, fontSize:11, fontWeight:800, border:'none', cursor:'pointer' }}>Logout</button>
+              </div>
+            ) : (
+              <div style={{ display:'flex', gap:8 }}>
+                <a href='/login' style={{ background:'#f1f5f9', padding:'6px 12px', borderRadius:100, fontSize:11, fontWeight:800, textDecoration:'none', color:'#0f172a' }}>Login</a>
+                <a href='/signup' style={{ background:'#0f172a', color:'#fff', padding:'6px 12px', borderRadius:100, fontSize:11, fontWeight:800, textDecoration:'none' }}>Sign Up</a>
+              </div>
+            )}
+          </div>
         </div>
       </header>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '20px' }}>
