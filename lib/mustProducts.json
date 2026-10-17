@@ -1,0 +1,114 @@
+[
+  {
+    "model": "PV18-3224 VPMII",
+    "cat": "Off-grid Hybrid",
+    "usd": "180/168/159",
+    "ngn": "252k/235.2k/222.6k",
+    "moq": "1/5/20",
+    "spec": "3.2KW 24V 60A MPPT 160V VOC"
+  },
+  {
+    "model": "PV18-3624 PRO",
+    "cat": "Off-grid Hybrid",
+    "usd": "180/168/159",
+    "ngn": "252k/235.2k/222.6k",
+    "moq": "1/5/20",
+    "spec": "3.6KW 24V 100A MPPT 400V VOC"
+  },
+  {
+    "model": "PV18-6048 PRO",
+    "cat": "Off-grid Hybrid",
+    "usd": "270/240/227",
+    "ngn": "378k/336k/317.8k",
+    "moq": "1/5/20",
+    "spec": "6KW 48V 100A MPPT 450V VOC 456*289*210mm 7.83KGS"
+  },
+  {
+    "model": "PV19-10048EXP",
+    "cat": "Off-grid Hybrid",
+    "usd": "520/496/469",
+    "ngn": "728k/694.4k/656.6k",
+    "moq": "1/5/20",
+    "spec": "10KW 48V 150A MPPT 500V VOC WIFI Parallel KITS 17.4KGS"
+  },
+  {
+    "model": "PH11-10KL1-EU",
+    "cat": "IP65 ON/OFF GRID",
+    "usd": "1200/1195/1129",
+    "ngn": "1.68M/1.673M/1.58M",
+    "moq": "1/5/20",
+    "spec": "10KW 48V IP65 ON/OFF GRID 230V"
+  },
+  {
+    "model": "PH11-15KL3-EU",
+    "cat": "IP65 ON/OFF GRID",
+    "usd": "1580/1572/1484",
+    "ngn": "2.212M/2.2M/2.077M",
+    "moq": "1/5/20",
+    "spec": "15KW 48V IP65 ON/OFF GRID 380V"
+  },
+  {
+    "model": "LP16-24200",
+    "cat": "Li Battery 25.6V",
+    "usd": "670/642/607",
+    "ngn": "938k/898.8k/849.8k",
+    "moq": "1/5/20",
+    "spec": "25.6V 200AH 5.12KWH BMS"
+  },
+  {
+    "model": "LP16-24300",
+    "cat": "Li Battery Wall Mounted",
+    "usd": "880/856/809",
+    "ngn": "1.232M/1.198M/1.132M",
+    "moq": "1/5/20",
+    "spec": "25.6V 300AH 7.68KWH WALL MOUNTED"
+  },
+  {
+    "model": "LP16-48100 SE",
+    "cat": "Li Battery 51.2V",
+    "usd": "630/612/579",
+    "ngn": "882k/856.8k/810.6k",
+    "moq": "1/5/20",
+    "spec": "51.2V 100AH 5.12KWH No WiFi kit & breaker"
+  },
+  {
+    "model": "LP16-48200",
+    "cat": "Li Battery 51.2V",
+    "usd": "1160/1149/1087",
+    "ngn": "1.624M/1.608M/1.521M",
+    "moq": "1/5/20",
+    "spec": "51.2V 200AH 10.24KWH BMS"
+  },
+  {
+    "model": "LP16-48300",
+    "cat": "Li Battery 51.2V",
+    "usd": "1550/1518/1436",
+    "ngn": "2.17M/2.125M/2.01M",
+    "moq": "1/5/20",
+    "spec": "51.2V 300AH 15.36KWH BMS"
+  },
+  {
+    "model": "HBP15-1012",
+    "cat": "ALL IN ONE ESS",
+    "usd": "390/364",
+    "ngn": "546k/509.6k",
+    "moq": "1/5",
+    "spec": "1KW SOLAR INVERTER WITH 1.28KWH LITHIUM"
+  },
+  {
+    "model": "HBP18-3024 OS",
+    "cat": "ALL IN ONE ESS",
+    "usd": "650/635",
+    "ngn": "910k/889k",
+    "moq": "1/5",
+    "spec": "3KW WITH 3KWH LITHIUM"
+  },
+  {
+    "model": "HBP18-5548 ES",
+    "cat": "ALL IN ONE ESS",
+    "usd": "1572/1500",
+    "ngn": "2.2M/2.1M",
+    "moq": "1/5",
+    "spec": "5.5KW SOLAR GENERATOR WITH 10.24KWH LITHIUM"
+  }
+]

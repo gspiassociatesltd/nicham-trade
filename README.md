@@ -1,16 +1,21 @@
-# NiChAm Trade - Vercel Deploy (MVP)
 
-Your Supabase is ready: 13 tables + 5 products.
+# NiChAm Trade - MUST + MOTOMA - ZIP -> GitHub -> Vercel
 
-1. Unzip this file
-2. Go to https://vercel.com -> New Project -> Upload this folder
-3. In Environment Variables, add:
-   NEXT_PUBLIC_SUPABASE_URL=https://kjeyqcxbqwiqenigpcot.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your anon key from Supabase Settings > API
-4. Deploy -> Your homepage will show the 5 products live!
+CORRECT FLOW (like you did before):
 
-Local test:
-npm install
-npm run dev
+1. Unzip NiChAm-Trade-MUST-MOTOMA-FULL.zip
+2. Go to github.com -> Your repo (e.g., nicham-trade) -> Add file -> Upload files -> Drag all unzipped files
+3. Commit directly to main
+4. Go to vercel.com -> Add New Project -> Import GitHub repo -> Deploy
+5. Vercel gives new URL (not 45wzu0g7s old one)
+6. Set custom domain nichamtrade.com in Vercel Settings -> Domains (for Alibaba affiliate compliance)
 
-This is your Full-Stack Lead build - no need to WhatsApp anyone.
+Whats Inside:
+- 14 MUST models from MUSTNG.pdf + mustpower.com
+- Pricing USD + NGN from your PDF (1$=1400 rate)
+- MOQ Policy: Mix models to unlock tier pricing (3 inverters + 2 batteries = 5 units price)
+- DDP Lagos calculation, MoMo -> Flutterwave Escrow + Afriex Diaspora
+- Source: MUSTNG.pdf + www.mustpower.com
+
+Previous link https://nicham-trade-45wzu0g7s-kpata-academy.vercel.app/ is old 4-product build.
+This ZIP is full build you can deploy like before.

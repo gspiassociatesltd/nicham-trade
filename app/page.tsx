@@ -1,127 +1,29 @@
-'use client'
-import { useState, useEffect } from 'react'
-import QuoteModal from './components/QuoteModal'
-interface Btn { id: string; name: string; links: any; active: boolean; subOptions?: string[] }
-export default function Home() {
-  const [buttons, setButtons] = useState<Btn[]>([])
-  const [selectedButton, setSelectedButton] = useState<Btn | null>(null)
-  const [selectedSubOption, setSelectedSubOption] = useState<string | null>(null)
-  const [products, setProducts] = useState<any[]>([])
-  const [loading, setLoading] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<any>(null)
-  const [user, setUser] = useState<any>(null)
-  const SUB = ['Pharmaceuticals - Paracetamol, Sorbitol','Commodity Chemicals - Caustic Soda, HCl, Nitric, Stearic, Acetic, H2O2','Paint Chemicals - Natrosol, Calcium Carbonate','Water Treatment - Soda Ash, Calcium Hypochlorite, PAC, Aluminum Sulphate, Ferric Chloride']
-  useEffect(() => { loadButtons(); const s=localStorage.getItem('nicham_user'); if(s) setUser(JSON.parse(s)) }, [])
-  async function loadButtons() {
-    try {
-      const res = await fetch('/api/product-buttons')
-      const data = await res.json()
-      if (data.buttons) {
-        const active = data.buttons.filter((b: any) => b.active)
-        const grouped = active.filter((b: any) => !b.name.toLowerCase().includes('industrial chemicals'))
-        grouped.push({ id: 'btn_industrial', name: 'Industrial Chemicals', links: {}, active: true, subOptions: SUB })
-        setButtons(grouped)
-        if (grouped.length > 0) selectButton(grouped[0])
-      }
-    } catch {
-      const fallback = [
-        { id: 'btn_batteries', name: 'Solar Batteries', links: {}, active: true },
-        { id: 'btn_inverters', name: 'Solar Inverters', links: {}, active: true },
-        { id: 'btn_agri', name: 'Agri Solar Products', links: {}, active: true },
-        { id: 'btn_ebikes', name: 'Solar Bikes', links: {}, active: true },
-        { id: 'btn_industrial', name: 'Industrial Chemicals', links: {}, active: true, subOptions: SUB }
-      ]
-      setButtons(fallback)
-      selectButton(fallback[0] as any)
-    }
-  }
-  async function selectButton(btn: Btn, subOption?: string) {
-    setSelectedButton(btn)
-    if (btn.id === 'btn_industrial' && subOption) setSelectedSubOption(subOption)
-    else if (btn.id === 'btn_industrial' && !subOption) { setSelectedSubOption(SUB[0]); subOption = SUB[0] }
-    else setSelectedSubOption(null)
-    setLoading(true)
-    setProducts([])
-    try {
-      let queryName = btn.name
-      if (btn.id === 'btn_industrial' && subOption) {
-        if (subOption.includes('Pharmaceuticals')) queryName = 'Industrial Chemicals - Pharmaceuticals'
-        else if (subOption.includes('Commodity')) queryName = 'Industrial Chemicals - Commodity Chemicals'
-        else if (subOption.includes('Paint')) queryName = 'Industrial Chemicals - Paint Chemicals'
-        else if (subOption.includes('Water')) queryName = 'Industrial Chemicals - Water Treatment'
-      }
-      const res = await fetch('/api/scout1688?buttonId=' + btn.id + '&buttonName=' + encodeURIComponent(queryName))
-      const data = await res.json()
-      setProducts(data.products || [])
-    } catch { setProducts([]) }
-    finally { setLoading(false) }
-  }
-  function isChem(p: any) { return p.id?.startsWith('PH-') || p.id?.startsWith('CC-') || p.id?.startsWith('PC-') || p.id?.startsWith('WT-') }
-  function logout(){ localStorage.removeItem('nicham_user'); setUser(null); window.location.href='/' }
+
+import must from '../lib/mustProducts.json'
+export default function Page(){
   return (
-    <div style={{ fontFamily: 'Inter, sans-serif', background: '#f8fafc', minHeight: '100vh' }}>
-      <header style={{ background: '#fff', borderBottom: '2px solid #0f172a', position: 'sticky', top: 0, zIndex: 40 }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-            <div style={{ width: 56, height: 56, background: '#0f172a', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ color: '#fff', fontWeight: 900, fontSize: 28 }}>N</span></div>
-            <div><div style={{ fontWeight: 900, fontSize: 26 }}>NiChAm Trade</div><div style={{ fontSize: 11, color: '#64748b' }}>SOLAR & INDUSTRIAL CHEMICAL MARKETPLACE • EU/US STANDARDS ONLY • DDP TO PREMISES • VALID 3 DAYS</div></div>
+    <div style={{fontFamily:'Inter,system-ui', maxWidth:'1200px', margin:'0 auto', padding:'16px'}}>
+      <h1 style={{fontWeight:900, fontSize:'22px'}}>NiChAm Trade – MUST Power – 14 Models – Powering Nigeria</h1>
+      <p style={{fontSize:'12px', color:'#555'}}>DDP to Your Premises • Only EU/US Standards IEC 62619 UL1973 CE UN38.3 • Valid 3 Days • Mix MOQ Policy: Mix different models to unlock tier pricing</p>
+      <p style={{fontSize:'11px', marginTop:'8px', background:'#eff6ff', padding:'8px', borderRadius:'8px'}}>Source: MUSTNG.pdf + www.mustpower.com | MUST Factory: 20 years, 1500 staff, 80k units/month, 100k m² base | Case Studies: PV19 EXP+LP16, 120kW/240kWh Hybrid Storage, PH11+HV29 C&I ESS | ESP 10-20kW/40-51kWh, ESG 30-60kW/61-115kWh, ESG-E 125kW/261kWh Liquid-Cooled</p>
+      <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginTop:'16px'}}>
+        {(must as any[]).map((p:any,i:number)=>(
+          <div key={i} style={{border:'1px solid #e2e8f0', borderRadius:'16px', padding:'12px', background:'white'}}>
+            <div style={{display:'flex', justifyContent:'space-between'}}><span style={{background:'#2563eb', color:'white', fontSize:'10px', padding:'2px 8px', borderRadius:'999px', fontWeight:700}}>MUST {p.model}</span><span style={{fontSize:'10px', background:'#f1f5f9', padding:'2px 8px', borderRadius:'999px'}}>{p.cat}</span></div>
+            <h3 style={{fontWeight:700, fontSize:'13px', marginTop:'8px'}}>{p.model}</h3>
+            <p style={{fontSize:'11px', color:'#475569'}}>{p.spec}</p>
+            <div style={{fontSize:'11px', marginTop:'8px', background:'#f8fafc', padding:'8px', borderRadius:'8px'}}>
+              <p><b>USD:</b> {p.usd} | <b>NGN:</b> {p.ngn}</p>
+              <p><b>MOQ:</b> {p.moq}</p>
+            </div>
+            <button style={{width:'100%', background:'#2563eb', color:'white', padding:'8px', borderRadius:'12px', marginTop:'8px', fontSize:'12px', fontWeight:700}}>Quote DDP Lagos → Routes to 3 Companies</button>
           </div>
-          <div style={{ display:'flex', gap:8, alignItems:'center' }}>
-            <div style={{ background: '#22c55e', color: '#fff', padding: '8px 16px', borderRadius: 100, fontSize: 11, fontWeight: 800 }}>5 CATEGORIES • DDP TO PREMISES • VALID 3 DAYS</div>
-            {user ? (
-              <div style={{ display:'flex', gap:8, alignItems:'center' }}>
-                <span style={{ fontSize:11, fontWeight:800 }}>{user.name} ({user.role})</span>
-                {user.role==='admin' && <a href='/admin' style={{ background:'#0f172a', color:'#fff', padding:'6px 12px', borderRadius:100, fontSize:11, fontWeight:800, textDecoration:'none' }}>Admin</a>}
-                <button onClick={logout} style={{ background:'#f1f5f9', padding:'6px 12px', borderRadius:100, fontSize:11, fontWeight:800, border:'none', cursor:'pointer' }}>Logout</button>
-              </div>
-            ) : (
-              <div style={{ display:'flex', gap:8 }}>
-                <a href='/login' style={{ background:'#f1f5f9', padding:'6px 12px', borderRadius:100, fontSize:11, fontWeight:800, textDecoration:'none', color:'#0f172a' }}>Login</a>
-                <a href='/signup' style={{ background:'#0f172a', color:'#fff', padding:'6px 12px', borderRadius:100, fontSize:11, fontWeight:800, textDecoration:'none' }}>Sign Up</a>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '20px' }}>
-        <div style={{ textAlign: 'center' }}><h1 style={{ fontSize: 22, fontWeight: 800 }}>Powering Nigeria – Solar & Industrial Chemicals – DDP to Your Premises</h1><p style={{ fontSize: 13, color: '#475569', margin: '8px auto 0', maxWidth: 800 }}>Only EU/US standards – IEC 62619 • UL1973 • CE • UN38.3 • REACH • ISO 9001 – Grade A+ – DDP to Premises – Valid 3 Days</p></div>
-        <div style={{ marginTop: 20, display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', background: '#fff', padding: 12, borderRadius: 16, border: '1px solid #e2e8f0' }}>
-          {buttons.map(btn => (<button key={btn.id} onClick={() => selectButton(btn)} style={{ background: selectedButton?.id === btn.id ? '#0f172a' : '#f1f5f9', color: selectedButton?.id === btn.id ? '#fff' : '#334155', padding: '10px 16px', borderRadius: 100, fontWeight: 800, fontSize: 12, cursor: 'pointer', border: 'none' }}>{btn.name}</button>))}
-        </div>
-        {selectedButton?.id === 'btn_industrial' && (
-          <div style={{ marginTop: 16, display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', background: '#f0fdf4', padding: 12, borderRadius: 12, border: '1px solid #bbf7d0' }}>
-            <div style={{ width: '100%', textAlign: 'center', fontSize: 11, fontWeight: 800, color: '#166534', marginBottom: 4 }}>Industrial Chemicals – Choose Category:</div>
-            {SUB.map(opt => (<button key={opt} onClick={() => selectButton(selectedButton, opt)} style={{ background: selectedSubOption === opt ? '#166534' : '#fff', color: selectedSubOption === opt ? '#fff' : '#166534', border: '1px solid #bbf7d0', padding: '8px 12px', borderRadius: 100, fontWeight: 700, fontSize: 11, cursor: 'pointer' }}>{opt}</button>))}
-          </div>
-        )}
+        ))}
       </div>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '16px 20px 40px' }}>
-        {loading ? (<div style={{ textAlign: 'center', padding: 40 }}>Loading...</div>) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
-            {products.map(p => (
-              <div key={p.id} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ height: 220, background: '#fff', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid #f1f5f9' }}>
-                  <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 12 }} loading="lazy" />
-                  <div style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(15,23,42,0.9)', color: '#fff', padding: '5px 10px', borderRadius: 100, fontSize: 10, fontWeight: 800 }}>{p.voltage}</div>
-                  <div style={{ position: 'absolute', top: 10, right: 10, background: '#22c55e', color: '#fff', padding: '5px 10px', borderRadius: 100, fontSize: 10, fontWeight: 800 }}>MOQ: {p.moq}</div>
-                  <div style={{ position: 'absolute', bottom: 10, left: 10, background: '#fff', border: '1px solid #e2e8f0', color: '#166534', padding: '4px 8px', borderRadius: 100, fontSize: 9, fontWeight: 800 }}>{p.standards?.[0]} • {p.grade}</div>
-                </div>
-                <div style={{ padding: 16, flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ fontWeight: 900, fontSize: 15, lineHeight: 1.2 }}>{p.name}</div>
-                  <div style={{ fontSize: 12, color: '#64748b', marginTop: 8, lineHeight: 1.4 }}>{p.desc}</div>
-                  {isChem(p) ? (
-                    <div style={{ fontSize: 11, color: '#475569', marginTop: 10 }}>Packing: {p.capacity} • Grade: {p.voltage} • Standard: {p.standards?.join(', ')} • DDP to Premises • Valid 3 Days</div>
-                  ) : (
-                    <div style={{ fontSize: 11, color: '#475569', marginTop: 10 }}>Capacity: {p.capacity} • {p.voltage} • {p.standards?.[0]} • DDP to Premises • Valid 3 Days</div>
-                  )}
-                  <button onClick={() => setSelectedProduct(p)} style={{ width: '100%', marginTop: 14, background: '#0f172a', color: '#fff', padding: '13px', borderRadius: 10, fontWeight: 800, fontSize: 13, cursor: 'pointer', border: 'none' }}>Get Exact DDP to Premises Quote • MOQ {p.moq}</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+      <div style={{marginTop:'24px', background:'#0f172a', color:'white', padding:'16px', borderRadius:'16px', fontSize:'12px'}}>
+        <p style={{fontWeight:900}}>NiChAm Trade – Payment: MoMo → Flutterwave Escrow (1.4% fee, holds until delivery) + Afriex Diaspora (Zero fee, instant USD→NGN to MoMo) + Alibaba Affiliate Deep Link (15 days cookie)</p>
+        <p style={{marginTop:'8px'}}>DDP Example LP16-48200 10.24KWH: Factory $1,087 (20 units) = ₦1,521,800 + Freight $120 = ₦168k + Nigeria-side + Customs $180 = ₦252k + Last-mile $50 = ₦70k + Platform 3% $32.6 = ₦45,654 = DDP ~₦2,057,454/unit – Valid 3 Days</p>
       </div>
-      {selectedProduct && <QuoteModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
     </div>
   )
 }
