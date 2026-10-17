@@ -2,12 +2,10 @@
 import { useState } from 'react'
 
 const PRODUCTS = [
-  // MOTOMA 4 – Dubai – +971 52 580 3914 – MOQ 12 pcs
   { id: 1, brand: 'MOTOMA', name: 'M68PW PRO - 200Ah 25.6V', cat: '25.6V Residential', desc: '200Ah 25.6V Grade A+ 8000 Cycles', moq: 'MOQ 12 pcs', price: '$880/860/840', wa: '971525803914' },
   { id: 2, brand: 'MOTOMA', name: 'M69PW PRO - 280Ah 25.6V', cat: '25.6V High Cap', desc: '280Ah High Capacity 15+ Years', moq: 'MOQ 12 pcs', price: '$1150/1120/1090', wa: '971525803914' },
   { id: 3, brand: 'MOTOMA', name: 'M87PW PRO - 100Ah 51.2V', cat: '51.2V Compact', desc: '100Ah 51.2V 8000 cycles Compact', moq: 'MOQ 12 pcs', price: '$590/570/550', wa: '971525803914' },
   { id: 4, brand: 'MOTOMA', name: 'M88PW PRO - 200Ah 51.2V', cat: '51.2V Popular', desc: '200Ah 51.2V 16 Parallel', moq: 'MOQ 12 pcs', price: '$1080/1050/1020', wa: '971525803914' },
-  // MUST 14 – China – +86 189 2434 3876 – MOQ Mix 1/5/20
   { id: 5, brand: 'MUST', name: 'PV18-3224 VPMII', cat: 'High Frequency', desc: '3.2KW 24V 60A MPPT 160V VOC', moq: 'MOQ Mix 1/5/20', price: '$180/168/159', wa: '8618924343876' },
   { id: 6, brand: 'MUST', name: 'PV18-3624 PRO', cat: 'High Frequency', desc: '3.6KW 24V 100A MPPT 400V VOC', moq: 'MOQ Mix 1/5/20', price: '$180/168/159', wa: '8618924343876' },
   { id: 7, brand: 'MUST', name: 'PV18-6048 PRO', cat: 'High Frequency', desc: '6KW 48V 100A MPPT 450V VOC 7.83KGS', moq: 'MOQ Mix 1/5/20', price: '$270/240/227', wa: '8618924343876' },
@@ -32,46 +30,152 @@ export default function Page() {
 
   const handleRFQ = (p: any) => {
     const isMotoma = p.brand === 'MOTOMA'
-    const phone = isMotoma ? '971525803914' : '8618924343876'
+    const phone = p.wa
     const factory = isMotoma ? 'MOTOMA Dubai Team 🇦🇪' : 'MUST Factory Team 🇨🇳'
-    const msg = `Hi ${factory}\n\nRFQ for ${p.name}\n${p.desc}\n\n- DDP Lagos, Nigeria\n- DDP to Premises Minna, Niger State\n- NiChAm Trade\n- Qty: Please quote Tier 1/5/20\n\nAdmin notified – Please send DDP price.`
-    setToast(`Admin notified – RFQ for ${p.name} logged – DDP Lagos – Opening WhatsApp ${isMotoma ? '+971 52 580 3914' : '+86 189 2434 3876'}`)
-    setTimeout(() => setToast(''), 4000)
+    const msg = `Hi ${factory}\n\nRFQ for ${p.name}\n${p.desc}\nPrice: ${p.price}\n\n- DDP Lagos, Nigeria\n- DDP to Premises Minna, Niger State\n- NiChAm Trade\n- Qty: Please quote Tier 1/5/20 (Mix 3 inverters + 2 batteries = 5 units)\n\nAdmin notified – Please send DDP price with shipping & delivery time.`
+    setToast(`✅ Admin notified – RFQ for ${p.name} logged – DDP Lagos – Opening WhatsApp ${isMotoma ? '+971 52 580 3914' : '+86 189 2434 3876'}`)
+    setTimeout(() => setToast(''), 5000)
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank')
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-slate-900 text-white p-6">
-        <h1 className="text-3xl font-bold">NiChAm Trade – Powering Nigeria</h1>
-        <p className="text-gray-300 mt-2 text-sm">Source MUSTNG.pdf 14 models + MOTOMA 4 models – Mix MOQ Policy: 3 inverters + 2 batteries = 5 units price – DDP Lagos, Nigeria – Valid 3 Days – Only EU/US Standards</p>
-        <div className="mt-4 flex gap-2">
-          {['All', 'MOTOMA', 'MUST'].map(f => (
-            <button key={f} onClick={() => setFilter(f)} className={`px-4 py-2 rounded-full text-sm font-bold ${filter === f ? 'bg-amber-500 text-black' : 'bg-slate-800 text-white'}`}>{f === 'All' ? 'All 18' : f === 'MOTOMA' ? 'MOTOMA Dubai 🇦🇪' : 'MUST Factory 🇨🇳'} {f === 'All' ? '' : f === 'MOTOMA' ? '(4)' : '(14)'}</button>
-          ))}
-        </div>
-      </header>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .card { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+        .card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+      `}</style>
 
-      {toast && <div className="fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-xl shadow-xl z-50 font-bold">{toast}</div>}
-
-      <main className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {filtered.map(p => (
-          <div key={p.id} className="bg-white rounded-2xl p-5 shadow-sm border hover:shadow-xl hover:-translate-y-1 transition-all">
-            <div className="flex justify-between items-start mb-3">
-              <span className={`text-xs font-bold px-2 py-1 rounded-full ${p.brand === 'MOTOMA' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'}`}>{p.brand} {p.brand === 'MOTOMA' ? '🇦🇪' : '🇨🇳'}</span>
-              <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full font-bold">{p.moq}</span>
+      <div style={{minHeight: '100vh', background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)'}}>
+        {/* HEADER – Beautiful Dark Premium */}
+        <header style={{background: '#0f172a', color: 'white', padding: '32px 24px'}}>
+          <div style={{maxWidth: '1400px', margin: '0 auto'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+              <div style={{width: '48px', height: '48px', background: 'linear-gradient(135deg, #f59e0b, #eab308)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px'}}>☀️</div>
+              <div>
+                <h1 style={{fontSize: '32px', fontWeight: 800, letterSpacing: '-0.02em'}}>NiChAm Trade – Powering Nigeria</h1>
+                <p style={{color: '#94a3b8', fontSize: '14px', marginTop: '6px', lineHeight: 1.5}}>Source MUSTNG.pdf 14 models + MOTOMA 4 models – Mix MOQ Policy: 3 inverters + 2 batteries = 5 units price – DDP Lagos, Nigeria – Valid 3 Days – Only EU/US Standards</p>
+              </div>
             </div>
-            <div className="text-xs text-gray-500 font-bold mb-1">{p.cat}</div>
-            <h3 className="font-bold text-slate-900 mb-1">{p.name}</h3>
-            <p className="text-xs text-gray-500 mb-3 h-8">{p.desc}</p>
-            <div className="bg-gray-100 rounded-lg p-2 text-sm font-bold mb-3">{p.price}</div>
-            <button onClick={() => handleRFQ(p)} className="w-full bg-slate-900 text-white rounded-xl py-3 text-sm font-bold hover:bg-black transition">
-              Request for Quote – DDP Lagos
-            </button>
-            <div className="text-xs text-center mt-2 text-gray-400">{p.brand === 'MOTOMA' ? 'WhatsApp +971 52 580 3914' : 'WhatsApp +86 189 2434 3876'}</div>
+            
+            <div style={{marginTop: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
+              {[
+                {key: 'All', label: 'All 18', count: ''},
+                {key: 'MOTOMA', label: 'MOTOMA Dubai 🇦🇪', count: '(4)'},
+                {key: 'MUST', label: 'MUST Factory 🇨🇳', count: '(14)'}
+              ].map(f => (
+                <button 
+                  key={f.key} 
+                  onClick={() => setFilter(f.key)} 
+                  style={{
+                    padding: '10px 18px', borderRadius: '999px', fontSize: '13px', fontWeight: 700,
+                    border: 'none', cursor: 'pointer',
+                    background: filter === f.key ? '#f59e0b' : '#1e293b',
+                    color: filter === f.key ? 'black' : 'white',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {f.label} {f.count}
+                </button>
+              ))}
+            </div>
           </div>
-        ))}
-      </main>
-    </div>
+        </header>
+
+        {toast && (
+          <div style={{
+            position: 'fixed', top: '20px', right: '20px', background: '#16a34a', color: 'white',
+            padding: '14px 20px', borderRadius: '12px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+            zIndex: 9999, fontWeight: 700, fontSize: '13px', maxWidth: '400px'
+          }}>
+            {toast}
+          </div>
+        )}
+
+        {/* GRID – Keeps your good 4-column character but beautiful */}
+        <main style={{
+          maxWidth: '1400px', margin: '0 auto', padding: '24px',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+          gap: '20px'
+        }}>
+          {filtered.map(p => {
+            const isMotoma = p.brand === 'MOTOMA'
+            return (
+              <div 
+                key={p.id} 
+                className="card"
+                style={{
+                  background: 'white', borderRadius: '20px', padding: '20px',
+                  border: `1px solid ${isMotoma ? '#dbeafe' : '#fef3c7'}`,
+                  borderLeft: `4px solid ${isMotoma ? '#3b82f6' : '#f59e0b'}`,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.06)'
+                }}
+              >
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px'}}>
+                  <div style={{display: 'flex', gap: '6px', flexWrap: 'wrap'}}>
+                    <span style={{
+                      fontSize: '10px', fontWeight: 800, padding: '4px 8px', borderRadius: '20px',
+                      background: isMotoma ? '#eff6ff' : '#fffbeb', color: isMotoma ? '#1d4ed8' : '#b45309',
+                      border: `1px solid ${isMotoma ? '#bfdbfe' : '#fde68a'}`
+                    }}>
+                      {p.brand} {isMotoma ? '🇦🇪' : '🇨🇳'}
+                    </span>
+                    <span style={{
+                      fontSize: '10px', fontWeight: 700, padding: '4px 8px', borderRadius: '20px',
+                      background: '#dcfce7', color: '#166534', border: '1px solid #bbf7d0'
+                    }}>
+                      {p.moq}
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{fontSize: '11px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px'}}>
+                  {p.cat}
+                </div>
+
+                <h3 style={{fontSize: '15px', fontWeight: 800, color: '#0f172a', marginBottom: '6px', lineHeight: 1.3}}>
+                  {p.name}
+                </h3>
+
+                <p style={{fontSize: '12px', color: '#64748b', marginBottom: '12px', minHeight: '32px', lineHeight: 1.4}}>
+                  {p.desc}
+                </p>
+
+                <div style={{
+                  background: '#f8fafc', borderRadius: '10px', padding: '10px 12px',
+                  fontSize: '13px', fontWeight: 800, color: '#0f172a', marginBottom: '14px',
+                  border: '1px solid #f1f5f9', letterSpacing: '-0.01em'
+                }}>
+                  {p.price}
+                </div>
+
+                <button 
+                  onClick={() => handleRFQ(p)} 
+                  style={{
+                    width: '100%', background: '#0f172a', color: 'white', borderRadius: '12px',
+                    padding: '12px', fontSize: '13px', fontWeight: 700, border: 'none',
+                    cursor: 'pointer', transition: 'all 0.2s'
+                  }}
+                  onMouseOver={e => (e.currentTarget.style.background = 'black')}
+                  onMouseOut={e => (e.currentTarget.style.background = '#0f172a')}
+                >
+                  Request for Quote – DDP Lagos
+                </button>
+
+                <div style={{fontSize: '10px', textAlign: 'center', marginTop: '8px', color: '#94a3b8', fontWeight: 600}}>
+                  WhatsApp {isMotoma ? '+971 52 580 3914' : '+86 189 2434 3876'}
+                </div>
+              </div>
+            )
+          })}
+        </main>
+
+        <footer style={{textAlign: 'center', padding: '24px', fontSize: '12px', color: '#94a3b8'}}>
+          NiChAm Trade – Minna, Niger State – DDP to Premises – MOTOMA Dubai 🇦🇪 +971 52 580 3914 | MUST Factory 🇨🇳 +86 189 2434 3876 – Admin notified on all RFQs – DDP Lagos, Nigeria
+        </footer>
+      </div>
+    </>
   )
 }
