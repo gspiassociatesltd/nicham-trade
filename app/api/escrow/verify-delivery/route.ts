@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabase } from '../../../../lib/supabase'
 export async function POST(req: NextRequest){
   const { order_id, identifier } = await req.json()
   const { data } = await supabase.from('escrow_documents').insert({
