@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { compareMarketPrice, calcLandedWithTier, getPlatformFeeRate } from '@/lib/priceComparator'
+import { compareMarketPrice, calcLandedWithTier, getPlatformFeeRate } from '../../../lib/priceComparator'
 
 // POST /api/compare-price - AI Assistant per Master Build Doc Rule 13F
 // Body: { product_title, base_price_ngn, weightKg, isNewInvention, selfClear }
