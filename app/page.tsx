@@ -1,15 +1,28 @@
-import p from '../lib/products.json'
-export default function Page(){
- const all=[...(p as any).motoma, ...(p as any).must]
- return <div style={{fontFamily:'system-ui',padding:16}}>
-  <h1 style={{fontWeight:900}}>NiChAm Trade –  Powering Nigeria </h1>
-    <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12,marginTop:16}}>
-   {all.map((x:any,i:number)=><div key={i} style={{border:'1px solid #ddd',borderRadius:16,padding:12,background:'white'}}>
-    <b style={{fontSize:11}}>{x.badge}</b> <span style={{fontSize:10,background:'#dcfce7',padding:'2px 6px',borderRadius:99}}>MOQ {x.moq}</span>
-    <h3 style={{fontSize:12,margin:'8px 0 0 0'}}>{x.model}</h3>
-    <p style={{fontSize:11,color:'#555'}}>{x.spec}</p>
-    {x.usd && <p style={{fontSize:11,background:'#f8fafc',padding:6,borderRadius:8,marginTop:6}}><b>{x.usd}</b></p>}
-   </div>)}
-  </div>
-   </div>
+// For MOTOMA products
+const motomaWhatsApp = (productName: string) => {
+  const msg = `Hi MOTOMA Dubai Team 🇦🇪\n\nRFQ for ${productName}\n\n- DDP Lagos, Nigeria\n- DDP to Premises Minna\n- NiChAm Trade\n\nPlease send DDP price with shipping.`
+  return `https://wa.me/971525803914?text=${encodeURIComponent(msg)}`
 }
+
+// For MUST products
+const mustWhatsApp = (productName: string) => {
+  const msg = `Hi MUST Factory Team 🇨🇳\n\nRFQ for ${productName}\n\n- DDP Lagos, Nigeria\n- Mix MOQ Policy: 3 inverters + 2 batteries = 5 units price\n- NiChAm Trade Minna\n\nPlease send DDP price.`
+  return `https://wa.me/8618924343876?text=${encodeURIComponent(msg)}`
+}
+
+// Button in card:
+<button 
+  onClick={() => {
+    // Admin notified – log to supabase
+    supabase.from('rfq_logs').insert({
+      product: productName,
+      brand: product.brand, // MOTOMA or MUST
+      ddp: 'Lagos, Nigeria',
+      timestamp: new Date()
+    })
+    window.open(brand === 'MOTOMA' ? motomaWhatsApp(productName) : mustWhatsApp(productName), '_blank')
+  }}
+  className="w-full bg-slate-900 text-white rounded-xl py-3 font-bold hover:bg-black"
+>
+  Request for Quote – DDP Lagos
+</button>
