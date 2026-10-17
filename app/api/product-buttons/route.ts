@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { DEFAULT_BUTTONS } from '../../../lib/productButtons'
+import { DEFAULT_BUTTONS } from '../../lib/productButtons'
 import fs from 'fs'
 import path from 'path'
 
