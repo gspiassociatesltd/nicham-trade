@@ -1,0 +1,25 @@
+
+{
+  "motoma": [
+    {"model":"M68PW PRO - 200Ah 25.6V","spec":"200Ah 25.6V Grade A+ 8000 Cycles","badge":"25.6V Residential","moq":"12 pcs"},
+    {"model":"M69PW PRO - 280Ah 25.6V","spec":"280Ah High Capacity 15+ Years","badge":"25.6V High Cap","moq":"12 pcs"},
+    {"model":"M87PW PRO - 100Ah 51.2V","spec":"100Ah 51.2V 8000 cycles Compact","badge":"51.2V Compact","moq":"12 pcs"},
+    {"model":"M88PW PRO - 200Ah 51.2V","spec":"200Ah 51.2V 16 Parallel","badge":"51.2V Popular","moq":"12 pcs"}
+  ],
+  "must": [
+    {"model":"PV18-3224 VPMII","spec":"3.2KW 24V 60A MPPT 160V VOC","badge":"High Frequency","moq":"Mix 1/5/20","usd":"$180/168/159","ngn":"252k/235.2k/222.6k"},
+    {"model":"PV18-3624 PRO","spec":"3.6KW 24V 100A MPPT 400V VOC","badge":"High Frequency","moq":"Mix 1/5/20","usd":"$180/168/159"},
+    {"model":"PV18-6048 PRO","spec":"6KW 48V 100A MPPT 450V VOC 7.83KGS","badge":"High Frequency","moq":"Mix 1/5/20","usd":"$270/240/227"},
+    {"model":"PV19-10048EXP","spec":"10KW 48V 150A MPPT 500V VOC WIFI Parallel 17.4KGS","badge":"High Frequency","moq":"Mix 1/5/20","usd":"$520/496/469"},
+    {"model":"PH11-10KL1-EU","spec":"10KW 48V IP65 ON/OFF GRID 230V","badge":"IP65 230V","moq":"Mix 1/5/20","usd":"$1200/1195/1129"},
+    {"model":"PH11-15KL3-EU","spec":"15KW 48V IP65 ON/OFF GRID 380V","badge":"IP65 380V","moq":"Mix 1/5/20","usd":"$1580/1572/1484"},
+    {"model":"LP16-24200","spec":"25.6V 200AH 5.12KWH BMS","badge":"Li 25.6V","moq":"Mix 1/5/20","usd":"$670/642/607"},
+    {"model":"LP16-24300","spec":"25.6V 300AH 7.68KWH WALL MOUNTED","badge":"Wall Mounted","moq":"Mix 1/5/20","usd":"$880/856/809"},
+    {"model":"LP16-48100 SE","spec":"51.2V 100AH 5.12KWH No WiFi kit","badge":"51.2V","moq":"Mix 1/5/20","usd":"$630/612/579"},
+    {"model":"LP16-48200","spec":"51.2V 200AH 10.24KWH BMS","badge":"51.2V","moq":"Mix 1/5/20","usd":"$1160/1149/1087"},
+    {"model":"LP16-48300","spec":"51.2V 300AH 15.36KWH BMS","badge":"51.2V High","moq":"Mix 1/5/20","usd":"$1550/1518/1436"},
+    {"model":"HBP15-1012","spec":"1KW WITH 1.28KWH LITHIUM ALL IN ONE ESS","badge":"ALL IN ONE","moq":"Mix 1/5","usd":"$390/364"},
+    {"model":"HBP18-3024 OS","spec":"3KW WITH 3KWH LITHIUM","badge":"ALL IN ONE","moq":"Mix 1/5","usd":"$650/635"},
+    {"model":"HBP18-5548 ES","spec":"5.5KW WITH 10.24KWH SOLAR GENERATOR","badge":"Solar Generator","moq":"Mix 1/5","usd":"$1572/1500"}
+  ]
+}

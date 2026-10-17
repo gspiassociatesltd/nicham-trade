@@ -1,1 +1,1 @@
-export default function Layout({children}:{children:any}){return <html><body>{children}</body></html>}
+export default function L({children}:{children:any}){return <html><body style={{margin:0}}>{children}</body></html>}
