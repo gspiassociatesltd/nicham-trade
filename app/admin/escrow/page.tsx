@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { supabase } from '../../../lib/supabase'
 export default function EscrowPage(){
   const [orders, setOrders] = useState<any[]>([])
   const [releases, setReleases] = useState<any[]>([])
