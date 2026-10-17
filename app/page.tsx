@@ -11,6 +11,5 @@ export default function Page(){
     {x.usd && <p style={{fontSize:11,background:'#f8fafc',padding:6,borderRadius:8,marginTop:6}}><b>{x.usd}</b></p>}
    </div>)}
   </div>
-  <p style={{fontSize:11,marginTop:24}}>Payment: MoMo → Flutterwave Escrow + Afriex Diaspora Zero Fee + Alibaba Deep Link 15 days cookie – DDP Example LP16-48200: $1087 + $120 freight + $180 Nigeria + $50 last-mile + 3% platform = ~₦2,057,454/unit</p>
- </div>
+   </div>
 }
