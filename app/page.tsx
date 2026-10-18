@@ -91,7 +91,7 @@ export default function Page() {
                   <p style={{color: '#94a3b8', fontSize: '13px', marginTop: '4px'}}>Industrial Chemicals & Solar Solutions – Minna, Niger State – DDP Lagos, Nigeria – Valid 3 Days – EU/US Standards</p>
                 </div>
               </div>
-              <a href="/admin" style={{background: '#f59e0b', color: 'black', padding: '10px 18px', borderRadius: '10px', fontWeight: 800, fontSize: '12px', textDecoration: 'none'}}>Admin Console →</a>
+              
             </div>
             
             <div style={{marginTop: '18px', display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
