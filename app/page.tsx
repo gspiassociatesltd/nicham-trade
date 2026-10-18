@@ -83,12 +83,12 @@ export default function Page() {
       <div style={{minHeight: '100vh', background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)'}}>
         <header style={{background: '#0f172a', color: 'white', padding: '28px 24px'}}>
           <div style={{maxWidth: '1400px', margin: '0 auto'}}>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
               <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
                 <div style={{width: '44px', height: '44px', background: 'linear-gradient(135deg, #f59e0b, #eab308)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px'}}>🏭</div>
                 <div>
                   <h1 style={{fontSize: '28px', fontWeight: 800, letterSpacing: '-0.02em'}}>NiChAm Trade – Powering Nigeria</h1>
-                  <p style={{color: '#94a3b8', fontSize: '13px', marginTop: '4px'}}>Industrial Chemicals & Solar Solutions – Minna, Niger State – DDP Lagos, Nigeria – Valid 3 Days – EU/US Standards</p>
+                  <p style={{color: '#94a3b8', fontSize: '13px', marginTop: '4px'}}>Industrial Chemicals & Solar Solutions – DDP Lagos, Nigeria – Valid 3 Days – EU/US Standards</p>
                 </div>
               </div>
               
@@ -117,10 +117,7 @@ export default function Page() {
           </div>
         )}
 
-        <div style={{maxWidth: '1400px', margin: '0 auto', padding: '12px 24px', background: '#fffbeb', borderBottom: '1px solid #fde68a', fontSize: '12px', color: '#92400e', fontWeight: 600}}>
-          💡 Best Choice: New orientation – Chemicals PRIMARY – All RFQ goes to NiChAm Trade +234 705 047 7950 only – Supplier numbers hidden – RFQ includes Manufacturer name except chemical – DDP Lagos, Nigeria
-        </div>
-
+        
         <main style={{maxWidth: '1400px', margin: '0 auto', padding: '24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '18px'}}>
           {filtered.map(p => {
             const isChemical = p.brand === 'CHEMICAL'
