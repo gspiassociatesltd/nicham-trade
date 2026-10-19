@@ -1,114 +1,88 @@
-"use client";
-import { useState } from "react";
+"use client"
+import { useState } from 'react'
 
-type Product = {
-  id: number;
-  name: string;
-  brand: string;
-  category: "solar" | "chemical";
-  spec: string;
-  image?: string;
-};
+const PRODUCTS = [ { id:1, brand:'MOTOMA', name:'M68PW PRO 200Ah 25.6V', cat:'25.6V Residential', group:'Solar Batteries', desc:'5.12kWh LiFePO4 green hex BMS 6000 cycles', moq:'MOQ 2 Units', img:'/solar/motoma-m68pw.png', mfg:'Motoma', color:'#0ea5e9' }, { id:2, brand:'MOTOMA', name:'M69PW PRO 280Ah 25.6V', cat:'25.6V High Capacity', group:'Solar Batteries', desc:'7.16kWh 25.6V wall CAN/RS485 parallel 16 units', moq:'MOQ 2 Units', img:'/solar/motoma-m69pw.png', mfg:'Motoma', color:'#0ea5e9' }, { id:3, brand:'MOTOMA', name:'M87PW PRO 100Ah 51.2V', cat:'51.2V Server/Wall', group:'Solar Batteries', desc:'5.12kWh 51.2V server/wall Grade A UN38.3', moq:'MOQ 2 Units', img:'/solar/motoma-m87pw.png', mfg:'Motoma', color:'#0ea5e9' }, { id:4, brand:'MOTOMA', name:'M88PW PRO 200Ah 51.2V', cat:'51.2V Popular', group:'Solar Batteries', desc:'10.24kWh 51.2V stackable 100A charge', moq:'MOQ 2 Units', img:'/solar/motoma-m88pw.png', mfg:'Motoma', color:'#0ea5e9' }, { id:5, brand:'MUST', name:'PV18-3224 VPMII 3.2KW', cat:'High Frequency 24V', group:'Solar Batteries', desc:'3.2KW 24V 60A MPPT 160V VOC', moq:'MOQ Mix 1/5/20', img:'/solar/must-pv18-3224.png', mfg:'Must Power', color:'#f59e0b' }, { id:6, brand:'MUST', name:'PV18-3624 PRO 3.6KW', cat:'High Frequency 24V', group:'Solar Batteries', desc:'3.6KW 24V 100A MPPT 400V VOC', moq:'MOQ Mix 1/5/20', img:'/solar/must-pv18-3624.png', mfg:'Must Power', color:'#f59e0b' }, { id:7, brand:'MUST', name:'PV18-6048 PRO 6KW', cat:'High Frequency 48V', group:'Solar Batteries', desc:'6KW 48V 100A MPPT 450V VOC', moq:'MOQ Mix 1/5/20', img:'/solar/must-pv18-6048.png', mfg:'Must Power', color:'#f59e0b' }, { id:8, brand:'MUST', name:'PV19-10048EXP 10KW', cat:'Exp Series 48V', group:'Solar Batteries', desc:'10KW 48V 150A MPPT 500V WIFI Parallel', moq:'MOQ Mix 1/5/20', img:'/solar/must-pv19-10048.png', mfg:'Must Power', color:'#f59e0b' }, { id:9, brand:'MUST', name:'PH11-10KL1-EU 10KW', cat:'IP65 230V', group:'Solar Batteries', desc:'10KW 48V IP65 ON/OFF GRID 230V', moq:'MOQ Mix 1/5/20', img:'/solar/must-ph11-10kl1.png', mfg:'Must Power', color:'#f59e0b' }, { id:10, brand:'MUST', name:'PH11-15KL3-EU 15KW', cat:'IP65 380V', group:'Solar Batteries', desc:'15KW 48V IP65 ON/OFF GRID 380V', moq:'MOQ Mix 1/5/20', img:'/solar/must-ph11-15kl3.png', mfg:'Must Power', color:'#f59e0b' }, { id:11, brand:'MUST', name:'LP16-24200 5.12KWH', cat:'5.12KWH Wall', group:'Solar Batteries', desc:'25.6V 200AH LITHIUM 5.12KWH BMS', moq:'MOQ Mix 1/5/20', img:'/solar/must-lp16-24200.png', mfg:'Must Power', color:'#f59e0b' }, { id:12, brand:'MUST', name:'LP16-24300 7.68KWH', cat:'7.68KWH Wall', group:'Solar Batteries', desc:'25.6V 300AH 7.68KWH WALL MOUNTED', moq:'MOQ Mix 1/5/20', img:'/solar/must-lp16-24300.png', mfg:'Must Power', color:'#f59e0b' }, { id:13, brand:'MUST', name:'LP16-48100 SE 5.12KWH', cat:'5.12KWH SE', group:'Solar Batteries', desc:'51.2V 100AH BMS no WiFi kit', moq:'MOQ Mix 1/5/20', img:'/solar/must-lp16-48100se.png', mfg:'Must Power', color:'#f59e0b' }, { id:14, brand:'MUST', name:'LP16-48200 10.24KWH', cat:'10.24KWH', group:'Solar Batteries', desc:'51.2V 200AH 10.24KWH BMS stackable', moq:'MOQ Mix 1/5/20', img:'/solar/must-lp16-48200.png', mfg:'Must Power', color:'#f59e0b' }, { id:15, brand:'MUST', name:'LP16-48300 15.36KWH', cat:'15.36KWH', group:'Solar Batteries', desc:'51.2V 300AH 15.36KWH BMS 150A', moq:'MOQ Mix 1/5/20', img:'/solar/must-lp16-48300.png', mfg:'Must Power', color:'#f59e0b' }, { id:16, brand:'MUST', name:'HBP15-1012 1KW+1.28KWH', cat:'ALL IN ONE ESS', group:'Solar Batteries', desc:'1KW INVERTER WITH 1.28KWH BATTERY ALL IN ONE', moq:'MOQ Mix 1/5/20', img:'/solar/must-hbp15-1012.png', mfg:'Must Power', color:'#f59e0b' }, { id:17, brand:'MUST', name:'HBP18-3024 OS 3KW+3KWH', cat:'ALL IN ONE', group:'Solar Batteries', desc:'3KW INVERTER WITH 3KWH BATTERY', moq:'MOQ Mix 1/5/20', img:'/solar/must-hbp18-3024.png', mfg:'Must Power', color:'#f59e0b' }, { id:18, brand:'MUST', name:'HBP18-5548 ES 5.5KW+10.24KWH', cat:'Solar Generator', group:'Solar Batteries', desc:'5.5KW GENERATOR WITH 10.24KWH BATTERY', moq:'MOQ Mix 1/5/20', img:'/solar/must-hbp18-5548.png', mfg:'Must Power', color:'#f59e0b' }, { id:101, brand:'CHEMICAL', name:'Paracetamol Powder', cat:'Pharmaceuticals', group:'Industrial Chemical', desc:'USP/BP COA MSDS 25KG drum', moq:'MOQ 5 MT', img:'', mfg:'', color:'#6366f1' }, { id:102, brand:'CHEMICAL', name:'Crystallized Sorbitol', cat:'Pharmaceuticals', group:'Industrial Chemical', desc:'Food & Pharma grade 25KG bags', moq:'MOQ 5 MT', img:'', mfg:'', color:'#6366f1' }, { id:103, brand:'CHEMICAL', name:'Caustic Soda Flakes 99%', cat:'Commodity Chemicals', group:'Industrial Chemical', desc:'99% 25KG bags NaOH', moq:'MOQ 5 MT', img:'', mfg:'', color:'#0ea5e9' }, { id:104, brand:'CHEMICAL', name:'Hydrochloric Acid 31%', cat:'Commodity Chemicals', group:'Industrial Chemical', desc:'31% HCl IBC 1000L', moq:'MOQ 5 MT', img:'', mfg:'', color:'#0ea5e9' }, { id:105, brand:'CHEMICAL', name:'Nitric Acid 68%', cat:'Commodity Chemicals', group:'Industrial Chemical', desc:'68% HNO3 IBC fertilizer', moq:'MOQ 5 MT', img:'', mfg:'', color:'#0ea5e9' }, { id:106, brand:'CHEMICAL', name:'Stearic Acid', cat:'Commodity Chemicals', group:'Industrial Chemical', desc:'Triple pressed 25KG bags', moq:'MOQ 5 MT', img:'', mfg:'', color:'#0ea5e9' }, { id:107, brand:'CHEMICAL', name:'Acetic Acid Glacial 99%', cat:'Commodity Chemicals', group:'Industrial Chemical', desc:'99.8% glacial IBC 1000L', moq:'MOQ 5 MT', img:'', mfg:'', color:'#0ea5e9' }, { id:108, brand:'CHEMICAL', name:'Hydrogen Peroxide 50%', cat:'Commodity Chemicals', group:'Industrial Chemical', desc:'50% food grade IBC 1000L', moq:'MOQ 5 MT', img:'', mfg:'', color:'#0ea5e9' }, { id:109, brand:'CHEMICAL', name:'Natrosol 250 HHR', cat:'Paint Chemicals', group:'Industrial Chemical', desc:'HEC thickener 25KG bags', moq:'MOQ 5 MT', img:'', mfg:'', color:'#f59e0b' }, { id:110, brand:'CHEMICAL', name:'Calcium Carbonate', cat:'Paint Chemicals', group:'Industrial Chemical', desc:'Superfine 800-2500 mesh 25KG', moq:'MOQ 10 MT', img:'', mfg:'', color:'#f59e0b' }, { id:111, brand:'CHEMICAL', name:'Soda Ash Light', cat:'Water Treatment', group:'Industrial Chemical', desc:'99.2% Na2CO3 50KG bags', moq:'MOQ 10 MT', img:'', mfg:'', color:'#14b8a6' }, { id:112, brand:'CHEMICAL', name:'Calcium Hypochlorite 65%', cat:'Water Treatment', group:'Industrial Chemical', desc:'65% granular 45KG drum', moq:'MOQ 5 MT', img:'', mfg:'', color:'#14b8a6' }, { id:113, brand:'CHEMICAL', name:'Poly Aluminium Chloride 30%', cat:'Water Treatment', group:'Industrial Chemical', desc:'PAC 30% yellow 25KG bags', moq:'MOQ 5 MT', img:'', mfg:'', color:'#14b8a6' }, { id:114, brand:'CHEMICAL', name:'Aluminium Sulphate 17%', cat:'Water Treatment', group:'Industrial Chemical', desc:'17% granular 50KG bags', moq:'MOQ 10 MT', img:'', mfg:'', color:'#14b8a6' }, { id:115, brand:'CHEMICAL', name:'Ferric Chloride 40%', cat:'Water Treatment', group:'Industrial Chemical', desc:'40% liquid IBC', moq:'MOQ 5 MT', img:'', mfg:'', color:'#14b8a6' } ]
 
-const PRODUCTS: Product[] = [
-  { id: 1, name: "MOTOMA M68PW", brand: "MOTOMA", category: "solar", spec: "5.12kWh / 51.2V 100Ah Wall-Mounted LiFePO4", image: "/solar/motoma-m68pw.png" },
-  { id: 2, name: "MOTOMA M69PW", brand: "MOTOMA", category: "solar", spec: "10.24kWh / 51.2V 200Ah Wall-Mounted LiFePO4", image: "/solar/motoma-m69pw.png" },
-  { id: 3, name: "MOTOMA M87PW", brand: "MOTOMA", category: "solar", spec: "5.12kWh / 51.2V 100Ah Rack-Mounted LiFePO4", image: "/solar/motoma-m87pw.png" },
-  { id: 4, name: "MOTOMA M88PW", brand: "MOTOMA", category: "solar", spec: "10.24kWh / 51.2V 200Ah Rack-Mounted LiFePO4", image: "/solar/motoma-m88pw.png" },
-  { id: 5, name: "MUST PV18-3224 VHM", brand: "MUST", category: "solar", spec: "3.2kW 24V Hybrid Inverter, MPPT 100A, WiFi", image: "/solar/must-pv18-3224.png" },
-  { id: 6, name: "MUST PV18-3624 VHM", brand: "MUST", category: "solar", spec: "3.6kW 24V Hybrid Inverter, MPPT 120A, WiFi", image: "/solar/must-pv18-3624.png" },
-  { id: 7, name: "MUST PV18-6048 VHM", brand: "MUST", category: "solar", spec: "6kW 48V Hybrid Inverter, MPPT 100A, Parallel", image: "/solar/must-pv18-6048.png" },
-  { id: 8, name: "MUST PV19-10048 EXP", brand: "MUST", category: "solar", spec: "10kW 48V Hybrid Inverter, Expansion Parallel up to 9", image: "/solar/must-pv18-6048.png" },
-  { id: 9, name: "MUST PH11-10KL1", brand: "MUST", category: "solar", spec: "10kW 48V Off-Grid Inverter, Single Phase, MPPT", image: "/solar/must-pv18-6048.png" },
-  { id: 10, name: "MUST PH11-15KL3", brand: "MUST", category: "solar", spec: "15kW 48V Off-Grid Inverter, 3-Phase, Dual MPPT", image: "/solar/must-pv18-6048.png" },
-  { id: 11, name: "MUST LP16-24200", brand: "MUST", category: "solar", spec: "2.56kWh 25.6V 100Ah LiFePO4 – Wall Mount", image: "/solar/must-lp16-48100se.png" },
-  { id: 12, name: "MUST LP16-24300", brand: "MUST", category: "solar", spec: "7.68kWh 25.6V 300Ah LiFePO4 Battery", image: "/solar/must-lp16-48100se.png" },
-  { id: 13, name: "MUST LP16-48100 SE", brand: "MUST", category: "solar", spec: "5.12kWh 51.2V 100Ah LiFePO4 – SE Edition", image: "/solar/must-lp16-48100se.png" },
-  { id: 14, name: "MUST LP16-48200", brand: "MUST", category: "solar", spec: "10.24kWh 51.2V 200Ah LiFePO4 Battery", image: "/solar/must-lp16-48100se.png" },
-  { id: 15, name: "MUST LP16-48300", brand: "MUST", category: "solar", spec: "15.36kWh 51.2V 300Ah LiFePO4 Battery", image: "/solar/must-lp16-48100se.png" },
-  { id: 16, name: "MUST HBP15-1012", brand: "MUST", category: "solar", spec: "1kW 12V Hybrid Inverter, MPPT 60A, Lithium Ready", image: "/solar/must-hbp18-5548.png" },
-  { id: 17, name: "MUST HBP18-3024", brand: "MUST", category: "solar", spec: "3kW 24V Hybrid Inverter, MPPT 80A", image: "/solar/must-hbp18-5548.png" },
-  { id: 18, name: "MUST HBP18-5548", brand: "MUST", category: "solar", spec: "5.5kW 48V Hybrid Inverter, MPPT 100A, WiFi", image: "/solar/must-hbp18-5548.png" },
-  { id: 19, name: "Sodium Hydroxide 98% Flakes", brand: "Industrial", category: "chemical", spec: "Caustic Soda – 25kg Bags – High Purity" },
-  { id: 20, name: "Sodium Carbonate Dense", brand: "Industrial", category: "chemical", spec: "Soda Ash Dense – 25kg / 50kg Bags" },
-  { id: 21, name: "Calcium Chloride 94%", brand: "Industrial", category: "chemical", spec: "Granular / Powder – 25kg Bags" },
-  { id: 22, name: "Citric Acid Anhydrous", brand: "Industrial", category: "chemical", spec: "Food Grade – 25kg Bags – E330" },
-  { id: 23, name: "Sodium Tripolyphosphate STPP", brand: "Industrial", category: "chemical", spec: "Tech Grade 94% – Detergent Grade" },
-  { id: 24, name: "LABSA 96%", brand: "Industrial", category: "chemical", spec: "Linear Alkyl Benzene Sulphonic Acid – 210kg Drum" },
-  { id: 25, name: "SLES 70%", brand: "Industrial", category: "chemical", spec: "Sodium Laureth Sulfate – 170kg Drum" },
-  { id: 26, name: "Caustic Potash KOH 90%", brand: "Industrial", category: "chemical", spec: "Potassium Hydroxide Flakes – 25kg Bags" },
-  { id: 27, name: "Sodium Metabisulphite", brand: "Industrial", category: "chemical", spec: "Food Grade 97% – 25kg Bags" },
-  { id: 28, name: "Sodium Bicarbonate", brand: "Industrial", category: "chemical", spec: "Food Grade – 25kg Bags – Baking Soda" },
-  { id: 29, name: "Hydrogen Peroxide 50%", brand: "Industrial", category: "chemical", spec: "Industrial Grade – 30kg Carboy" },
-  { id: 30, name: "PAC 30% – Poly Aluminium Chloride", brand: "Industrial", category: "chemical", spec: "Water Treatment – 25kg Bags" },
-  { id: 31, name: "Sodium Hypochlorite 12%", brand: "Industrial", category: "chemical", spec: "Bleach – IBC / Drum – Water Treatment" },
-  { id: 32, name: "Glacial Acetic Acid 99.8%", brand: "Industrial", category: "chemical", spec: "Tech Grade – 30kg Drum / IBC" },
-  { id: 33, name: "Oxalic Acid", brand: "Industrial", category: "chemical", spec: "99.6% Powder – 25kg Bags – Cleaning Grade" },
-];
-
-export default function Page() {
-  const [activeTab, setActiveTab] = useState<"all" | "solar" | "chemical">("all");
-  const filtered = PRODUCTS.filter((p) => (activeTab === "all" ? true : p.category === activeTab));
-
+export default function Page(){
+  const [tab, setTab] = useState('All')
+  const TABS = ['All','Solar Batteries','Industrial Chemical']
+  const filtered = tab === 'All' ? PRODUCTS : PRODUCTS.filter(function(p){ return p.group === tab })
+  const handleRFQ = function(p){
+    var msg = 'Hello NiChAm Trade, RFQ for ' + p.brand + ' ' + p.name + ' - ' + p.desc + '. DDP Lagos, Nigeria. Qty: '
+    window.open('https://wa.me/2347050477950?text=' + encodeURIComponent(msg), '_blank')
+  }
   return (
-    <main className="min-h-screen bg-white text-zinc-900">
-      <header className="border-b sticky top-0 bg-white/95 backdrop-blur z-10">
-        <div className="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-black text-white grid place-items-center font-bold text-sm">N</div>
+    <div style={{minHeight:'100vh', background:'#f8fafc', fontFamily:'Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'}}>
+      <header style={{background:'#ffffff', borderBottom:'1px solid #e2e8f0', position:'sticky', top:0, zIndex:20}}>
+        <div style={{maxWidth:'1280px', margin:'0 auto', padding:'14px 20px', display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+          <div style={{display:'flex', alignItems:'center', gap:'12px'}}>
+            <div style={{width:'36px', height:'36px', background:'#0f172a', color:'#fff', borderRadius:'9px', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:800, fontSize:'14px', letterSpacing:'-0.5px'}}>NC</div>
             <div>
-              <div className="font-bold tracking-tight leading-none">NiChAm Trade</div>
-              <div className="text-[11px] tracking-widest uppercase text-zinc-500">Solar & Industrial Supply</div>
+              <div style={{fontWeight:800, fontSize:'15px', letterSpacing:'-0.3px', color:'#0f172a', lineHeight:1}}>NiChAm Trade</div>
+              <div style={{fontSize:'11px', color:'#64748b', fontWeight:600, marginTop:'2px'}}>SOLAR & CHEMICAL DDP LAGOS</div>
             </div>
           </div>
-          <div className="hidden md:flex items-center gap-2 text-[11px] border px-3 py-1.5 rounded-full">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            DDP LAGOS – IMPORT & CLEARING INCLUDED
-          </div>
+          <div style={{fontSize:'11px', color:'#64748b', border:'1px solid #e2e8f0', padding:'6px 10px', borderRadius:'999px', fontWeight:600}}>33 PRODUCTS • DDP READY</div>
         </div>
       </header>
 
-      <section className="max-w-6xl mx-auto px-6 py-10 md:py-14">
-        <div className="grid md:grid-cols-[1.2fr_0.8fr] gap-8 items-start">
-          <div>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[0.95]">Power & Chemical Supply. Simplified.</h1>
-            <p className="mt-4 text-zinc-600 max-w-xl text-[15px] leading-relaxed">33 verified products. MOTOMA & MUST solar batteries and inverters + industrial chemicals. All prices DDP Lagos – no hidden clearing fees.</p>
-            <div className="mt-6 flex flex-wrap gap-2">
-              <button onClick={() => setActiveTab("all")} className={`px-4 py-2 text-sm rounded-full border ${activeTab==="all" ? "bg-black text-white border-black" : "bg-white"}`}>All 33 Products</button>
-              <button onClick={() => setActiveTab("solar")} className={`px-4 py-2 text-sm rounded-full border ${activeTab==="solar" ? "bg-black text-white border-black" : "bg-white"}`}>Solar Batteries 18</button>
-              <button onClick={() => setActiveTab("chemical")} className={`px-4 py-2 text-sm rounded-full border ${activeTab==="chemical" ? "bg-black text-white border-black" : "bg-white"}`}>Industrial Chemical 15</button>
-            </div>
-          </div>
-          <div className="border rounded-2xl p-5 bg-zinc-50">
-            <div className="text-xs uppercase tracking-widest font-semibold text-zinc-500 mb-3">DDP Lagos Includes</div>
-            <ul className="text-sm space-y-2">
-              <li className="flex gap-2"><span>✓</span> Import Duty & Customs Clearance</li>
-              <li className="flex gap-2"><span>✓</span> Port Charges & Terminal Handling</li>
-              <li className="flex gap-2"><span>✓</span> Delivery to Lagos Warehouse</li>
-              <li className="flex gap-2"><span>✓</span> No Extra Fees on Arrival</li>
-            </ul>
-            <div className="mt-4 p-3 bg-white rounded-xl border text-xs text-zinc-600">Request a formal quote – stock and DDP price confirmed within 2 hours.</div>
-          </div>
+      <main style={{maxWidth:'1280px', margin:'0 auto', padding:'20px'}}>
+        <div style={{display:'flex', gap:'10px', flexWrap:'wrap', margin:'18px 0 22px'}}>
+          {TABS.map(function(t){
+            var active = tab === t
+            return (
+              <button key={t} onClick={function(){ setTab(t) }} style={{padding:'10px 18px', borderRadius:'999px', border:'1px solid ' + (active ? '#0f172a' : '#e2e8f0'), background: active ? '#0f172a' : '#ffffff', color: active ? '#ffffff' : '#334155', fontSize:'13px', fontWeight:700, cursor:'pointer', transition:'all .15s'}}>
+                {t}
+              </button>
+            )
+          })}
         </div>
 
-        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((p) => (
-            <div key={p.id} className="border rounded-2xl p-5 bg-white hover:border-black transition">
-              <div className="flex justify-between items-start gap-3">
-                <div className="text-[11px] tracking-widest uppercase px-2 py-1 bg-zinc-100 rounded-full">{p.brand}</div>
-                <div className="text-[10px] tracking-widest uppercase text-zinc-400">{p.category}</div>
+        <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(300px, 1fr))', gap:'18px'}}>
+          {filtered.map(function(p){
+            return (
+              <div key={p.id} style={{background:'#ffffff', border:'1px solid #e2e8f0', borderRadius:'16px', overflow:'hidden', display:'flex', flexDirection:'column'}}>
+                <div style={{height:'176px', background:'#f8fafc', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', borderBottom:'1px solid #f1f5f9'}}>
+                  {p.img ? (
+                    <>
+                      <img src={p.img} alt={p.name} style={{width:'100%', height:'100%', objectFit:'contain', padding:'14px'}} onError={function(e){ var t=e.currentTarget as HTMLImageElement; t.style.display='none'; var fb=t.nextElementSibling as HTMLElement; if(fb) fb.style.display='flex'; }} />
+                      <div style={{display:'none', width:'100%', height:'100%', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:'8px', color:'#94a3b8'}}>
+                        <div style={{width:'44px', height:'44px', borderRadius:'10px', background:'#e2e8f0', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'18px'}}>◧</div>
+                        <div style={{fontSize:'11px', fontWeight:700}}>{p.brand}</div>
+                      </div>
+                    </>
+                  ) : (
+                    <div style={{display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:'8px', color:'#94a3b8'}}>
+                      <div style={{width:'48px', height:'48px', borderRadius:'12px', background:'#e2e8f0', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'20px'}}>⬡</div>
+                      <div style={{fontSize:'11px', fontWeight:700, letterSpacing:'.5px'}}>{p.brand}</div>
+                    </div>
+                  )}
+                  <div style={{position:'absolute', top:'10px', left:'10px', display:'flex', gap:'6px'}}>
+                    <span style={{fontSize:'10px', fontWeight:800, letterSpacing:'.4px', padding:'5px 8px', borderRadius:'999px', background:'#0f172a', color:'#fff'}}>{p.brand}</span>
+                  </div>
+                  <div style={{position:'absolute', top:'10px', right:'10px'}}>
+                    <span style={{fontSize:'10px', fontWeight:700, padding:'5px 8px', borderRadius:'999px', background:'#ffffff', border:'1px solid #e2e8f0', color:'#334155'}}>{p.moq}</span>
+                  </div>
+                </div>
+                <div style={{padding:'14px 14px 12px', display:'flex', flexDirection:'column', flex:1, gap:'8px'}}>
+                  <div style={{fontSize:'11px', fontWeight:700, color:p.color, letterSpacing:'.3px', textTransform:'uppercase'}}>{p.cat}</div>
+                  <div style={{fontSize:'15px', fontWeight:800, color:'#0f172a', lineHeight:1.2, letterSpacing:'-0.2px'}}>{p.name}</div>
+                  <div style={{fontSize:'12.5px', color:'#475569', lineHeight:1.4}}>{p.desc}</div>
+                  <div style={{background:'#f1f5f9', border:'1px dashed #cbd5e1', borderRadius:'9px', padding:'8px 10px', fontSize:'11px', color:'#475569', fontWeight:600, marginTop:'4px'}}>DDP Lagos • Customs & Duty Included • Invoice + COA</div>
+                  <button onClick={function(){ handleRFQ(p) }} style={{marginTop:'auto', width:'100%', background:'#0f172a', color:'#fff', border:'none', borderRadius:'10px', padding:'11px 12px', fontSize:'13px', fontWeight:800, cursor:'pointer', letterSpacing:'.2px'}}>Request for Quote – DDP Lagos</button>
+                </div>
               </div>
-              <h3 className="mt-4 font-semibold leading-tight">{p.name}</h3>
-              <p className="mt-2 text-sm text-zinc-600 leading-snug">{p.spec}</p>
-              <div className="mt-5">
-                <a href={`https://wa.me/2347050477950?text=Hello%20NiChAm%20Trade%20-%20I%20need%20DDP%20Lagos%20quote%20for%20${encodeURIComponent(p.name)}`} target="_blank" rel="noopener" className="inline-flex w-full justify-center px-4 py-2.5 bg-black text-white rounded-full text-sm font-medium hover:bg-zinc-800">Request for Quote</a>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
+      </main>
 
-        <div className="mt-16 border-t pt-8 text-center text-xs text-zinc-500">© {new Date().getFullYear()} NiChAm Trade – DDP Lagos Supply</div>
-      </section>
-    </main>
-  );
+      <footer style={{borderTop:'1px solid #e2e8f0', background:'#ffffff', marginTop:'28px'}}>
+        <div style={{maxWidth:'1280px', margin:'0 auto', padding:'22px 20px', display:'flex', justifyContent:'space-between', flexWrap:'wrap', gap:'12px'}}>
+          <div style={{fontSize:'12px', color:'#64748b', fontWeight:600}}>© {new Date().getFullYear()} NiChAm Trade – DDP Lagos. Solar Batteries & Industrial Chemical.</div>
+          <div style={{fontSize:'11px', color:'#94a3b8', fontWeight:600}}>Built for WhatsApp RFQ • No phone display • Clean catalog</div>
+        </div>
+      </footer>
+    </div>
+  )
 }
