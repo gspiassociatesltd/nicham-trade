@@ -1,274 +1,165 @@
+'use client';
+import { useState } from 'react';
 
-"use client"
-import { useState, useEffect } from 'react'
+type ProductAdmin = {
+  id: string;
+  brand: string;
+  model: string;
+  image: string;
+  ddpPriceUSD: number;
+  costUSD: number;
+  supplier: string;
+  supplierPhone: string;
+  manufacturer: string;
+  moq: string;
+  location: string;
+};
 
-const INITIAL_COMPANIES = [
-  { id: 1, name: 'Motoma', whatsapp: '+971 52 580 3914', phone: '971525803914', type: 'Battery', category: 'Manufacturer', status: 'Active', products: 'M68PW, M69PW, M87PW, M88PW' },
-  { id: 2, name: 'Must Power', whatsapp: '+86 189 2434 3876', phone: '8618924343876', type: 'Inverter/Battery', category: 'Manufacturer', status: 'Active', products: 'PV18, PH11, LP16, HBP' },
-  { id: 3, name: 'Alibaba', whatsapp: '+86 153 7259 8293', phone: '8615372598293', type: 'General', category: 'Manufacturer', status: 'Active', products: 'Industrial Chemicals' },
-  { id: 4, name: 'Made in China', whatsapp: '+86 193 7268 3720', phone: '8619372683720', type: 'General', category: 'Manufacturer', status: 'Active', products: 'Chemicals & Solar' },
-  { id: 5, name: 'Made in China', whatsapp: '+86 181 1480 3584', phone: '8618114803584', type: 'General', category: 'Manufacturer', status: 'Active', products: 'Chemicals & Solar' },
-]
+const adminProducts: ProductAdmin[] = [
+  // MOTOMA
+  { id: 'M68PW', brand: 'MOTOMA', model: 'M68PW PRO 200Ah 25.6V 5.12kWh', image: '/products/motoma/M68PW_PRO.png', ddpPriceUSD: 1150, costUSD: 890, supplier: 'MOTOMA Dubai FZE', supplierPhone: '+971 52 580 3914', manufacturer: 'MOTOMA Dubai', moq: 'Mix Allowed', location: 'Dubai Warehouse' },
+  { id: 'M69PW', brand: 'MOTOMA', model: 'M69PW PRO 300Ah 25.6V 7.68kWh', image: '/products/motoma/M69PW_PRO.png', ddpPriceUSD: 1650, costUSD: 1280, supplier: 'MOTOMA Dubai FZE', supplierPhone: '+971 52 580 3914', manufacturer: 'MOTOMA Dubai', moq: 'Mix Allowed', location: 'Dubai' },
+  { id: 'M87PW', brand: 'MOTOMA', model: 'M87PW PRO 100Ah 51.2V 5.12kWh', image: '/products/motoma/M87PW_PRO.png', ddpPriceUSD: 1180, costUSD: 920, supplier: 'MOTOMA Dubai FZE', supplierPhone: '+971 52 580 3914', manufacturer: 'MOTOMA Dubai', moq: 'Mix Allowed', location: 'Dubai' },
+  { id: 'M88PW', brand: 'MOTOMA', model: 'M88PW PRO 200Ah 51.2V 10.24kWh', image: '/products/motoma/M88PW_PRO.png', ddpPriceUSD: 2250, costUSD: 1750, supplier: 'MOTOMA Dubai FZE', supplierPhone: '+971 52 580 3914', manufacturer: 'MOTOMA Dubai', moq: 'Mix Allowed', location: 'Dubai' },
+  { id: 'M90', brand: 'MOTOMA', model: 'M90 PRO 320Ah 51.2V 16.38kWh Rack', image: '/products/motoma/M90_PRO.png', ddpPriceUSD: 3450, costUSD: 2680, supplier: 'MOTOMA Dubai FZE', supplierPhone: '+971 52 580 3914', manufacturer: 'MOTOMA Dubai', moq: '2 Units', location: 'Dubai' },
+  { id: 'M91', brand: 'MOTOMA', model: 'M91 PRO 280Ah 51.2V 14.33kWh', image: '/products/motoma/M91_PRO.png', ddpPriceUSD: 2950, costUSD: 2290, supplier: 'MOTOMA Dubai FZE', supplierPhone: '+971 52 580 3914', manufacturer: 'MOTOMA Dubai', moq: 'Mix Allowed', location: 'Dubai' },
+  // MUST
+  { id: 'MUST-PV18-5248', brand: 'MUST', model: 'PV18-5248 PRO 5.2kW Hybrid', image: '/products/must/MUST_1_916x1268.png', ddpPriceUSD: 580, costUSD: 420, supplier: 'MUST Power Factory', supplierPhone: '+86 189 2434 3876', manufacturer: 'MUST Factory', moq: '5 Units', location: 'Guangdong, CN' },
+  { id: 'MUST-PV18-8048', brand: 'MUST', model: 'PV18-8048 PRO 8kW Hybrid', image: '/products/must/MUST_2_685x950.png', ddpPriceUSD: 780, costUSD: 560, supplier: 'MUST Power Factory', supplierPhone: '+86 189 2434 3876', manufacturer: 'MUST Factory', moq: '3 Units', location: 'Guangdong' },
+  { id: 'MUST-LP16-48200', brand: 'MUST', model: 'LP16-48200 200Ah 48V 10.24kWh', image: '/products/must/MUST_3_656x684.png', ddpPriceUSD: 1950, costUSD: 1480, supplier: 'MUST Power Factory', supplierPhone: '+86 189 2434 3876', manufacturer: 'MUST Factory', moq: 'Mix Allowed', location: 'Guangdong' },
+  { id: 'MUST-LP16-48100', brand: 'MUST', model: 'LP16-48100 100Ah 48V 5.12kWh', image: '/products/must/MUST_4_526x684.png', ddpPriceUSD: 1080, costUSD: 820, supplier: 'MUST Power Factory', supplierPhone: '+86 189 2434 3876', manufacturer: 'MUST Factory', moq: 'Mix Allowed', location: 'Guangdong' },
+  { id: 'MUST-PH1800-5K', brand: 'MUST', model: 'PH1800 Pro 5kW 48V Off-Grid', image: '/products/must/MUST_5_584x553.png', ddpPriceUSD: 520, costUSD: 380, supplier: 'MUST Power Factory', supplierPhone: '+86 189 2434 3876', manufacturer: 'MUST Factory', moq: '10 Units', location: 'Guangdong' },
+  { id: 'MUST-HM-3K', brand: 'MUST', model: 'HM 3kW 24V Hybrid', image: '/products/must/MUST_6_472x684.png', ddpPriceUSD: 310, costUSD: 220, supplier: 'MUST Power Factory', supplierPhone: '+86 189 2434 3876', manufacturer: 'MUST Factory', moq: '10 Units', location: 'Guangdong' },
+  { id: 'MUST-PV18-10148', brand: 'MUST', model: 'PV18-10148 10kW 48V 3-Phase', image: '/products/must/MUST_11_433x519.png', ddpPriceUSD: 1450, costUSD: 1050, supplier: 'MUST Power Factory', supplierPhone: '+86 189 2434 3876', manufacturer: 'MUST Factory', moq: '2 Units', location: 'Guangdong' },
+];
 
 export default function AdminPage() {
-  const [tab, setTab] = useState('rfqs')
-  const [companies, setCompanies] = useState(INITIAL_COMPANIES)
-  const [rfqs, setRfqs] = useState<any[]>([])
-  const [products, setProducts] = useState<any[]>([])
-  const [showAddCompany, setShowAddCompany] = useState(false)
-  const [showAddProduct, setShowAddProduct] = useState(false)
-  const [newCompany, setNewCompany] = useState({ name: '', whatsapp: '', type: 'General', category: 'Manufacturer', products: '' })
-  const [newProduct, setNewProduct] = useState({ name: '', cat: '', desc: '', price: '', moq: '', manufacturer: '', brand: 'CHEMICAL' })
-  const [toast, setToast] = useState('')
+  const [pass, setPass] = useState('');
+  const [authed, setAuthed] = useState(false);
 
-  useEffect(() => {
-    const savedRfqs = localStorage.getItem('nicham_rfqs')
-    if (savedRfqs) setRfqs(JSON.parse(savedRfqs))
-    const savedCompanies = localStorage.getItem('nicham_companies')
-    if (savedCompanies) setCompanies(JSON.parse(savedCompanies))
-    const savedProducts = localStorage.getItem('nicham_products')
-    if (savedProducts) setProducts(JSON.parse(savedProducts))
-  }, [])
+  const handleLogin = () => {
+    if (pass === 'nicham2026' || pass === 'admin') setAuthed(true);
+    else alert('Wrong password - Use nicham2026');
+  };
 
-  const saveToast = (msg: string) => {
-    setToast(msg)
-    setTimeout(() => setToast(''), 4000)
-  }
-
-  const handleForward = (rfq: any, company: any, service: string = 'Manufacturer') => {
-    const msg = `🔔 FORWARD RFQ – ${service}\n\nProduct: ${rfq.product}\nManufacturer: ${rfq.manufacturer}\nCategory: ${rfq.category}\nDesc: ${rfq.desc}\nPrice: ${rfq.price}\nMOQ: ${rfq.moq}\n\n📍 DDP Lagos, Nigeria – DDP to Premises Minna\n🏢 From: NiChAm Trade – Customer RFQ\nTime: ${rfq.time}\n\nPlease quote DDP Lagos with shipping & docs.\n\nForwarded via Admin Console – NiChAm Trade +234 705 047 7950`
-    saveToast(`Forwarding to ${company.name} ${company.whatsapp} – ${service}`)
-    window.open(`https://wa.me/${company.phone}?text=${encodeURIComponent(msg)}`, '_blank')
-    const updated = rfqs.map(r => r.id === rfq.id ? {...r, status: `Forwarded to ${company.name} – ${service}`} : r)
-    setRfqs(updated)
-    localStorage.setItem('nicham_rfqs', JSON.stringify(updated))
-  }
-
-  const handleLogistics = (rfq: any, type: string) => {
-    const msg = `${type.toUpperCase()} REQUEST – NiChAm Trade\n\nProduct: ${rfq.product}\nManufacturer: ${rfq.manufacturer}\nDDP: Lagos, Nigeria\n\nPlease provide ${type} quote for DDP shipment.\n\nNiChAm Trade Admin – +234 705 047 7950`
-    saveToast(`${type} request logged for ${rfq.product}`)
-    // In real app, this would go to logistics/insurance/inspector WhatsApp – For demo, open NiChAm Trade WhatsApp
-    window.open(`https://wa.me/2347050477950?text=${encodeURIComponent(msg)}`, '_blank')
-  }
-
-  const addCompany = () => {
-    if (!newCompany.name || !newCompany.whatsapp) return saveToast('Name and WhatsApp required')
-    const phone = newCompany.whatsapp.replace(/[^0-9]/g, '')
-    const comp = { id: Date.now(), name: newCompany.name, whatsapp: newCompany.whatsapp, phone, type: newCompany.type, category: newCompany.category, status: 'Active', products: newCompany.products }
-    const updated = [...companies, comp]
-    setCompanies(updated)
-    localStorage.setItem('nicham_companies', JSON.stringify(updated))
-    setNewCompany({ name: '', whatsapp: '', type: 'General', category: 'Manufacturer', products: '' })
-    setShowAddCompany(false)
-    saveToast(`Company ${comp.name} onboarded – ${comp.whatsapp}`)
-  }
-
-  const addProduct = () => {
-    if (!newProduct.name) return saveToast('Product name required')
-    const prod = { id: Date.now(), ...newProduct, time: new Date().toLocaleString() }
-    const updated = [...products, prod]
-    setProducts(updated)
-    localStorage.setItem('nicham_products', JSON.stringify(updated))
-    setNewProduct({ name: '', cat: '', desc: '', price: '', moq: '', manufacturer: '', brand: 'CHEMICAL' })
-    setShowAddProduct(false)
-    saveToast(`Product ${prod.name} listed – ${prod.brand}`)
+  if (!authed) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-900 p-4">
+        <div className="bg-white rounded-2xl p-8 w-full max-w-sm">
+          <h1 className="font-black text-xl">NiChAm Admin</h1>
+          <p className="text-xs text-slate-500 mt-1">Supplier numbers hidden from customers. Login to view.</p>
+          <input
+            type="password"
+            placeholder="Password: nicham2026"
+            value={pass}
+            onChange={e => setPass(e.target.value)}
+            className="mt-4 w-full border rounded-xl px-4 py-2.5 text-sm"
+          />
+          <button onClick={handleLogin} className="mt-3 w-full bg-slate-900 text-white py-2.5 rounded-xl font-bold text-sm">Unlock Admin</button>
+          <p className="mt-3 text-[10px] text-slate-400">Customer RFQ goes to +234 705 047 7950. This page shows real supplier contacts for fulfillment.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-        * { font-family: 'Inter', sans-serif; }
-      `}</style>
+    <div className="min-h-screen bg-slate-50">
+      <header className="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+        <div>
+          <h1 className="font-black">NiChAm Trade – Admin Panel</h1>
+          <p className="text-xs text-slate-400">MOTOMA Dubai + MUST Factory – Supplier View – Customer RFQ → +234 705 047 7950</p>
+        </div>
+        <button onClick={() => setAuthed(false)} className="text-xs bg-white text-black px-3 py-1.5 rounded-full">Logout</button>
+      </header>
 
-      <div style={{minHeight: '100vh', background: '#f8fafc', display: 'flex'}}>
-        {/* SIDEBAR */}
-        <div style={{width: '240px', background: '#0f172a', color: 'white', padding: '20px', position: 'fixed', height: '100vh', overflowY: 'auto'}}>
-          <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '28px'}}>
-            <div style={{width: '36px', height: '36px', background: '#f59e0b', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>🏭</div>
-            <div>
-              <div style={{fontWeight: 800, fontSize: '14px'}}>NiChAm Trade</div>
-              <div style={{fontSize: '11px', color: '#94a3b8'}}>Admin Console</div>
-            </div>
+      <div className="max-w-7xl mx-auto p-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-white border rounded-xl p-4">
+            <div className="text-xs text-slate-500">Customer Facing Number</div>
+            <div className="font-black text-emerald-600">+234 705 047 7950</div>
+            <div className="text-[10px]">All RFQ via WhatsApp – You forward to supplier</div>
           </div>
-
-          {[
-            {key: 'rfqs', label: 'RFQs', icon: '📩', count: rfqs.length},
-            {key: 'companies', label: 'Companies', icon: '🏢', count: companies.length},
-            {key: 'products', label: 'Products', icon: '📦', count: products.length},
-            {key: 'logistics', label: 'Logistics', icon: '🚚'},
-            {key: 'insurance', label: 'Insurance', icon: '🛡️'},
-            {key: 'inspector', label: 'Inspector', icon: '🔍'},
-          ].map(item => (
-            <button key={item.key} onClick={() => setTab(item.key)} style={{
-              width: '100%', textAlign: 'left', padding: '10px 12px', borderRadius: '8px', border: 'none',
-              background: tab === item.key ? '#1e293b' : 'transparent', color: tab === item.key ? 'white' : '#94a3b8',
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', marginBottom: '4px', fontWeight: 600, fontSize: '13px'
-            }}>
-              <span>{item.icon} {item.label}</span>
-              {item.count !== undefined && <span style={{background: '#f59e0b', color: 'black', padding: '2px 6px', borderRadius: '10px', fontSize: '10px'}}>{item.count}</span>}
-            </button>
-          ))}
-
-          <div style={{marginTop: '24px', padding: '12px', background: '#1e293b', borderRadius: '10px'}}>
-            <div style={{fontSize: '11px', color: '#94a3b8', fontWeight: 700}}>All RFQs to:</div>
-            <div style={{fontSize: '13px', fontWeight: 800, color: '#f59e0b', marginTop: '4px'}}>NiChAm Trade</div>
-            <div style={{fontSize: '12px', fontWeight: 700}}>+234 705 047 7950</div>
-            <div style={{fontSize: '10px', color: '#64748b', marginTop: '6px'}}>Supplier numbers hidden from customer app – Only visible here for forwarding</div>
+          <div className="bg-white border rounded-xl p-4">
+            <div className="text-xs text-slate-500">MOTOMA Supplier</div>
+            <div className="font-bold">+971 52 580 3914</div>
+            <div className="text-[10px]">MOTOMA Dubai FZE – Manufacturer: MOTOMA Dubai</div>
           </div>
-
-          <a href="/" style={{display: 'block', marginTop: '20px', textAlign: 'center', padding: '10px', background: '#f59e0b', color: 'black', borderRadius: '8px', fontWeight: 800, fontSize: '12px', textDecoration: 'none'}}>← Customer View</a>
+          <div className="bg-white border rounded-xl p-4">
+            <div className="text-xs text-slate-500">MUST Supplier</div>
+            <div className="font-bold">+86 189 2434 3876</div>
+            <div className="text-[10px]">MUST Factory Guangdong – Manufacturer: MUST Factory</div>
+          </div>
         </div>
 
-        {/* MAIN */}
-        <div style={{marginLeft: '240px', flex: 1, padding: '24px'}}>
-          {toast && <div style={{position: 'fixed', top: '18px', right: '18px', background: '#16a34a', color: 'white', padding: '12px 18px', borderRadius: '10px', zIndex: 9999, fontWeight: 700, fontSize: '12px'}}>{toast}</div>}
+        <div className="bg-white rounded-2xl border overflow-hidden">
+          <div className="p-4 border-b flex justify-between items-center">
+            <h2 className="font-bold">20 Products – Cost vs DDP Margin</h2>
+            <span className="text-xs bg-emerald-50 text-emerald-700 px-2 py-1 rounded-full">{adminProducts.length} items (sample)</span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead className="bg-slate-100 text-[10px] uppercase">
+                <tr>
+                  <th className="p-3 text-left">Product</th>
+                  <th className="p-3">Brand</th>
+                  <th className="p-3">DDP Lagos</th>
+                  <th className="p-3">Cost</th>
+                  <th className="p-3">Margin</th>
+                  <th className="p-3">Supplier</th>
+                  <th className="p-3">MOQ</th>
+                </tr>
+              </thead>
+              <tbody>
+                {adminProducts.map(p => {
+                  const margin = p.ddpPriceUSD - p.costUSD;
+                  const pct = Math.round((margin / p.costUSD) * 100);
+                  return (
+                    <tr key={p.id} className="border-t hover:bg-slate-50">
+                      <td className="p-3 flex items-center gap-2">
+                        <img src={p.image} alt="" className="w-10 h-10 object-contain bg-white border rounded" />
+                        <div>
+                          <div className="font-bold line-clamp-1">{p.model}</div>
+                          <div className="text-[10px] text-slate-500">{p.manufacturer} – {p.location}</div>
+                        </div>
+                      </td>
+                      <td className="p-3"><span className={`px-2 py-1 rounded-full font-bold ${p.brand==='MOTOMA'?'bg-emerald-600 text-white':'bg-yellow-400'}`}>{p.brand}</span></td>
+                      <td className="p-3 font-bold">${p.ddpPriceUSD}</td>
+                      <td className="p-3">${p.costUSD}</td>
+                      <td className="p-3"><span className="bg-green-50 text-green-700 px-2 py-1 rounded-full font-bold">+${margin} ({pct}%)</span></td>
+                      <td className="p-3">
+                        <div className="font-bold">{p.supplier}</div>
+                        <div className="text-emerald-700">{p.supplierPhone}</div>
+                      </td>
+                      <td className="p-3">{p.moq}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div className="p-4 bg-yellow-50 text-[11px] text-yellow-800 border-t">
+            ⚠️ IMPORTANT: Customer app at / never shows supplierPhone. Only this /admin page shows it. RFQ flow: Customer WhatsApp → +234 705 047 7950 (you) → you forward to +971 52 580 3914 (MOTOMA) or +86 189 2434 3876 (MUST) with Manufacturer tag.
+          </div>
+        </div>
 
-          {tab === 'rfqs' && (
-            <div>
-              <h1 style={{fontSize: '22px', fontWeight: 800}}>RFQs – DDP Lagos, Nigeria – Forward to Manufacturer</h1>
-              <p style={{color: '#64748b', fontSize: '13px', marginTop: '4px'}}>Customer RFQs come to NiChAm Trade +234 705 047 7950 – Admin forwards to right manufacturer with manufacturer name (except chemical) + Logistics/Insurance/Inspector</p>
-
-              <div style={{marginTop: '18px', background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)'}}>
-                {rfqs.length === 0 ? (
-                  <div style={{textAlign: 'center', padding: '40px', color: '#94a3b8'}}>
-                    <div style={{fontSize: '32px'}}>📩</div>
-                    <div style={{fontWeight: 700, marginTop: '8px'}}>No RFQs yet</div>
-                    <div style={{fontSize: '12px', marginTop: '4px'}}>When customers click Request for Quote on main site, RFQs appear here – Then you forward to Motoma, Must Power, Alibaba, Made in China etc</div>
-                  </div>
-                ) : (
-                  <div style={{overflowX: 'auto'}}>
-                    <table style={{width: '100%', fontSize: '12px', borderCollapse: 'collapse'}}>
-                      <thead>
-                        <tr style={{textAlign: 'left', borderBottom: '2px solid #f1f5f9', color: '#64748b', fontSize: '11px', textTransform: 'uppercase'}}>
-                          <th style={{padding: '8px'}}>Time</th>
-                          <th style={{padding: '8px'}}>Product</th>
-                          <th style={{padding: '8px'}}>Manufacturer</th>
-                          <th style={{padding: '8px'}}>Status</th>
-                          <th style={{padding: '8px'}}>Forward</th>
-                          <th style={{padding: '8px'}}>Services</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {rfqs.map(r => (
-                          <tr key={r.id} style={{borderBottom: '1px solid #f8fafc'}}>
-                            <td style={{padding: '10px', color: '#64748b', fontSize: '11px'}}>{r.time}</td>
-                            <td style={{padding: '10px', fontWeight: 700}}>{r.product}<div style={{fontSize: '10px', color: '#94a3b8', fontWeight: 400}}>{r.desc}</div></td>
-                            <td style={{padding: '10px'}}><span style={{background: r.brand === 'CHEMICAL' ? '#eef2ff' : '#fffbeb', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, fontSize: '11px'}}>{r.manufacturer}</span></td>
-                            <td style={{padding: '10px'}}><span style={{background: r.status.includes('Forwarded') ? '#dcfce7' : '#fef3c7', color: r.status.includes('Forwarded') ? '#166534' : '#92400e', padding: '3px 8px', borderRadius: '12px', fontSize: '11px', fontWeight: 700}}>{r.status}</span></td>
-                            <td style={{padding: '10px'}}>
-                              <select onChange={e => {
-                                const comp = companies.find(c => c.id === parseInt(e.target.value))
-                                if (comp) handleForward(r, comp)
-                              }} style={{padding: '6px', borderRadius: '6px', border: '1px solid #e2e8f0', fontSize: '11px'}}>
-                                <option>Forward to Manufacturer...</option>
-                                {companies.map(c => <option key={c.id} value={c.id}>{c.name} – {c.whatsapp}</option>)}
-                              </select>
-                            </td>
-                            <td style={{padding: '10px', display: 'flex', gap: '4px'}}>
-                              <button onClick={() => handleLogistics(r, 'Logistics')} style={{padding: '4px 8px', borderRadius: '6px', border: 'none', background: '#0f172a', color: 'white', fontSize: '10px', cursor: 'pointer'}}>🚚 Logistics</button>
-                              <button onClick={() => handleLogistics(r, 'Insurance')} style={{padding: '4px 8px', borderRadius: '6px', border: 'none', background: '#1e40af', color: 'white', fontSize: '10px', cursor: 'pointer'}}>🛡️ Insurance</button>
-                              <button onClick={() => handleLogistics(r, 'Inspector')} style={{padding: '4px 8px', borderRadius: '6px', border: 'none', background: '#7c3aed', color: 'white', fontSize: '10px', cursor: 'pointer'}}>🔍 Inspector</button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {tab === 'companies' && (
-            <div>
-              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <h1 style={{fontSize: '22px', fontWeight: 800}}>Companies – Onboard More Companies</h1>
-                <button onClick={() => setShowAddCompany(true)} style={{padding: '10px 16px', background: '#0f172a', color: 'white', borderRadius: '8px', border: 'none', fontWeight: 700, fontSize: '12px', cursor: 'pointer'}}>+ Add Company</button>
-              </div>
-              <p style={{color: '#64748b', fontSize: '13px', marginTop: '4px'}}>Manufacturer numbers hidden from customer app – Only visible here – Forward RFQ to right manufacturer – Admin can onboard more companies</p>
-
-              <div style={{marginTop: '16px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '14px'}}>
-                {companies.map(c => (
-                  <div key={c.id} style={{background: 'white', borderRadius: '14px', padding: '16px', border: '1px solid #f1f5f9', boxShadow: '0 2px 8px rgba(0,0,0,0.04)'}}>
-                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                      <div style={{fontWeight: 800, fontSize: '14px'}}>{c.name}</div>
-                      <span style={{fontSize: '10px', background: '#dcfce7', color: '#166534', padding: '3px 8px', borderRadius: '10px', fontWeight: 700}}>{c.status}</span>
-                    </div>
-                    <div style={{fontSize: '12px', color: '#0f172a', fontWeight: 700, marginTop: '6px'}}>📱 {c.whatsapp}</div>
-                    <div style={{fontSize: '11px', color: '#64748b', marginTop: '4px'}}>{c.type} – {c.category}</div>
-                    <div style={{fontSize: '11px', color: '#94a3b8', marginTop: '6px'}}>{c.products}</div>
-                    <button onClick={() => window.open(`https://wa.me/${c.phone}?text=${encodeURIComponent(`Hi ${c.name} – From NiChAm Trade Admin – ${c.products}`)}`, '_blank')} style={{marginTop: '10px', width: '100%', padding: '8px', background: '#25D366', color: 'white', borderRadius: '8px', border: 'none', fontWeight: 700, fontSize: '12px', cursor: 'pointer'}}>WhatsApp {c.name}</button>
-                  </div>
-                ))}
-              </div>
-
-              {showAddCompany && (
-                <div style={{position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999}}>
-                  <div style={{background: 'white', borderRadius: '16px', padding: '20px', width: '400px'}}>
-                    <h3 style={{fontWeight: 800, fontSize: '16px'}}>Onboard New Company</h3>
-                    <input placeholder="Company Name (e.g., New Chemical Co)" value={newCompany.name} onChange={e => setNewCompany({...newCompany, name: e.target.value})} style={{width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: '12px', fontSize: '13px'}} />
-                    <input placeholder="WhatsApp (e.g., +86 123 4567 8901)" value={newCompany.whatsapp} onChange={e => setNewCompany({...newCompany, whatsapp: e.target.value})} style={{width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: '8px', fontSize: '13px'}} />
-                    <input placeholder="Type (Battery/Inverter/Chemical/General)" value={newCompany.type} onChange={e => setNewCompany({...newCompany, type: e.target.value})} style={{width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: '8px', fontSize: '13px'}} />
-                    <input placeholder="Products (e.g., Caustic Soda, PAC)" value={newCompany.products} onChange={e => setNewCompany({...newCompany, products: e.target.value})} style={{width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: '8px', fontSize: '13px'}} />
-                    <div style={{display: 'flex', gap: '8px', marginTop: '14px'}}>
-                      <button onClick={addCompany} style={{flex: 1, padding: '10px', background: '#0f172a', color: 'white', borderRadius: '8px', border: 'none', fontWeight: 700, cursor: 'pointer'}}>Add Company</button>
-                      <button onClick={() => setShowAddCompany(false)} style={{flex: 1, padding: '10px', background: '#f1f5f9', borderRadius: '8px', border: 'none', fontWeight: 700, cursor: 'pointer'}}>Cancel</button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {tab === 'products' && (
-            <div>
-              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <h1 style={{fontSize: '22px', fontWeight: 800}}>Products – List More Items</h1>
-                <button onClick={() => setShowAddProduct(true)} style={{padding: '10px 16px', background: '#0f172a', color: 'white', borderRadius: '8px', border: 'none', fontWeight: 700, fontSize: '12px', cursor: 'pointer'}}>+ List More Item</button>
-              </div>
-              <p style={{color: '#64748b', fontSize: '13px', marginTop: '4px'}}>Admin can list more chemical and solar items – They appear on customer app – RFQ goes to +234 705 047 7950 with manufacturer name except chemical</p>
-              <div style={{marginTop: '16px', background: 'white', borderRadius: '14px', padding: '16px'}}>
-                {products.length === 0 ? <div style={{textAlign: 'center', padding: '30px', color: '#94a3b8', fontSize: '13px'}}>No custom products yet – Click + List More Item to add industrial chemicals or solar models – They will show on customer app with beautiful cards</div> : products.map(p => <div key={p.id} style={{padding: '10px', borderBottom: '1px solid #f1f5f9', fontSize: '13px'}}><strong>{p.name}</strong> – {p.cat} – {p.manufacturer || 'Chemical (no manufacturer)'} – {p.price}</div>)}
-              </div>
-
-              {showAddProduct && (
-                <div style={{position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999}}>
-                  <div style={{background: 'white', borderRadius: '16px', padding: '20px', width: '400px'}}>
-                    <h3 style={{fontWeight: 800, fontSize: '16px'}}>List More Item</h3>
-                    <input placeholder="Product Name" value={newProduct.name} onChange={e => setNewProduct({...newProduct, name: e.target.value})} style={{width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: '12px', fontSize: '13px'}} />
-                    <input placeholder="Category (Industrial Chemical / Solar)" value={newProduct.cat} onChange={e => setNewProduct({...newProduct, cat: e.target.value})} style={{width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: '8px', fontSize: '13px'}} />
-                    <input placeholder="Manufacturer (leave empty for chemical)" value={newProduct.manufacturer} onChange={e => setNewProduct({...newProduct, manufacturer: e.target.value})} style={{width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: '8px', fontSize: '13px'}} />
-                    <input placeholder="Description" value={newProduct.desc} onChange={e => setNewProduct({...newProduct, desc: e.target.value})} style={{width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: '8px', fontSize: '13px'}} />
-                    <input placeholder="Price (e.g., $420/400/380/MT)" value={newProduct.price} onChange={e => setNewProduct({...newProduct, price: e.target.value})} style={{width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: '8px', fontSize: '13px'}} />
-                    <div style={{display: 'flex', gap: '8px', marginTop: '14px'}}>
-                      <button onClick={addProduct} style={{flex: 1, padding: '10px', background: '#0f172a', color: 'white', borderRadius: '8px', border: 'none', fontWeight: 700, cursor: 'pointer'}}>List Item</button>
-                      <button onClick={() => setShowAddProduct(false)} style={{flex: 1, padding: '10px', background: '#f1f5f9', borderRadius: '8px', border: 'none', fontWeight: 700, cursor: 'pointer'}}>Cancel</button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {(tab === 'logistics' || tab === 'insurance' || tab === 'inspector') && (
-            <div>
-              <h1 style={{fontSize: '22px', fontWeight: 800, textTransform: 'capitalize'}}>{tab} – DDP Lagos Coordination</h1>
-              <div style={{marginTop: '16px', background: 'white', borderRadius: '14px', padding: '24px', textAlign: 'center'}}>
-                <div style={{fontSize: '36px'}}>{tab === 'logistics' ? '🚚' : tab === 'insurance' ? '🛡️' : '🔍'}</div>
-                <div style={{fontWeight: 800, marginTop: '12px'}}>{tab.charAt(0).toUpperCase() + tab.slice(1)} Management</div>
-                <div style={{fontSize: '13px', color: '#64748b', marginTop: '6px', maxWidth: '500px', margin: '6px auto'}}>
-                  {tab === 'logistics' ? 'Coordinate DDP shipping from manufacturer to Lagos – Forwarding to Motoma, Must Power, Alibaba, Made in China – Track containers, ETA, customs' : 
-                   tab === 'insurance' ? 'Arrange cargo insurance for DDP Lagos shipments – Cover chemicals and solar – Get quotes from insurers' :
-                   'Arrange pre-shipment inspection – Quality check for chemicals and solar – Inspector reports – SGS, Bureau Veritas'}
-                </div>
-                <button onClick={() => window.open(`https://wa.me/2347050477950?text=${encodeURIComponent(`${tab.toUpperCase()} – NiChAm Trade – DDP Lagos – Need ${tab} coordination`)}`, '_blank')} style={{marginTop: '16px', padding: '10px 20px', background: '#0f172a', color: 'white', borderRadius: '8px', border: 'none', fontWeight: 700, cursor: 'pointer'}}>Manage {tab}</button>
-              </div>
-            </div>
-          )}
+        <div className="mt-6 grid md:grid-cols-2 gap-4">
+          <div className="bg-slate-900 text-white rounded-2xl p-5">
+            <h3 className="font-bold">How RFQ Works (As Per Your Instruction)</h3>
+            <ol className="mt-3 text-xs space-y-2 list-decimal pl-4 text-slate-300">
+              <li>Customer clicks RFQ → WhatsApp opens to <b className="text-white">+234 705 047 7950</b></li>
+              <li>Message includes Model + Manufacturer (MOTOMA Dubai / MUST Factory)</li>
+              <li>You receive in Nigeria, you check stock/admin panel for supplier cost</li>
+              <li>You forward RFQ to supplier: MOTOMA +971 52 580 3914 or MUST +86 189 2434 3876</li>
+              <li>Supplier sends proforma, you add margin, send to customer as DDP Lagos</li>
+            </ol>
+          </div>
+          <div className="bg-white border rounded-2xl p-5">
+            <h3 className="font-bold">Permanent Image Storage</h3>
+            <p className="text-xs text-slate-600 mt-2">Images you uploaded via <b>Upload files</b> to <code>public/products/motoma/</code> and <code>public/products/must/</code> are permanent in GitHub – never lost until admin replaces. Your earlier 7 files were 0-byte because you used Create file, not Upload.</p>
+            <div className="mt-3 text-[11px] bg-slate-100 p-3 rounded-xl font-mono">public/products/motoma/M68PW_PRO.png<br/>public/products/motoma/M69PW_PRO.png<br/>public/products/motoma/M87PW_PRO.png<br/>public/products/motoma/M88PW_PRO.png<br/>public/products/motoma/M90_PRO.png<br/>public/products/motoma/M91_PRO.png</div>
+          </div>
         </div>
       </div>
-    </>
-  )
+    </div>
+  );
 }
-
