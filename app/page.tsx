@@ -10,7 +10,6 @@ type Product = {
   voltage: string;
   energy: string;
   cycles: string;
-  features: string[];
   manufacturer: string;
 };
 
@@ -24,20 +23,20 @@ type Chemical = {
 };
 
 const solarProducts: Product[] = [
-  { id: 'M68PW', brand: 'MOTOMA', model: 'M68PW PRO - 200Ah 25.6V', image: '/products/motoma/M68PW_PRO.png', capacity: '200Ah', voltage: '25.6V', energy: '5.12kWh', cycles: '8000 Cycles', features: ['Grade A+ LiFePO4','SOC Display','WiFi Monitoring'], manufacturer: 'MOTOMA Dubai' },
-  { id: 'M69PW', brand: 'MOTOMA', model: 'M69PW PRO - 300Ah 25.6V', image: '/products/motoma/M69PW_PRO.png', capacity: '300Ah', voltage: '25.6V', energy: '7.68kWh', cycles: '8000 Cycles', features: ['Grade A+ Cells','Touch Screen','7Y Warranty'], manufacturer: 'MOTOMA Dubai' },
-  { id: 'M87PW', brand: 'MOTOMA', model: 'M87PW PRO - 100Ah 51.2V', image: '/products/motoma/M87PW_PRO.png', capacity: '100Ah', voltage: '51.2V', energy: '5.12kWh', cycles: '8000 Cycles', features: ['Wall Mount','Fresh LiFePO4','60°C Resilience'], manufacturer: 'MOTOMA Dubai' },
-  { id: 'M88PW', brand: 'MOTOMA', model: 'M88PW PRO - 200Ah 51.2V', image: '/products/motoma/M88PW_PRO.png', capacity: '200Ah', voltage: '51.2V', energy: '10.24kWh', cycles: '8000 Cycles', features: ['10kWh Power Wall','150A Continuous','WiFi + Touch'], manufacturer: 'MOTOMA Dubai' },
-  { id: 'M90', brand: 'MOTOMA', model: 'M90 PRO - 320Ah 51.2V Rack', image: '/products/motoma/M90_PRO.png', capacity: '320Ah', voltage: '51.2V', energy: '16.38kWh', cycles: '8000 Cycles', features: ['19" Rack Mount','Commercial','200A Peak'], manufacturer: 'MOTOMA Dubai' },
-  { id: 'M91', brand: 'MOTOMA', model: 'M91 PRO - 280Ah 51.2V', image: '/products/motoma/M91_PRO.png', capacity: '280Ah', voltage: '51.2V', energy: '14.33kWh', cycles: '8000 Cycles', features: ['High Capacity','Lifetime Support','Smart BMS'], manufacturer: 'MOTOMA Dubai' },
-  { id: 'MUST-5248', brand: 'MUST', model: 'PV18-5248 PRO 5.2kW Hybrid', image: '/products/must/MUST_1_916x1268.png', capacity: '5.2kW', voltage: '48V', energy: 'MPPT 100A', cycles: 'Pure Sine', features: ['WiFi Monitoring','Parallel 9','LiFePO4 Ready'], manufacturer: 'MUST Factory' },
-  { id: 'MUST-8048', brand: 'MUST', model: 'PV18-8048 PRO 8kW Hybrid', image: '/products/must/MUST_2_685x950.png', capacity: '8kW', voltage: '48V', energy: 'MPPT 120A', cycles: 'On/Off Grid', features: ['Dual MPPT','High PV 500V','BMS Comm'], manufacturer: 'MUST Factory' },
-  { id: 'MUST-48200', brand: 'MUST', model: 'LP16-48200 200Ah 48V Wall', image: '/products/must/MUST_3_656x684.png', capacity: '200Ah', voltage: '48V', energy: '10.24kWh', cycles: '6000 Cycles', features: ['Wall Mount','Grade A Cells','6000 Cycles'], manufacturer: 'MUST Factory' },
-  { id: 'MUST-48100', brand: 'MUST', model: 'LP16-48100 100Ah 48V', image: '/products/must/MUST_4_526x684.png', capacity: '100Ah', voltage: '48V', energy: '5.12kWh', cycles: '6000 Cycles', features: ['Compact Wall','5kWh Module','Parallel 16'], manufacturer: 'MUST Factory' },
-  { id: 'MUST-5K', brand: 'MUST', model: 'PH1800 Pro 5kW 48V', image: '/products/must/MUST_5_584x553.png', capacity: '5kW', voltage: '48V', energy: 'MPPT 80A', cycles: 'Transformer', features: ['Heavy Duty','Pure Sine','LCD Display'], manufacturer: 'MUST Factory' },
-  { id: 'MUST-3K', brand: 'MUST', model: 'HM 3kW 24V Hybrid', image: '/products/must/MUST_6_472x684.png', capacity: '3kW', voltage: '24V', energy: 'MPPT 60A', cycles: 'Hybrid', features: ['Best Seller','WiFi Opt','Lithium Ready'], manufacturer: 'MUST Factory' },
-  { id: 'MUST-24200', brand: 'MUST', model: 'LP16-24200 200Ah 24V', image: '/products/must/MUST_10_446x553.png', capacity: '200Ah', voltage: '25.6V', energy: '5.12kWh', cycles: '6000 Cycles', features: ['24V Large','5kWh','Heavy Duty BMS'], manufacturer: 'MUST Factory' },
-  { id: 'MUST-10148', brand: 'MUST', model: 'PV18-10148 10kW 48V 3-Phase', image: '/products/must/MUST_11_433x519.png', capacity: '10kW', voltage: '48V', energy: 'MPPT 2x100A', cycles: '3 Phase', features: ['10kW Hybrid','Dual MPPT','Parallel 9'], manufacturer: 'MUST Factory' },
+  { id: 'M68PW', brand: 'MOTOMA', model: 'M68PW PRO - 200Ah 25.6V', image: '/products/motoma/M68PW_PRO.png', capacity: '200Ah', voltage: '25.6V', energy: '5.12kWh', cycles: '8000 Cycles', manufacturer: 'MOTOMA Dubai' },
+  { id: 'M69PW', brand: 'MOTOMA', model: 'M69PW PRO - 300Ah 25.6V', image: '/products/motoma/M69PW_PRO.png', capacity: '300Ah', voltage: '25.6V', energy: '7.68kWh', cycles: '8000 Cycles', manufacturer: 'MOTOMA Dubai' },
+  { id: 'M87PW', brand: 'MOTOMA', model: 'M87PW PRO - 100Ah 51.2V', image: '/products/motoma/M87PW_PRO.png', capacity: '100Ah', voltage: '51.2V', energy: '5.12kWh', cycles: '8000 Cycles', manufacturer: 'MOTOMA Dubai' },
+  { id: 'M88PW', brand: 'MOTOMA', model: 'M88PW PRO - 200Ah 51.2V', image: '/products/motoma/M88PW_PRO.png', capacity: '200Ah', voltage: '51.2V', energy: '10.24kWh', cycles: '8000 Cycles', manufacturer: 'MOTOMA Dubai' },
+  { id: 'M90', brand: 'MOTOMA', model: 'M90 PRO - 320Ah 51.2V Rack', image: '/products/motoma/M90_PRO.png', capacity: '320Ah', voltage: '51.2V', energy: '16.38kWh', cycles: '8000 Cycles', manufacturer: 'MOTOMA Dubai' },
+  { id: 'M91', brand: 'MOTOMA', model: 'M91 PRO - 280Ah 51.2V', image: '/products/motoma/M91_PRO.png', capacity: '280Ah', voltage: '51.2V', energy: '14.33kWh', cycles: '8000 Cycles', manufacturer: 'MOTOMA Dubai' },
+  { id: 'MUST-5248', brand: 'MUST', model: 'PV18-5248 PRO 5.2kW Hybrid', image: '/products/must/MUST_1_916x1268.png', capacity: '5.2kW', voltage: '48V', energy: 'MPPT 100A', cycles: 'Pure Sine', manufacturer: 'MUST Factory' },
+  { id: 'MUST-8048', brand: 'MUST', model: 'PV18-8048 PRO 8kW Hybrid', image: '/products/must/MUST_2_685x950.png', capacity: '8kW', voltage: '48V', energy: 'MPPT 120A', cycles: 'On/Off Grid', manufacturer: 'MUST Factory' },
+  { id: 'MUST-48200', brand: 'MUST', model: 'LP16-48200 200Ah 48V Wall', image: '/products/must/MUST_3_656x684.png', capacity: '200Ah', voltage: '48V', energy: '10.24kWh', cycles: '6000 Cycles', manufacturer: 'MUST Factory' },
+  { id: 'MUST-48100', brand: 'MUST', model: 'LP16-48100 100Ah 48V', image: '/products/must/MUST_4_526x684.png', capacity: '100Ah', voltage: '48V', energy: '5.12kWh', cycles: '6000 Cycles', manufacturer: 'MUST Factory' },
+  { id: 'MUST-5K', brand: 'MUST', model: 'PH1800 Pro 5kW 48V', image: '/products/must/MUST_5_584x553.png', capacity: '5kW', voltage: '48V', energy: 'MPPT 80A', cycles: 'Transformer', manufacturer: 'MUST Factory' },
+  { id: 'MUST-3K', brand: 'MUST', model: 'HM 3kW 24V Hybrid', image: '/products/must/MUST_6_472x684.png', capacity: '3kW', voltage: '24V', energy: 'MPPT 60A', cycles: 'Hybrid', manufacturer: 'MUST Factory' },
+  { id: 'MUST-24200', brand: 'MUST', model: 'LP16-24200 200Ah 24V', image: '/products/must/MUST_10_446x553.png', capacity: '200Ah', voltage: '25.6V', energy: '5.12kWh', cycles: '6000 Cycles', manufacturer: 'MUST Factory' },
+  { id: 'MUST-10148', brand: 'MUST', model: 'PV18-10148 10kW 48V 3-Phase', image: '/products/must/MUST_11_433x519.png', capacity: '10kW', voltage: '48V', energy: 'MPPT 2x100A', cycles: '3 Phase', manufacturer: 'MUST Factory' },
 ];
 
 const chemicals: Chemical[] = [
@@ -72,7 +71,6 @@ export default function Page() {
     if (filter === 'ALL' || filter === 'CHEMICALS') return chemicals;
     return [];
   };
-
   const solarToShow = getSolarToShow();
   const chemToShow = getChemToShow();
 
@@ -90,57 +88,59 @@ export default function Page() {
       <style>{`
         *{box-sizing:border-box} body{margin:0}
         .container{max-width:1280px; margin:0 auto; padding:0 20px}
-        .header{position:sticky; top:0; z-index:50; background:rgba(255,255,255,0.95); backdrop-filter:blur(12px); border-bottom:1px solid #e2e8f0; padding:14px 0}
-        .logo{display:flex; align-items:center; gap:12px}
-        .logo-icon{width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,#059669,#eab308); display:flex; align-items:center; justify-content:center; color:white; font-weight:900; font-size:22px}
+        .header{position:sticky; top:0; z-index:50; background:rgba(255,255,255,0.96); backdrop-filter:blur(12px); border-bottom:1px solid #e2e8f0; padding:0}
+        .header-inner{display:flex; justify-content:center; align-items:center; flex-direction:column; padding:18px 0 14px; text-align:center}
+        .logo-main{display:flex; flex-direction:column; align-items:center; gap:8px}
+        .logo-icon{width:64px; height:64px; border-radius:16px; background:linear-gradient(135deg,#059669,#10b981,#eab308); display:flex; align-items:center; justify-content:center; color:white; font-weight:900; font-size:32px; box-shadow:0 8px 24px rgba(5,150,105,0.35)}
+        .brand-name{font-size:42px; font-weight:900; letter-spacing:-1.5px; color:#0f172a; line-height:1; margin-top:6px}
+        .brand-sub{font-size:13px; font-weight:800; color:#059669; letter-spacing:1px; text-transform:uppercase; margin-top:4px}
         .badge{display:inline-flex; background:#ecfdf5; color:#047857; padding:6px 12px; border-radius:999px; font-size:12px; font-weight:800}
-        .hero{padding:40px 0 20px; text-align:center; max-width:900px; margin:0 auto}
-        .hero h1{font-size:42px; line-height:1.05; font-weight:900; margin:14px 0; color:#0f172a}
-        .btn{padding:12px 26px; border-radius:12px; font-weight:800; font-size:14px; border:none; cursor:pointer; transition:all 0.2s; letter-spacing:0.2px}
+        .hero{padding:28px 0 18px; text-align:center; max-width:900px; margin:0 auto}
+        .hero-subtitle{font-size:18px; line-height:1.4; font-weight:600; color:#334155; margin:12px auto; max-width:720px}
+        .hero-desc{color:#64748b; font-size:14px; line-height:1.5; margin-top:8px}
+        .btn{padding:12px 26px; border-radius:12px; font-weight:800; font-size:14px; border:none; cursor:pointer; transition:all 0.2s}
         .btn:hover{transform:translateY(-1px); box-shadow:0 6px 18px rgba(0,0,0,0.12)}
         .btn-primary{background:#059669; color:white; box-shadow:0 4px 14px rgba(5,150,105,0.35)}
         .btn-dark{background:#0f172a; color:white}
         .btn-light{background:white; border:1px solid #e2e8f0; color:#0f172a}
         .btn-active{box-shadow:0 0 0 3px #10b981 !important; transform:scale(1.05)}
-        .grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:20px; padding:20px 0 20px}
+        .grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:20px; padding:18px 0 20px}
         .gridChem{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; padding:10px 0 60px}
         .card{background:white; border:1px solid #e2e8f0; border-radius:20px; overflow:hidden; transition:all 0.25s; display:flex; flex-direction:column}
         .card:hover{transform:translateY(-6px); box-shadow:0 20px 40px rgba(0,0,0,0.12)}
         .card-img{height:200px; background:linear-gradient(180deg,#f8fafc 0%,#ffffff 100%); display:flex; align-items:center; justify-content:center; position:relative; padding:14px; border-bottom:1px solid #f1f5f9}
         .card-img img{max-height:170px; max-width:100%; object-fit:contain}
-        .pill{position:absolute; font-size:10px; font-weight:900; padding:5px 10px; border-radius:999px; text-transform:uppercase}
-        .pill-brand{top:12px; left:12px}
+        .pill{position:absolute; font-size:10px; font-weight:900; padding:5px 10px; border-radius:999px; text-transform:uppercase; top:12px; left:12px}
         .chem-card{background:white; border:1px solid #e2e8f0; border-radius:16px; padding:16px; transition:0.2s}
         .chem-card:hover{box-shadow:0 12px 32px rgba(0,0,0,0.1); transform:translateY(-4px); border-color:#10b981}
         .chem-icon{width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:10px}
         .cat-pharma{background:#fef3c7} .cat-commodity{background:#dbeafe} .cat-paint{background:#e0e7ff} .cat-water{background:#ccfbf1}
-        .section-title{font-size:22px; font-weight:900; color:#0f172a; margin:28px 0 14px; padding-top:20px; border-top:1px solid #e2e8f0}
-        @media(max-width:1100px){.grid4,.gridChem{grid-template-columns:repeat(3,1fr)} .hero h1{font-size:34px}}
-        @media(max-width:700px){.grid4,.gridChem{grid-template-columns:repeat(2,1fr)} .hero h1{font-size:28px}}
-        @media(max-width:500px){.grid4,.gridChem{grid-template-columns:1fr}}
+        .section-title{font-size:20px; font-weight:900; color:#0f172a; margin:28px 0 14px; padding-top:20px; border-top:1px solid #e2e8f0}
+        @media(max-width:1100px){.grid4,.gridChem{grid-template-columns:repeat(3,1fr)} .brand-name{font-size:36px} .hero-subtitle{font-size:16px}}
+        @media(max-width:700px){.grid4,.gridChem{grid-template-columns:repeat(2,1fr)} .brand-name{font-size:32px} .hero-subtitle{font-size:15px}}
+        @media(max-width:500px){.grid4,.gridChem{grid-template-columns:1fr} .brand-name{font-size:28px}}
       `}</style>
 
       {toast && <div style={{ position: 'fixed', top: 20, right: 20, zIndex: 9999, background: '#059669', color: 'white', padding: '12px 22px', borderRadius: 14, fontWeight: 800, fontSize: 13 }}>✅ {toast}</div>}
 
       <div className="header">
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div className="logo">
-            <div className="logo-icon">N</div>
-            <div>
-              <div style={{ fontWeight: 900, fontSize: 19, lineHeight: 1 }}>NiChAm Trade</div>
-              <div style={{ fontSize: 11, color: '#059669', fontWeight: 800 }}>Powering Nigeria – Solar, Storage & Chemicals</div>
+        <div className="container">
+          <div className="header-inner">
+            <div className="logo-main">
+              <div className="logo-icon">N</div>
+              <div className="brand-name">NiChAm Trade</div>
+              <div className="brand-sub">Powering Nigeria – Solar, Storage & Chemicals</div>
             </div>
           </div>
-          <span style={{ fontSize: 11, background: '#f1f5f9', padding: '7px 12px', borderRadius: 999, fontWeight: 700, border: '1px solid #e2e8f0' }}>Solar + Chemicals</span>
         </div>
       </div>
 
       <div className="container">
         <div className="hero">
           <div className="badge">⚡ Solar, Storage & Industrial Chemicals</div>
-          <h1>MOTOMA Grade A+ <span style={{ color: '#059669' }}>8000 Cycles</span>, MUST Inverters & Industrial Chemicals</h1>
-          <p style={{ color: '#475569', marginTop: 12, lineHeight: 1.6, fontSize: 15 }}>Wall mount, rack mount, hybrid inverters + Pharmaceuticals, commodity chemicals, paint chemicals & water treatment solutions for Nigeria.</p>
-          <div style={{ display: 'flex', gap: 12, marginTop: 24, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div className="hero-subtitle">MOTOMA Grade A+ <span style={{ color: '#059669', fontWeight: 900 }}>8000 Cycles</span>, MUST Inverters & Industrial Chemicals</div>
+          <div className="hero-desc">Wall mount, rack mount, hybrid inverters + Pharmaceuticals, commodity chemicals, paint chemicals & water treatment solutions for Nigeria.</div>
+          <div style={{ display: 'flex', gap: 12, marginTop: 20, justifyContent: 'center', flexWrap: 'wrap' }}>
             <button onClick={() => setFilter('MOTOMA')} className={`btn ${filter === 'MOTOMA' ? 'btn-primary btn-active' : 'btn-dark'}`}>MOTOMA</button>
             <button onClick={() => setFilter('MUST')} className={`btn ${filter === 'MUST' ? 'btn-primary btn-active' : 'btn-light'}`}>MUST</button>
             <button onClick={() => setFilter('ALL')} className={`btn ${filter === 'ALL' ? 'btn-dark btn-active' : 'btn-light'}`}>All</button>
@@ -154,7 +154,7 @@ export default function Page() {
               {solarToShow.map(p => (
                 <div key={p.id} className="card">
                   <div className="card-img">
-                    <span className="pill pill-brand" style={{ background: p.brand === 'MOTOMA' ? '#059669' : '#eab308', color: p.brand === 'MOTOMA' ? 'white' : 'black', top: 12, left: 12, position: 'absolute' }}>{p.brand}</span>
+                    <span className="pill" style={{ background: p.brand === 'MOTOMA' ? '#059669' : '#eab308', color: p.brand === 'MOTOMA' ? 'white' : 'black' }}>{p.brand}</span>
                     <img src={p.image} alt={p.model} />
                   </div>
                   <div style={{ padding: 14, flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -172,11 +172,11 @@ export default function Page() {
           </>
         )}
 
-        {chemToShow.length > 0 && (
+        {getChemToShow().length > 0 && (
           <>
             <h2 className="section-title">🧪 Industrial Chemicals</h2>
             <div className="gridChem">
-              {chemToShow.map(c => {
+              {getChemToShow().map(c => {
                 const catClass = c.category === 'Pharmaceuticals' ? 'cat-pharma' : c.category === 'Commodity chemicals' ? 'cat-commodity' : c.category === 'Paint chemicals' ? 'cat-paint' : 'cat-water';
                 return (
                   <div key={c.id} className="chem-card">
@@ -195,9 +195,9 @@ export default function Page() {
       </div>
 
       <footer style={{ background: '#0f172a', color: 'white', padding: '24px 0', marginTop: 20 }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, fontSize: 12 }}>
-          <div><div style={{ fontWeight: 900 }}>NiChAm Trade – Powering Nigeria</div><div style={{ color: '#94a3b8', marginTop: 4 }}>MOTOMA Dubai + MUST Factory | Chemicals | GSPI Associates Ltd</div></div>
-          <div style={{ color: '#94a3b8' }}>Minna • Abuja • Lagos – Nigeria</div>
+        <div className="container" style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', gap: 6, fontSize: 12, textAlign: 'center' }}>
+          <div style={{ fontWeight: 900, fontSize: 16 }}>NiChAm Trade – Powering Nigeria</div>
+          <div style={{ color: '#94a3b8' }}>MOTOMA Dubai + MUST Factory | Chemicals | GSPI Associates Ltd • Minna • Abuja • Lagos</div>
         </div>
       </footer>
     </div>
