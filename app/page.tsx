@@ -44,25 +44,23 @@ export default function Page() {
   };
 
   return (
-    <div style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif', background: '#f8fafc', minHeight: '100vh', margin: 0 }}>
+    <div style={{ fontFamily: 'Inter, system-ui, sans-serif', background: '#f8fafc', minHeight: '100vh' }}>
       <style>{`
-        *{box-sizing:border-box}
-        body{margin:0}
+        *{box-sizing:border-box} body{margin:0}
         .container{max-width:1280px; margin:0 auto; padding:0 20px}
         .header{position:sticky; top:0; z-index:50; background:rgba(255,255,255,0.92); backdrop-filter:blur(12px); border-bottom:1px solid #e2e8f0; padding:14px 0}
         .logo{display:flex; align-items:center; gap:12px}
-        .logo-icon{width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,#059669,#eab308); display:flex; align-items:center; justify-content:center; color:white; font-weight:900; font-size:22px; box-shadow:0 4px 12px rgba(5,150,105,0.3)}
-        .badge{display:inline-flex; background:#ecfdf5; color:#047857; padding:6px 12px; border-radius:999px; font-size:12px; font-weight:800; letter-spacing:0.2px}
-        .hero{display:grid; grid-template-columns:1.2fr 0.8fr; gap:32px; padding:48px 0 32px}
-        .hero h1{font-size:48px; line-height:1.05; font-weight:900; margin:12px 0; color:#0f172a; letter-spacing:-1px}
-        .btn{padding:11px 20px; border-radius:12px; font-weight:800; font-size:14px; border:none; cursor:pointer; transition:all 0.2s}
+        .logo-icon{width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,#059669,#eab308); display:flex; align-items:center; justify-content:center; color:white; font-weight:900; font-size:22px}
+        .badge{display:inline-flex; background:#ecfdf5; color:#047857; padding:6px 12px; border-radius:999px; font-size:12px; font-weight:800}
+        .hero{padding:48px 0 24px; text-align:center; max-width:820px; margin:0 auto}
+        .hero h1{font-size:46px; line-height:1.05; font-weight:900; margin:14px 0; color:#0f172a; letter-spacing:-1px}
+        .btn{padding:11px 22px; border-radius:12px; font-weight:800; font-size:14px; border:none; cursor:pointer; transition:all 0.2s}
         .btn:hover{transform:translateY(-1px)}
         .btn-primary{background:#059669; color:white; box-shadow:0 4px 14px rgba(5,150,105,0.35)}
         .btn-dark{background:#0f172a; color:white}
         .btn-light{background:white; border:1px solid #e2e8f0; color:#0f172a}
-        .btn-active{box-shadow:0 8px 20px rgba(0,0,0,0.15); transform:scale(1.03)}
-        .grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:20px; padding-bottom:80px}
-        .card{background:white; border:1px solid #e2e8f0; border-radius:20px; overflow:hidden; transition:all 0.25s cubic-bezier(0.4,0,0.2,1); display:flex; flex-direction:column}
+        .grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:20px; padding:24px 0 80px}
+        .card{background:white; border:1px solid #e2e8f0; border-radius:20px; overflow:hidden; transition:all 0.25s; display:flex; flex-direction:column}
         .card:hover{transform:translateY(-8px); box-shadow:0 24px 48px rgba(0,0,0,0.13); border-color:#cbd5e1}
         .card-img{height:220px; background:linear-gradient(180deg,#f8fafc 0%,#ffffff 100%); display:flex; align-items:center; justify-content:center; position:relative; padding:16px; border-bottom:1px solid #f1f5f9}
         .card-img img{max-height:180px; max-width:100%; object-fit:contain; transition:transform 0.35s}
@@ -72,7 +70,7 @@ export default function Page() {
         .pill-moq{top:12px; right:12px; background:#0f172a; color:white}
         .spec{font-size:10px; background:#f1f5f9; padding:4px 9px; border-radius:999px; font-weight:600; color:#334155; border:1px solid #e2e8f0}
         .spec-green{background:#ecfdf5; color:#047857; border-color:#a7f3d0}
-        @media(max-width:1100px){.grid4{grid-template-columns:repeat(3,1fr)} .hero{grid-template-columns:1fr} .hero h1{font-size:38px}}
+        @media(max-width:1100px){.grid4{grid-template-columns:repeat(3,1fr)} .hero h1{font-size:38px}}
         @media(max-width:700px){.grid4{grid-template-columns:repeat(2,1fr)} .hero h1{font-size:32px}}
         @media(max-width:500px){.grid4{grid-template-columns:1fr}}
       `}</style>
@@ -85,35 +83,24 @@ export default function Page() {
             <div className="logo-icon">N</div>
             <div>
               <div style={{ fontWeight: 900, fontSize: 19, lineHeight: 1, color: '#0f172a' }}>NiChAm Trade</div>
-              <div style={{ fontSize: 11, color: '#059669', fontWeight: 800, marginTop: 2, letterSpacing: 0.3 }}>Powering Nigeria – Solar & Storage</div>
+              <div style={{ fontSize: 11, color: '#059669', fontWeight: 800, marginTop: 2 }}>Powering Nigeria – Solar & Storage</div>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <span style={{ fontSize: 12, background: '#f1f5f9', padding: '7px 12px', borderRadius: 999, fontWeight: 600, color: '#334155', border: '1px solid #e2e8f0' }}>MOTOMA Dubai + MUST Factory</span>
-          </div>
+          <span style={{ fontSize: 12, background: '#f1f5f9', padding: '7px 12px', borderRadius: 999, fontWeight: 600, color: '#334155', border: '1px solid #e2e8f0' }}>MOTOMA Dubai + MUST Factory</span>
         </div>
       </div>
 
       <div className="container">
         <div className="hero">
-          <div>
-            <div className="badge">⚡ 20 Products Ready – Real Photos Extracted</div>
-            <h1>MOTOMA Grade A+ <span style={{ color: '#059669' }}>8000 Cycles</span> & MUST Hybrid Inverters</h1>
-            <p style={{ color: '#475569', marginTop: 14, lineHeight: 1.65, fontSize: 15 }}>Wall mount, rack mount, hybrid inverters. Professional solar & storage solutions for Nigeria. MOQ mix policy available.</p>
-            <div style={{ display: 'flex', gap: 10, marginTop: 24, flexWrap: 'wrap' }}>
-              <button onClick={() => setFilter('MOTOMA')} className={`btn ${filter === 'MOTOMA' ? 'btn-primary btn-active' : 'btn-dark'}`}>MOTOMA 6</button>
-              <button onClick={() => setFilter('MUST')} className={`btn ${filter === 'MUST' ? 'btn-primary btn-active' : 'btn-light'}`}>MUST 14</button>
-              <button onClick={() => setFilter('ALL')} className={`btn ${filter === 'ALL' ? 'btn-dark btn-active' : 'btn-light'}`}>All 20</button>
-            </div>
-          </div>
-          <div style={{ background: 'linear-gradient(135deg,#059669,#10b981,#eab308)', borderRadius: 24, padding: 5, boxShadow: '0 20px 60px rgba(5,150,105,0.25)' }}>
-            <div style={{ background: 'white', borderRadius: 20, padding: 18 }}>
-              <img src="/products/motoma/M68PW_PRO.png" alt="MOTOMA" style={{ width: '100%', height: 280, objectFit: 'contain' }} />
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 14, alignItems: 'center' }}>
-                <span style={{ fontWeight: 900, fontSize: 14, color: '#0f172a' }}>M68PW PRO Best Seller</span>
-                <span style={{ fontSize: 11, background: '#ecfdf5', color: '#047857', padding: '5px 10px', borderRadius: 999, fontWeight: 800 }}>200Ah 25.6V 5.12kWh</span>
-              </div>
-            </div>
+          <div className="badge">⚡ 20 Products Ready – Real Photos Extracted</div>
+          <h1>MOTOMA Grade A+ <span style={{ color: '#059669' }}>8000 Cycles</span> & MUST Hybrid Inverters</h1>
+          <p style={{ color: '#475569', marginTop: 14, lineHeight: 1.65, fontSize: 15, maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
+            Wall mount, rack mount, hybrid inverters. Professional solar & storage solutions for Nigeria. MOQ mix policy available. All RFQ via WhatsApp.
+          </p>
+          <div style={{ display: 'flex', gap: 10, marginTop: 24, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button onClick={() => setFilter('MOTOMA')} className={`btn ${filter === 'MOTOMA' ? 'btn-primary' : 'btn-dark'}`}>MOTOMA 6</button>
+            <button onClick={() => setFilter('MUST')} className={`btn ${filter === 'MUST' ? 'btn-primary' : 'btn-light'}`}>MUST 14</button>
+            <button onClick={() => setFilter('ALL')} className={`btn ${filter === 'ALL' ? 'btn-dark' : 'btn-light'}`}>All 20</button>
           </div>
         </div>
 
@@ -151,7 +138,7 @@ export default function Page() {
         </div>
       </div>
 
-      <footer style={{ background: '#0f172a', color: 'white', padding: '28px 0', borderTop: '1px solid #1e293b', marginTop: 20 }}>
+      <footer style={{ background: '#0f172a', color: 'white', padding: '28px 0', borderTop: '1px solid #1e293b' }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, fontSize: 13 }}>
           <div><div style={{ fontWeight: 900 }}>NiChAm Trade – Powering Nigeria</div><div style={{ color: '#94a3b8', marginTop: 4, fontSize: 12 }}>MOTOMA Dubai + MUST Factory | GSPI Associates Ltd</div></div>
           <div style={{ color: '#94a3b8', fontSize: 12, lineHeight: 1.6 }}>Professional Solar & Storage Solutions<br />Minna • Abuja • Lagos – Nigeria</div>
