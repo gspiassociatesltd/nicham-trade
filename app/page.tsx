@@ -155,7 +155,7 @@ export default function Page() {
       <footer style={{ background: '#0f172a', color: 'white', padding: '32px 0', marginTop: 20 }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', gap: 10, textAlign: 'center' }}>
           <div style={{ fontWeight: 900, fontSize: 20, letterSpacing: -0.5 }}>NiChAm Trade – Powering Nigeria</div>
-          <div style={{ color: '#94a3b8', fontSize: 13 }}>Solar • Storage • Industrial Chemicals • Minna • Abuja • Lagos</div>
+          <div style={{ color: '#94a3b8', fontSize: 13 }}>Solar • Storage • Industrial Chemicals • Nationwide</div>
         </div>
       </footer>
     </div>
