@@ -61,18 +61,8 @@ export default function Page() {
   const [filter, setFilter] = useState<'ALL' | 'MOTOMA' | 'MUST' | 'CHEMICALS'>('ALL');
   const [toast, setToast] = useState<string | null>(null);
 
-  const getSolarToShow = () => {
-    if (filter === 'ALL') return solarProducts;
-    if (filter === 'MOTOMA') return solarProducts.filter(p => p.brand === 'MOTOMA');
-    if (filter === 'MUST') return solarProducts.filter(p => p.brand === 'MUST');
-    return [];
-  };
-  const getChemToShow = () => {
-    if (filter === 'ALL' || filter === 'CHEMICALS') return chemicals;
-    return [];
-  };
-  const solarToShow = getSolarToShow();
-  const chemToShow = getChemToShow();
+  const solarToShow = filter === 'ALL' ? solarProducts : filter === 'MOTOMA' ? solarProducts.filter(p => p.brand === 'MOTOMA') : filter === 'MUST' ? solarProducts.filter(p => p.brand === 'MUST') : [];
+  const chemToShow = filter === 'ALL' || filter === 'CHEMICALS' ? chemicals : [];
 
   const handleRFQ = (item: Product | Chemical, type: 'SOLAR' | 'CHEM') => {
     const model = type === 'SOLAR' ? (item as Product).model : (item as Chemical).name;
@@ -88,17 +78,15 @@ export default function Page() {
       <style>{`
         *{box-sizing:border-box} body{margin:0}
         .container{max-width:1280px; margin:0 auto; padding:0 20px}
-        .header{position:sticky; top:0; z-index:50; background:rgba(255,255,255,0.96); backdrop-filter:blur(12px); border-bottom:1px solid #e2e8f0; padding:0}
+        .header{position:sticky; top:0; z-index:50; background:rgba(255,255,255,0.96); backdrop-filter:blur(12px); border-bottom:1px solid #e2e8f0}
         .header-inner{display:flex; justify-content:center; align-items:center; flex-direction:column; padding:18px 0 14px; text-align:center}
-        .logo-main{display:flex; flex-direction:column; align-items:center; gap:8px}
         .logo-icon{width:64px; height:64px; border-radius:16px; background:linear-gradient(135deg,#059669,#10b981,#eab308); display:flex; align-items:center; justify-content:center; color:white; font-weight:900; font-size:32px; box-shadow:0 8px 24px rgba(5,150,105,0.35)}
-        .brand-name{font-size:42px; font-weight:900; letter-spacing:-1.5px; color:#0f172a; line-height:1; margin-top:6px}
+        .brand-name{font-size:42px; font-weight:900; letter-spacing:-1.5px; color:#0f172a; line-height:1; margin-top:8px}
         .brand-sub{font-size:13px; font-weight:800; color:#059669; letter-spacing:1px; text-transform:uppercase; margin-top:4px}
-        .badge{display:inline-flex; background:#ecfdf5; color:#047857; padding:6px 12px; border-radius:999px; font-size:12px; font-weight:800}
         .hero{padding:28px 0 18px; text-align:center; max-width:900px; margin:0 auto}
-        .hero-subtitle{font-size:18px; line-height:1.4; font-weight:600; color:#334155; margin:12px auto; max-width:720px}
-        .hero-desc{color:#64748b; font-size:14px; line-height:1.5; margin-top:8px}
-        .btn{padding:12px 26px; border-radius:12px; font-weight:800; font-size:14px; border:none; cursor:pointer; transition:all 0.2s}
+        .hero-subtitle{font-size:18px; line-height:1.4; font-weight:600; color:#334155; margin:10px auto; max-width:720px}
+        .hero-desc{color:#64748b; font-size:14px; line-height:1.5; margin-top:6px}
+        .btn{padding:12px 22px; border-radius:12px; font-weight:800; font-size:13px; border:none; cursor:pointer; transition:all 0.2s}
         .btn:hover{transform:translateY(-1px); box-shadow:0 6px 18px rgba(0,0,0,0.12)}
         .btn-primary{background:#059669; color:white; box-shadow:0 4px 14px rgba(5,150,105,0.35)}
         .btn-dark{background:#0f172a; color:white}
@@ -116,33 +104,31 @@ export default function Page() {
         .chem-icon{width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:10px}
         .cat-pharma{background:#fef3c7} .cat-commodity{background:#dbeafe} .cat-paint{background:#e0e7ff} .cat-water{background:#ccfbf1}
         .section-title{font-size:20px; font-weight:900; color:#0f172a; margin:28px 0 14px; padding-top:20px; border-top:1px solid #e2e8f0}
-        @media(max-width:1100px){.grid4,.gridChem{grid-template-columns:repeat(3,1fr)} .brand-name{font-size:36px} .hero-subtitle{font-size:16px}}
-        @media(max-width:700px){.grid4,.gridChem{grid-template-columns:repeat(2,1fr)} .brand-name{font-size:32px} .hero-subtitle{font-size:15px}}
+        @media(max-width:1100px){.grid4,.gridChem{grid-template-columns:repeat(3,1fr)} .brand-name{font-size:36px}}
+        @media(max-width:700px){.grid4,.gridChem{grid-template-columns:repeat(2,1fr)} .brand-name{font-size:32px} .hero-subtitle{font-size:16px}}
         @media(max-width:500px){.grid4,.gridChem{grid-template-columns:1fr} .brand-name{font-size:28px}}
       `}</style>
 
-      {toast && <div style={{ position: 'fixed', top: 20, right: 20, zIndex: 9999, background: '#059669', color: 'white', padding: '12px 22px', borderRadius: 14, fontWeight: 800, fontSize: 13 }}>✅ {toast}</div>}
+      {toast && <div style={{ position: 'fixed', top: 20, right: 20, zIndex: 9999, background: '#059669', color: 'white', padding: '12px 22px', borderRadius: 14, fontWeight: 800 }}>✅ {toast}</div>}
 
       <div className="header">
         <div className="container">
           <div className="header-inner">
-            <div className="logo-main">
-              <div className="logo-icon">N</div>
-              <div className="brand-name">NiChAm Trade</div>
-              <div className="brand-sub">Powering Nigeria – Solar, Storage & Chemicals</div>
-            </div>
+            <div className="logo-icon">N</div>
+            <div className="brand-name">NiChAm Trade</div>
+            <div className="brand-sub">Powering Nigeria – Solar, Storage & Chemicals</div>
           </div>
         </div>
       </div>
 
       <div className="container">
         <div className="hero">
-          <div className="badge">⚡ Solar, Storage & Industrial Chemicals</div>
           <div className="hero-subtitle">MOTOMA Grade A+ <span style={{ color: '#059669', fontWeight: 900 }}>8000 Cycles</span>, MUST Inverters & Industrial Chemicals</div>
           <div className="hero-desc">Wall mount, rack mount, hybrid inverters + Pharmaceuticals, commodity chemicals, paint chemicals & water treatment solutions for Nigeria.</div>
-          <div style={{ display: 'flex', gap: 12, marginTop: 20, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 10, marginTop: 20, justifyContent: 'center', flexWrap: 'wrap' }}>
             <button onClick={() => setFilter('MOTOMA')} className={`btn ${filter === 'MOTOMA' ? 'btn-primary btn-active' : 'btn-dark'}`}>MOTOMA</button>
             <button onClick={() => setFilter('MUST')} className={`btn ${filter === 'MUST' ? 'btn-primary btn-active' : 'btn-light'}`}>MUST</button>
+            <button onClick={() => setFilter('CHEMICALS')} className={`btn ${filter === 'CHEMICALS' ? 'btn-primary btn-active' : 'btn-light'}`}>Industrial Chemicals</button>
             <button onClick={() => setFilter('ALL')} className={`btn ${filter === 'ALL' ? 'btn-dark btn-active' : 'btn-light'}`}>All</button>
           </div>
         </div>
@@ -159,11 +145,6 @@ export default function Page() {
                   </div>
                   <div style={{ padding: 14, flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <div style={{ fontWeight: 800, fontSize: 13, minHeight: 34 }}>{p.model}</div>
-                    <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginTop: 8 }}>
-                      <span style={{ fontSize: 10, background: '#f1f5f9', padding: '3px 8px', borderRadius: 999 }}>{p.capacity}</span>
-                      <span style={{ fontSize: 10, background: '#f1f5f9', padding: '3px 8px', borderRadius: 999 }}>{p.voltage}</span>
-                      <span style={{ fontSize: 10, background: '#ecfdf5', color: '#047857', padding: '3px 8px', borderRadius: 999, fontWeight: 700 }}>{p.cycles}</span>
-                    </div>
                     <button onClick={() => handleRFQ(p, 'SOLAR')} style={{ marginTop: 12, width: '100%', background: '#059669', color: 'white', border: 'none', padding: '11px', borderRadius: 10, fontWeight: 900, fontSize: 12, cursor: 'pointer' }}>Request RFQ</button>
                   </div>
                 </div>
@@ -172,11 +153,11 @@ export default function Page() {
           </>
         )}
 
-        {getChemToShow().length > 0 && (
+        {chemToShow.length > 0 && (
           <>
             <h2 className="section-title">🧪 Industrial Chemicals</h2>
             <div className="gridChem">
-              {getChemToShow().map(c => {
+              {chemToShow.map(c => {
                 const catClass = c.category === 'Pharmaceuticals' ? 'cat-pharma' : c.category === 'Commodity chemicals' ? 'cat-commodity' : c.category === 'Paint chemicals' ? 'cat-paint' : 'cat-water';
                 return (
                   <div key={c.id} className="chem-card">
@@ -197,7 +178,7 @@ export default function Page() {
       <footer style={{ background: '#0f172a', color: 'white', padding: '24px 0', marginTop: 20 }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', gap: 6, fontSize: 12, textAlign: 'center' }}>
           <div style={{ fontWeight: 900, fontSize: 16 }}>NiChAm Trade – Powering Nigeria</div>
-          <div style={{ color: '#94a3b8' }}>MOTOMA Dubai + MUST Factory | Chemicals | GSPI Associates Ltd • Minna • Abuja • Lagos</div>
+          <div style={{ color: '#94a3b8' }}>MOTOMA Dubai + MUST Factory | Industrial Chemicals | GSPI Associates Ltd</div>
         </div>
       </footer>
     </div>
